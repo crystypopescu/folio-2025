@@ -1,0 +1,16 @@
+{
+  "name": "bruno-simon-folio-2025",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "vite": "^5.4.8",
+    "vite-plugin-restart": "^0.4.1"
+  }
+}
