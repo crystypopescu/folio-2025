@@ -1,6 +1,6 @@
 import { Controls } from './Controls.js'
-import { Physics } from './Physics.js'
-import { PhysicsDebug } from './PhysicsDebug.js'
+import { Physics } from './Physics/Physics.js'
+import { PhysicsDebug } from './Physics/PhysicsDebug.js'
 import { Rendering } from './Rendering.js'
 import { Time } from './Time.js'
 import { Vehicle } from './Vehicle.js'

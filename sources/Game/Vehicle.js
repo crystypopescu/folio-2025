@@ -7,11 +7,9 @@ export class Vehicle
     {
         this.game = new Game()
 
-        const chassisDescription = RAPIER.RigidBodyDesc.dynamic().setTranslation(0.0, 1.0, 0.0).setCanSleep(false)
-        this.chassisBody = this.game.physics.world.createRigidBody(chassisDescription)
-        this.game.physics.world.createCollider(RAPIER.ColliderDesc.cuboid(1, 0.5, 2), this.chassisBody);
+        this.setChassis()
 
-        this.controller = this.game.physics.world.createVehicleController(this.chassisBody)
+        this.controller = this.game.physics.world.createVehicleController(this.chassis.physical.body)
 
         const wheelGeneral = {
             directionCs: new THREE.Vector3(0, -1, 0), // Suspension direction
@@ -20,8 +18,8 @@ export class Vehicle
             maxSuspensionForce: 6000,    // 6000
             maxSuspensionTravel: 5,      // 5
             radius: 0.5,                 // No default
-            sideFrictionStiffness: 0.6,   // 1
-            suspensionCompression: 2, // 0.83
+            sideFrictionStiffness: 0.6,  // 1
+            suspensionCompression: 2,    // 0.83
             suspensionRelaxation: 1.88,  // 0.88
             suspensionRestLength: 0.125, // No default
             suspensionStiffness: 30,     // 5.88
@@ -64,6 +62,25 @@ export class Vehicle
         {
             this.update()
         })
+    }
+
+    setChassis()
+    {
+        const visual = new THREE.Mesh(
+            new THREE.BoxGeometry(1 * 2, 0.5 * 2, 2 * 2),
+            new THREE.MeshNormalMaterial()
+        )
+        this.game.world.scene.add(visual)
+        this.chassis = this.game.physics.addEntity(
+            {
+                type: 'dynamic',
+                shape: 'cuboid',
+                position: { x: 0, y: 1, z: 0 },
+                colliders: [ { shape: 'cuboid', parameters: [ 1, 0.5, 2 ] } ],
+                canSleep: false
+            },
+            visual
+        )
     }
 
     update()

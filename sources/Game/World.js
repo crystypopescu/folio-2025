@@ -12,14 +12,8 @@ export class World
         this.scene = new THREE.Scene()
         this.scene.fogNode = rangeFog(color(0x1b191f), 50, 100)
 
-        this.setGrid()
-
-        // this.dummy = new THREE.Mesh(
-        //     new THREE.BoxGeometry(1, 1, 1),
-        //     new THREE.MeshNormalMaterial()
-        // )
-        // this.dummy.position.x = 1
-        // this.scene.add(this.dummy)
+        this.setGround()
+        this.setDummy()
 
         // const axesHelper = new THREE.AxesHelper()
         // this.scene.add(axesHelper)
@@ -30,7 +24,7 @@ export class World
         }, 999)
     }
 
-    setGrid()
+    setGround()
     {
         const lines = [
             // new MeshGridMaterialLine(0x444444, 0.1, 0.04),
@@ -47,12 +41,36 @@ export class World
             lines
         })
 
-        const grid = new THREE.Mesh(
+        const ground = new THREE.Mesh(
             new THREE.PlaneGeometry(1000, 1000),
             uvGridMaterial
         )
-        grid.rotation.x = - Math.PI * 0.5
-        this.scene.add(grid)
+        ground.rotation.x = - Math.PI * 0.5
+        this.scene.add(ground)
+
+        // Physical ground
+        this.game.physics.addEntity({
+            type: 'fixed',
+            colliders: [ { shape: 'cuboid', parameters: [ 100, 1, 100 ], position: { x: 0, y: - 1.01, z: 0 } } ]
+        })
+    }
+    
+    setDummy()
+    {
+        const dummy = new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshNormalMaterial()
+        )
+        this.scene.add(dummy)
+
+        this.game.physics.addEntity(
+            {
+                type: 'dynamic',
+                position: { x: 0, y: 3, z: 0 },
+                colliders: [ { shape: 'cuboid', parameters: [ 0.5, 0.5, 0.5 ] } ]
+            },
+            dummy
+        )
     }
 
     update()

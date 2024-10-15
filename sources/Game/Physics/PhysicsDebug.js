@@ -1,4 +1,4 @@
-import { Game } from './Game.js'
+import { Game } from '../Game.js'
 import * as THREE from 'three/webgpu'
 
 export class PhysicsDebug
@@ -29,7 +29,6 @@ export class PhysicsDebug
     update()
     {
         const { vertices, colors } = this.game.physics.world.debugRender()
-        // console.log(this.game.physics.world.debugRender())
 
         this.geometry.attributes.position.array = vertices
         this.geometry.attributes.position.count = vertices.length / 3
