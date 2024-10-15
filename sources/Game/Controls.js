@@ -12,6 +12,7 @@ export class Controls
             { name: 'down', keys: [ 'ArrowDown', 'KeyS' ] },
             { name: 'left', keys: [ 'ArrowLeft', 'KeyA' ] },
             { name: 'jump', keys: [ 'Space' ] },
+            { name: 'boost', keys: [ 'ShiftLeft', 'ShiftRight' ] },
         ]
 
         this.keys = {}

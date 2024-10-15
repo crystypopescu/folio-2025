@@ -51,7 +51,7 @@ export class Vehicle
             offset: new THREE.Vector3(0.75, -0.4,  0.8), // No default
             directionCs: new THREE.Vector3(0, -1, 0), // Suspension direction
             axleCs: new THREE.Vector3(-1, 0, 0),      // Rotation axis
-            frictionSlip: 4,             // 10.5
+            frictionSlip: 20,             // 10.5
             maxSuspensionForce: 6000,    // 6000
             maxSuspensionTravel: 5,      // 5
             radius: 0.5,                 // No default
@@ -145,9 +145,12 @@ export class Vehicle
     {
         this.wheels.engineForce = 0
         if(this.game.controls.keys.up)
-            this.wheels.engineForce += 10
+            this.wheels.engineForce += 6
         if(this.game.controls.keys.down)
-            this.wheels.engineForce -= 10
+            this.wheels.engineForce -= 6
+
+        if(this.game.controls.keys.boost)
+            this.wheels.engineForce *= 2.5
 
         this.wheels.steering = 0
         if(this.game.controls.keys.right)
