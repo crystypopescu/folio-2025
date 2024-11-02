@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import CameraControls from 'camera-controls'
 import { Game } from './Game.js'
+import { clamp, lerp, remap, smoothstep } from './utilities/maths.js'
 
 CameraControls.install( { THREE: THREE } )
 
@@ -12,10 +13,18 @@ export class View
 
         this.mode = 'default'
 
-        this.spherical = new THREE.Spherical(25, Math.PI * 0.35, Math.PI * 0.25)
         this.target = new THREE.Vector3()
         this.smoothedTarget = new THREE.Vector3()
-        this.offset = new THREE.Vector3().setFromSpherical(this.spherical)
+
+        this.phi = Math.PI * 0.35
+        this.theta = Math.PI * 0.25
+
+        this.radius = {}
+        this.radius.smoothedValue = 25
+        this.radius.low = 25
+        this.radius.high = 35
+        this.radius.speedLow = 5
+        this.radius.speedHigh = 40
 
         this.camera = new THREE.PerspectiveCamera(25, this.game.viewport.ratio, 0.1, 1000)
         this.game.world.scene.add(this.camera)
@@ -61,9 +70,17 @@ export class View
                 this.cameraControls.setTarget(this.target.x, this.target.y, this.target.z)
                 this.cameraControls.setPosition(this.camera.position.x, this.camera.position.y, this.camera.position.z)
             })
-            folder.addBinding(this.spherical, 'phi', { min: 0, max: Math.PI * 0.5, step: 0.001 }).on('change', () => this.offset.setFromSpherical(this.spherical) )
-            folder.addBinding(this.spherical, 'theta', { min: - Math.PI, max: Math.PI, step: 0.001 }).on('change', () => this.offset.setFromSpherical(this.spherical) )
-            folder.addBinding(this.spherical, 'radius', { min: 0, max: 100, step: 0.001 }).on('change', () => this.offset.setFromSpherical(this.spherical) )
+            folder.addBinding(this, 'phi', { min: 0, max: Math.PI * 0.5, step: 0.001 })
+            folder.addBinding(this, 'theta', { min: - Math.PI, max: Math.PI, step: 0.001 })
+
+            const radiusFolder = folder.addFolder({
+                title: 'Radius',
+                expanded: true,
+            })
+            radiusFolder.addBinding(this.radius, 'low', { min: 0, max: 100, step: 0.001 })
+            radiusFolder.addBinding(this.radius, 'high', { min: 0, max: 100, step: 0.001 })
+            radiusFolder.addBinding(this.radius, 'speedLow', { min: 0, max: 100, step: 0.001 })
+            radiusFolder.addBinding(this.radius, 'speedHigh', { min: 0, max: 100, step: 0.001 })
         }
     }
 
@@ -75,12 +92,31 @@ export class View
 
     update()
     {
+        // Default mode
         if(this.mode === 'default')
         {
-            this.smoothedTarget.lerp(this.target, this.game.time.delta * 10)
-            this.camera.position.copy(this.smoothedTarget).add(this.offset)
+            // Target
+            const newSmoothTarget = this.smoothedTarget.clone().lerp(this.target, this.game.time.delta * 10)
+            const smoothTargetDelta = newSmoothTarget.clone().sub(this.smoothedTarget)
+            const targetSpeed = smoothTargetDelta.length() / this.game.time.delta
+            this.smoothedTarget.copy(newSmoothTarget)
+            
+            // Radius
+            const radiusRatio = smoothstep(targetSpeed, this.radius.speedLow, this.radius.speedHigh)
+            const radius = lerp(this.radius.low, this.radius.high, radiusRatio)
+            this.radius.smoothedValue = lerp(this.radius.smoothedValue, radius, this.game.time.delta * 10)
+            
+            // Offset
+            const offset = new THREE.Vector3().setFromSphericalCoords(this.radius.smoothedValue, this.phi, this.theta)
+
+            // Position
+            this.camera.position.copy(this.smoothedTarget).add(offset)
+
+            // Look at
             this.camera.lookAt(this.smoothedTarget)
         }
+        
+        // Controls mode
         else
         {
             this.cameraControls.update(this.game.time.delta)
