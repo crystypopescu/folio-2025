@@ -12,7 +12,7 @@ export class View
     {
         this.game = new Game()
 
-        this.mode = 'controls'
+        this.mode = 'default'
 
         this.target = new THREE.Vector3()
         this.smoothedTarget = new THREE.Vector3()

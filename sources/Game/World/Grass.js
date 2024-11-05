@@ -136,9 +136,10 @@ export class Grass
                 this.game.vehicle.wheelTracks.renderTarget.texture,
                 worldPosition.xz.sub(- this.game.vehicle.wheelTracks.halfSize).sub(this.playerPosition).div(this.game.vehicle.wheelTracks.size)
             )
+            const flatness = wheelTracksColor.a.oneMinus().toVar()
 
             // Height
-            const height = attribute('randomness').mul(0.4).add(0.6).mul(wheelTracksColor.a.oneMinus())
+            const height = attribute('randomness').mul(0.4).add(0.6).mul(flatness)
 
             // Shape
             const shape = vec3(
@@ -151,7 +152,7 @@ export class Grass
             const vertexPosition = position3.add(shape)
 
             // Wind
-            wind.assign(getWind([this.resources.noisesTexture, worldPosition.xz]).mul(tipness).mul(1))
+            wind.assign(getWind([this.resources.noisesTexture, worldPosition.xz]).mul(tipness).mul(flatness))
             vertexPosition.addAssign(vec3(wind.x, 0, wind.y))
 
             // Vertex rotation
