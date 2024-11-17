@@ -13,6 +13,8 @@ export class Rendering
         this.renderer.setPixelRatio(this.game.viewport.pixelRatio)
         this.renderer.setClearColor(0x1b191f)
         this.renderer.domElement.classList.add('experience')
+        this.renderer.shadowMap.enabled = true
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.game.domElement.append(this.renderer.domElement)
 
         this.game.time.events.on('tick', () =>

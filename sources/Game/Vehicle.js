@@ -101,6 +101,7 @@ export class Vehicle
                 wheelGeometry,
                 new THREE.MeshNormalNodeMaterial({ flatShading: true })
             )
+            wheel.visual.castShadow = true
             wheel.visual.rotation.reorder('YXZ')
             this.chassis.visual.add(wheel.visual)
 

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Game } from '../Game.js'
-import { color, sin, time, smoothstep, mix, matcapUV, float, mod, texture, transformNormalToView, uniformArray, varying, vertexIndex, rotateUV, cameraPosition, vec4, atan2, vec3, vec2, modelWorldMatrix, Fn, attribute, uniform } from 'three'
+import { output, color, sin, time, smoothstep, mix, matcapUV, float, mod, texture, transformNormalToView, uniformArray, varying, vertexIndex, rotateUV, cameraPosition, vec4, atan2, vec3, vec2, modelWorldMatrix, Fn, attribute, uniform } from 'three'
 import getWind from '../tsl/getWind.js'
 
 export class Grass
@@ -17,7 +17,7 @@ export class Grass
         this.game.resources.load(
             [
                 { path: 'matcaps/grassOnGreen.png', type: 'texture', name: 'matcapGrassOnGreen' },
-                { path: 'noises-128x128.png', type: 'texture', name: 'noisesTexture' },
+                { path: 'noises-256x256.png', type: 'texture', name: 'noisesTexture' },
             ],
             (resources) =>
             {
@@ -87,7 +87,8 @@ export class Grass
 
     setMaterial()
     {
-        this.material = new THREE.MeshMatcapNodeMaterial()
+        // this.material = new THREE.MeshMatcapNodeMaterial()
+        this.material = new THREE.MeshPhongMaterial()
         this.center = uniform(new THREE.Vector2())
         this.groundDataDelta = uniform(new THREE.Vector2())
 
@@ -173,18 +174,18 @@ export class Grass
         const colorVariation = varying(texture(this.resources.noisesTexture, bladePosition.mul(0.02)).smoothstep(0.2, 0.8))
 
         const finalColor = colorVariation.mix(colorA, colorB).mul(tipness)
+        const shadowColor = finalColor.mul(vec3(0.25, 0.5, 2, 1))
 
-        this.material.outputNode = vec4(finalColor.rgb, 1)
+        const totalShadows = float(1).toVar()
 
-        // Test
-        // // const testGeometry = new THREE.PlaneGeometry(20, 20, 1, 1)
-        // const testGeometry = new THREE.SphereGeometry(2, 32, 32)
-        // testGeometry.rotateX(- Math.PI * 0.5)
+        this.material.receivedShadowNode = Fn(([ shadow ]) => 
+        {
+            totalShadows.mulAssign(shadow)
 
-        // const testMaterial = new THREE.MeshMatcapNodeMaterial({ depthTest: false, matcap: this.resources.matcapGrassOnGreen })
-        // this.testPlane = new THREE.Mesh(testGeometry, testMaterial)
-        // this.game.scene.add(this.testPlane)
-        
+            return float(1)
+        })
+        this.material.outputNode = vec4(mix(finalColor.rgb, shadowColor.rgb, totalShadows.oneMinus()), 1)
+
         // Debug
         if(this.game.debug.active)
         {
@@ -207,6 +208,7 @@ export class Grass
     {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.mesh.frustumCulled = false
+        this.mesh.receiveShadow = true
         this.game.scene.add(this.mesh)
     }
 

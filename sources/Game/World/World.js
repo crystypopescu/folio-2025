@@ -46,23 +46,34 @@ export class World
             for(let j = 3; j < clusterCount; j++)
             {
                 const size = remap(Math.random(), 0, 1, 0.3, 1)
-                const position = new THREE.Vector3(
+
+                const object = new THREE.Object3D()
+                
+                const angle = Math.PI * 2 * Math.random()
+                object.up.set(Math.sin(angle), Math.cos(angle), 0)
+                object.lookAt(towardCamera)
+
+                object.position.set(
                     clusterPosition.x + (Math.random() - 0.5) * 3,
                     size * 0.5,
                     clusterPosition.y + (Math.random() - 0.5) * 3
                 )
-                const euler = new THREE.Euler().setFromVector3(towardCamera)
-                const quaternion = new THREE.Quaternion().setFromEuler(euler)
 
-                const axisQuaternion = new THREE.Quaternion().setFromAxisAngle(towardCamera, Math.random() * Math.PI * 2)
-                quaternion.premultiply(axisQuaternion)
 
-                const scale = new THREE.Vector3().setScalar(size)
+                
+                // const euler = new THREE.Euler().setFromVector3(towardCamera)
+                // const quaternion = new THREE.Quaternion().setFromEuler(euler)
+                // const axisQuaternion = new THREE.Quaternion().setFromAxisAngle(towardCamera, Math.random() * Math.PI * 2)
+                // quaternion.multiply(axisQuaternion)
 
-                const matrix = new THREE.Matrix4()
-                matrix.compose(position, quaternion, scale)
+                object.updateMatrix()
 
-                items.push(matrix)
+                object.scale.setScalar(size)
+
+                // const matrix = new THREE.Matrix4()
+                // matrix.compose(position, quaternion, scale)
+
+                items.push(object.matrix)
             }
         }
 

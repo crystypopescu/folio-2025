@@ -13,6 +13,7 @@ import { Viewport } from './Viewport.js'
 import { World } from './World/World.js'
 import { GroundData } from './GroundData/GroundData.js'
 import { Monitoring } from './Monitoring.js'
+import { Lighting } from './Ligthing.js'
 
 export class Game
 {
@@ -67,6 +68,7 @@ export class Game
         this.view = new View()
         this.vehicle = new Vehicle()
         this.world = new World()
+        this.lighting = new Lighting()
         this.rendering = new Rendering()
         // this.monitoring = new Monitoring()
     }

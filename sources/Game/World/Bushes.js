@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { Game } from '../Game.js'
 import getWind from '../tsl/getWind.js'
-import { instance, smoothstep, vec4, PI, vertexIndex, rotateUV, time, sin, uv, texture, float, Fn, positionLocal, vec3, transformNormalToView, normalWorld, positionWorld, frontFacing, If } from 'three'
+import { mix, output, instance, smoothstep, vec4, PI, vertexIndex, rotateUV, time, sin, uv, texture, float, Fn, positionLocal, vec3, transformNormalToView, normalWorld, positionWorld, frontFacing, If } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { remap } from '../utilities/maths.js'
 
@@ -17,7 +17,7 @@ export class Bushes
             [
                 { path: 'bush/bush-leaves-3.png', type: 'texture', name: 'bushLeaves' },
                 { path: 'matcaps/bushOnGreen.png', type: 'texture', name: 'matcapBushOnGreen' },
-                { path: 'noises-128x128.png', type: 'texture', name: 'noisesTexture' },
+                { path: 'noises-256x256.png', type: 'texture', name: 'noisesTexture' },
             ],
             (resources) =>
             {
@@ -56,7 +56,7 @@ export class Bushes
 
             // plane.rotateX(Math.random() * 9999)
             plane.rotateZ(Math.random() * 9999)
-            plane.rotateY(Math.PI * 0.5)
+            plane.rotateY(0)
             plane.translate(
                 position.x,
                 position.y,
@@ -104,40 +104,33 @@ export class Bushes
             alphaTest: 0.01
         })
     
-        // this.material.normalNode = Fn(() =>
-        // {
-        //     const normal = normalWorld.toVar()
-
-        //     If(frontFacing.not(), () =>
-        //     {
-        //         normal.assign(normal.negate())
-        //     })
-            
-        //     return transformNormalToView(normal)
-        // })()
-
         const wind = getWind([this.resources.noisesTexture, positionLocal.xz])
         const multiplier = positionLocal.y.clamp(0, 1).mul(1)
-
-        // const timeOffset = float(vertexIndex).div(4).floor().div(100)
-        // const shakeStrength = smoothstep(0.1, 0.2, wind.length()).mul(0.2)
-        // const shake = sin(time.add(timeOffset).mul(30))
-        // const shakyUv = rotateUV(uv(), shake.mul(shakeStrength))
-        // this.material.opacityNode = texture(this.resources.bushLeaves, shakyUv).r
 
         this.material.positionNode = Fn( ( { object } ) =>
         {
             instance(object.count, this.instanceMatrix).append()
 
-            // const elevation = positionLocal.y.clamp(0, 1)
-            // const fakeWind = vec2(1, 1)
             return positionLocal.add(vec3(wind.x, 0, wind.y).mul(multiplier))
         })()
+
+
+        const totalShadows = float(1).toVar()
+
+        this.material.receivedShadowNode = Fn(([ shadow ]) => 
+        {
+            totalShadows.mulAssign(shadow)
+
+            return float(1)
+        })
+        this.material.outputNode = vec4(mix(output.rgb, output.rgb.mul(vec3(0.25, 0.5, 2, 1)), totalShadows.oneMinus()), 1)
     }
 
     setInstancedMesh()
     {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
+        this.mesh.receiveShadow = true
+        this.mesh.castShadow = true
         this.mesh.count = this.items.length
         this.mesh.frustumCulled = false
         // this.mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage)
