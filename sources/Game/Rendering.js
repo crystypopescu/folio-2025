@@ -45,7 +45,7 @@ export class Rendering
         this.renderer.setPixelRatio(this.game.viewport.pixelRatio)
     }
 
-    render()
+    async render()
     {
         this.renderer.renderAsync(this.game.scene, this.game.view.camera)
     }

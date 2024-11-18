@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { Game } from '../Game.js'
 import getWind from '../tsl/getWind.js'
-import { mix, output, instance, smoothstep, vec4, PI, vertexIndex, rotateUV, time, sin, uv, texture, float, Fn, positionLocal, vec3, transformNormalToView, normalWorld, positionWorld, frontFacing, If } from 'three'
+import { color, uniform, normalLocal, mix, output, instance, smoothstep, vec4, PI, vertexIndex, rotateUV, time, sin, uv, texture, float, Fn, positionLocal, vec3, transformNormalToView, normalWorld, positionWorld, frontFacing, If } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { remap } from '../utilities/maths.js'
 
@@ -16,15 +16,11 @@ export class Bushes
         this.game.resources.load(
             [
                 { path: 'bush/bush-leaves-3.png', type: 'texture', name: 'bushLeaves' },
-                { path: 'matcaps/bushOnGreen.png', type: 'texture', name: 'matcapBushOnGreen' },
                 { path: 'noises-256x256.png', type: 'texture', name: 'noisesTexture' },
             ],
             (resources) =>
             {
                 this.resources = resources
-                this.resources.matcapBushOnGreen.colorSpace = THREE.SRGBColorSpace
-                this.resources.noisesTexture.wrapS = THREE.RepeatWrapping
-                this.resources.noisesTexture.wrapT = THREE.RepeatWrapping
                 this.init()
             }
         )
@@ -94,33 +90,61 @@ export class Bushes
 
     setMaterial()
     {
-        this.material = new THREE.MeshMatcapNodeMaterial({
-            // side: THREE.DoubleSide,
-            matcap: this.resources.matcapBushOnGreen,
+        this.material = new THREE.MeshLambertNodeMaterial({
             alphaMap: this.resources.bushLeaves,
             alphaTest: 0.01
         })
     
+        // Position
         const wind = getWind([this.resources.noisesTexture, positionLocal.xz])
         const multiplier = positionLocal.y.clamp(0, 1).mul(1)
+
+        const normalTest = vec3().toVar()
 
         this.material.positionNode = Fn( ( { object } ) =>
         {
             instance(object.count, this.instanceMatrix).append()
+            normalTest.assign(normalLocal)
 
             return positionLocal.add(vec3(wind.x, 0, wind.y).mul(multiplier))
         })()
 
-
+        // Shadow
         const totalShadows = float(1).toVar()
+        // this.material.castShadowNode = Fn(([ shadow ]) => 
+        // {
+        //     totalShadows.mulAssign(shadow)
 
+        //     return float(1)
+        // })
         this.material.receivedShadowNode = Fn(([ shadow ]) => 
         {
             totalShadows.mulAssign(shadow)
 
             return float(1)
         })
-        this.material.outputNode = vec4(mix(output.rgb, output.rgb.mul(vec3(0.25, 0.5, 2, 1)), totalShadows.oneMinus()), 1)
+
+        // Output
+        const colorA = uniform(color('#204c40').rgb)
+        const colorB = uniform(color('#9eaf33').rgb)
+        const colorMix = normalLocal.dot(this.game.lighting.directionUniform).smoothstep(-0.5, 1)
+        const finalColor = mix(colorA, colorB, colorMix).varying()
+        // this.material.outputNode = vec4(finalColor, 1)
+        this.material.outputNode = vec4(mix(finalColor, colorA, totalShadows.oneMinus()), 1)
+
+        // Bushes
+        if(this.game.debug.active)
+        {
+            const debugPanel = this.game.debug.panel.addFolder({
+                title: '🌳 Bushes',
+                expanded: true,
+            })
+
+            debugPanel.addBinding({ color: colorA.value.getHex(THREE.SRGBColorSpace) }, 'color', { color: { type: 'float' } })
+                .on('change', tweak => { colorA.value.set(tweak.value) })
+            debugPanel.addBinding({ color: colorB.value.getHex(THREE.SRGBColorSpace) }, 'color', { color: { type: 'float' } })
+                .on('change', tweak => { colorB.value.set(tweak.value) })
+        }
     }
 
     setInstancedMesh()

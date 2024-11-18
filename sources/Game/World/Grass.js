@@ -87,8 +87,7 @@ export class Grass
 
     setMaterial()
     {
-        // this.material = new THREE.MeshMatcapNodeMaterial()
-        this.material = new THREE.MeshPhongMaterial()
+        this.material = new THREE.MeshLambertMaterial()
         this.center = uniform(new THREE.Vector2())
         this.groundDataDelta = uniform(new THREE.Vector2())
 
@@ -182,9 +181,10 @@ export class Grass
         const colorB = uniform(color('#e0e239'))
         const colorVariation = varying(texture(this.resources.noisesTexture, bladePosition.mul(0.02)).smoothstep(0.2, 0.8))
 
-        const finalColor = colorVariation.mix(colorA, colorB).mul(tipness).rgb.varying()
-        const shadowColor = finalColor.mul(vec3(0.25, 0.5, 2, 1)).rgb.varying()
-        this.material.outputNode = vec4(mix(finalColor, shadowColor, totalShadows.oneMinus()), 1)
+        const baseColor = colorVariation.mix(colorA, colorB).rgb.varying()
+        const shadowColor = baseColor.mul(vec3(0.25, 0.5, 3, 1)).rgb.varying()
+
+        this.material.outputNode = vec4(mix(baseColor, shadowColor, totalShadows.oneMinus()).mul(tipness), 1)
 
         // Debug
         if(this.game.debug.active)
