@@ -168,22 +168,22 @@ export class Grass
         const normal = vec3(wind.y.mul(-10), 1, wind.y.mul(-10)).normalize()
         this.material.normalNode = transformNormalToView(normal)
 
-        // Output
-        const colorA = uniform(color('#72a51e'))
-        const colorB = uniform(color('#e0e239'))
-        const colorVariation = varying(texture(this.resources.noisesTexture, bladePosition.mul(0.02)).smoothstep(0.2, 0.8))
-
-        const finalColor = colorVariation.mix(colorA, colorB).mul(tipness)
-        const shadowColor = finalColor.mul(vec3(0.25, 0.5, 2, 1))
-
+        // Shadow
         const totalShadows = float(1).toVar()
-
         this.material.receivedShadowNode = Fn(([ shadow ]) => 
         {
             totalShadows.mulAssign(shadow)
 
             return float(1)
         })
+
+        // Output
+        const colorA = uniform(color('#72a51e'))
+        const colorB = uniform(color('#e0e239'))
+        const colorVariation = varying(texture(this.resources.noisesTexture, bladePosition.mul(0.02)).smoothstep(0.2, 0.8))
+
+        const finalColor = colorVariation.mix(colorA, colorB).mul(tipness).varying()
+        const shadowColor = finalColor.mul(vec3(0.25, 0.5, 2, 1)).varying()
         this.material.outputNode = vec4(mix(finalColor.rgb, shadowColor.rgb, totalShadows.oneMinus()), 1)
 
         // Debug
