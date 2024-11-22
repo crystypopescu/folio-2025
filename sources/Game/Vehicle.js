@@ -8,12 +8,15 @@ export class Vehicle
     {
         this.game = new Game()
         
+        if(this.game.debug.active)
+        {
+            this.debugPanel = this.game.debug.panel.addFolder({
+                title: '🚗 Vehicle',
+                expanded: false,
+            })
+        }
+
         this.events = new Events()
-
-        this.setChassis()
-
-        this.controller = this.game.physics.world.createVehicleController(this.chassis.physical.body)
-
         this.sideward = new THREE.Vector3(0, 0, 1)
         this.upward = new THREE.Vector3(0, 1, 0)
         this.forward = new THREE.Vector3(1, 0, 0)
@@ -24,20 +27,16 @@ export class Vehicle
         this.absoluteSpeed = 0
         this.upsideDownRatio = 0
 
-        if(this.game.debug.active)
-        {
-            this.debugPanel = this.game.debug.panel.addFolder({
-                title: '🚗 Vehicle',
-                expanded: false,
-            })
-        }
-
+        this.setParts()
+        this.setChassis()
+        this.controller = this.game.physics.world.createVehicleController(this.chassis.physical.body)
         this.setWheels()
         this.setStop()
         this.setFlip()
         this.setUnstuck()
         this.setReset()
         this.setHydraulics()
+        this.setBlinkers()
 
         this.game.time.events.on('tick', () =>
         {
@@ -49,29 +48,50 @@ export class Vehicle
         }, 4)
     }
 
-    setChassis()
+    setParts()
     {
-        const model = this.game.resources.vehicleChassis.scene.children[0]
-        model.traverse((child) =>
+        this.parts = {}
+
+        // Chassis
+        this.parts.chassis = this.game.resources.vehicleChassis.scene.children[0]
+        this.parts.chassis.traverse((child) =>
         {
             if(child.isMesh)
             {
                 child.receiveShadow = true
                 child.castShadow = true
                 child.material.shadowSide = THREE.BackSide
-
-                // if(child.material.name === 'emissiveWarmWhite' || child.material.name === 'emissiveRed')
-                // {
-                //     const luminanceCoefficients = new THREE.Vector3()
-                //     THREE.ColorManagement.getLuminanceCoefficients(luminanceCoefficients)
-                //     const luminance = child.material.color.r * luminanceCoefficients.x + child.material.color.g * luminanceCoefficients.y + child.material.color.b * luminanceCoefficients.z
-                //     child.material.color.multiplyScalar(1.1 / luminance)
-                // }
             }
         })
-        this.game.materials.updateObject(model)
-        this.game.scene.add(model)
+        this.game.materials.updateObject(this.parts.chassis)
+        this.game.scene.add(this.parts.chassis)
 
+        // Blinker left
+        this.parts.blinkerLeft = this.parts.chassis.getObjectByName('blinkerLeft')
+
+        // Blinker right
+        this.parts.blinkerRight = this.parts.chassis.getObjectByName('blinkerRight')
+
+        // Stop lights
+        this.parts.stopLights = this.parts.chassis.getObjectByName('stopLights')
+        this.parts.stopLights.visible = false
+
+        // Wheel
+        this.parts.wheel = this.game.resources.vehicleWheel.scene.children[0]
+        this.parts.wheel.traverse((child) =>
+        {
+            if(child.isMesh)
+            {
+                child.receiveShadow = true
+                child.castShadow = true
+                child.material.shadowSide = THREE.BackSide
+            }
+        })
+        this.game.materials.updateObject(this.parts.wheel)
+    }
+
+    setChassis()
+    {
         this.chassis = this.game.physics.addEntity(
             {
                 type: 'dynamic',
@@ -80,7 +100,7 @@ export class Vehicle
                 colliders: [ { shape: 'cuboid', parameters: [ 1.5, 0.5, 0.85 ] } ],
                 canSleep: false,
             },
-            model
+            this.parts.chassis
         )
     }
 
@@ -100,17 +120,6 @@ export class Vehicle
         this.wheels.brakePerpetualStrength = 3
         this.wheels.maxSpeed = 5
         this.wheels.maxSpeedBoost = 12
-        this.wheels.model = this.game.resources.vehicleWheel.scene.children[0]
-        this.wheels.model.traverse((child) =>
-        {
-            if(child.isMesh)
-            {
-                child.receiveShadow = true
-                child.castShadow = true
-                child.material.shadowSide = THREE.BackSide
-            }
-        })
-        this.game.materials.updateObject(this.wheels.model)
 
         // Geometry
         const wheelGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 8)
@@ -128,7 +137,7 @@ export class Vehicle
             wheel.visual = new THREE.Group()
             this.chassis.visual.add(wheel.visual)
 
-            const actualWheel = this.wheels.model.clone(true)
+            const actualWheel = this.parts.wheel.clone(true)
             wheel.visual.add(actualWheel)
             actualWheel.position.set(0, 0, 0)
             
@@ -420,6 +429,30 @@ export class Vehicle
         }
     }
 
+    setBlinkers()
+    {
+        setInterval(() =>
+        {
+            if(this.game.inputs.keys.left)
+                this.parts.blinkerLeft.visible = !this.parts.blinkerLeft.visible
+
+            if(this.game.inputs.keys.right)
+                this.parts.blinkerRight.visible = !this.parts.blinkerRight.visible
+        }, 400)
+
+        this.game.inputs.events.on('left', (event) =>
+        {
+            if(!event.down)
+                this.parts.blinkerLeft.visible = true
+        })
+
+        this.game.inputs.events.on('right', (event) =>
+        {
+            if(!event.down)
+                this.parts.blinkerRight.visible = true
+        })
+    }
+
     updatePrePhysics()
     {
         let reverseBrake = false
@@ -460,6 +493,11 @@ export class Vehicle
         {
             this.wheels.engineForce = 0
             brake = this.wheels.brakeStrength
+            this.parts.stopLights.visible = true
+        }
+        else
+        {
+            this.parts.stopLights.visible = false
         }
 
         const maxSpeed = this.game.inputs.keys.boost ? this.wheels.maxSpeedBoost : this.wheels.maxSpeed

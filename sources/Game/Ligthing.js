@@ -12,7 +12,7 @@ export class Lighting
         this.direction = new THREE.Vector3().setFromSpherical(this.spherical).normalize()
         this.directionUniform = uniform(this.direction)
         this.colorUniform = uniform(color('#ffffff'))
-        this.intensityUniform = uniform(2)
+        this.intensityUniform = uniform(1)
         this.count = 1
         this.lights = []
         this.mapSizeMin = 512

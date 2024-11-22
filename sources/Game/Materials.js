@@ -34,6 +34,8 @@ export class Materials
 
         const createEmissiveTweak = (material) =>
         {
+            if(!this.game.debug.active)
+                return false
             const update = () =>
             {
                 material.color.set(dummy.color)
@@ -46,8 +48,8 @@ export class Materials
 
         // Pure white
         const pureWhite = new THREE.MeshLambertNodeMaterial()
-        pureWhite.positionNode = this.lightPositionNode(color('#ffffff'), this.getTotalShadow(pureWhite))
-        pureWhite.outputNode = this.lightOutputNode()
+        pureWhite.shadowSide = THREE.BackSide
+        pureWhite.outputNode = this.lightOutputNode(color('#ffffff'), this.getTotalShadow(pureWhite))
         this.save('pureWhite', pureWhite)
     
         // Emissive headlight
@@ -90,11 +92,10 @@ export class Materials
             return totalShadows
         }
 
-        // Position to update varying
-        const finalColor = varying(vec3())
-        this.lightPositionNode = Fn(([colorBase, totalShadows]) =>
+        // Light output
+        this.lightOutputNode = Fn(([colorBase, totalShadows]) =>
         {
-            finalColor.assign(colorBase)
+            const finalColor = colorBase.toVar()
 
             // Light
             finalColor.assign(finalColor.mul(this.game.lighting.colorUniform.mul(this.game.lighting.intensityUniform)))
@@ -114,14 +115,7 @@ export class Materials
             const combinedShadowMix = max(coreShadowMix, castShadowMix)
             const shadowColor = colorBase.rgb.mul(this.shadowColorMultiplier).rgb
             finalColor.assign(mix(finalColor, shadowColor, combinedShadowMix))
-
-            // finalColor.assign(combinedShadowMix)
-            return positionLocal
-        })
-
-        // Light output
-        this.lightOutputNode = Fn(() =>
-        {
+            
             return vec4(finalColor.rgb, 1)
         })
         
@@ -160,13 +154,8 @@ export class Materials
                     // Pure
                     const pureColor = material.color.clone()
                     const maxLength = Math.max(pureColor.r, Math.max(pureColor.g, pureColor.b))
-                    // console.log(name)
-                    // console.log(maxLength)
-                    // console.log(pureColor.r, pureColor.g, pureColor.b)
                     if(maxLength > 1)
-                    {
                         pureColor.set(pureColor.r / maxLength, pureColor.g / maxLength, pureColor.b / maxLength)
-                    }
                     
                     const boxPure = new THREE.Mesh(this.tests.boxGeometry, new THREE.MeshBasicMaterial({ color: pureColor }))
                     boxPure.position.y = 0.75
@@ -240,10 +229,7 @@ export class Materials
         {
             // Shadow
             material.shadowSide = THREE.BackSide
-
-            // Shadow receive
-            material.positionNode = this.lightPositionNode(baseMaterial.color, this.getTotalShadow(material))
-            material.outputNode = this.lightOutputNode()
+            material.outputNode = this.lightOutputNode(baseMaterial.color, this.getTotalShadow(material))
         }
 
         material.name = baseMaterial.name

@@ -111,7 +111,7 @@ export class View
         this.spherical.theta = Math.PI * 0.25
 
         this.spherical.radius = {}
-        this.spherical.radius.min = 10
+        this.spherical.radius.min = 15
         this.spherical.radius.max = 30
         this.spherical.radius.current = lerp(this.spherical.radius.min, this.spherical.radius.max, 1 - this.zoom.smoothedRatio)
 
