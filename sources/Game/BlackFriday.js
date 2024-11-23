@@ -118,9 +118,9 @@ export class BlackFriday
 
         this.fragments.code = 'abc'
         this.fragments.list = [
-            { position: new THREE.Vector3(3, 1, 0), character: this.fragments.code[0] },
-            { position: new THREE.Vector3(3, 1, 5), character: this.fragments.code[1] },
-            { position: new THREE.Vector3(3, 1, 10), character: this.fragments.code[2] },
+            { position: new THREE.Vector3(10, 1, 0), character: this.fragments.code[0] },
+            { position: new THREE.Vector3(10, 1, 5), character: this.fragments.code[1] },
+            { position: new THREE.Vector3(10, 1, 10), character: this.fragments.code[2] },
         ]
         
         const material = new THREE.MeshBasicNodeMaterial()
@@ -167,6 +167,7 @@ export class BlackFriday
 
         this.fragments.catch = (_fragment) =>
         {
+            _fragment.mesh.visible = false
             _fragment.caught = true
             _fragment.element.innerHTML = /* html */`
                 <div class="character">${_fragment.character}</div>

@@ -107,7 +107,7 @@ export class View
     setSpherical()
     {
         this.spherical = {}
-        this.spherical.phi = Math.PI * 0.35
+        this.spherical.phi = Math.PI * 0.32
         this.spherical.theta = Math.PI * 0.25
 
         this.spherical.radius = {}

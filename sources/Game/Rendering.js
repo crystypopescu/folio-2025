@@ -13,7 +13,7 @@ export class Rendering
         {
             this.debugPanel = this.game.debug.panel.addFolder({
                 title: '📸 Rendering',
-                expanded: false,
+                expanded: true,
             })
         }
 
@@ -33,14 +33,22 @@ export class Rendering
 
     setRenderer()
     {
+        const clearColor = { value: '#191613' }
         this.renderer = new THREE.WebGPURenderer({ forceWebGL: false })
         this.renderer.setSize(this.game.viewport.width, this.game.viewport.height)
         this.renderer.setPixelRatio(this.game.viewport.pixelRatio)
-        this.renderer.setClearColor(0x000000)
+        this.renderer.setClearColor(clearColor.value)
         this.renderer.domElement.classList.add('experience')
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.game.domElement.append(this.renderer.domElement)
+
+        // Debug
+        if(this.game.debug.active)
+        {
+            this.debugPanel.addBinding(clearColor, 'value', { label: 'clearColor', view: 'color' })
+                .on('change', tweak => { this.renderer.setClearColor(tweak.value) })
+        }
     }
 
     setPostprocessing()

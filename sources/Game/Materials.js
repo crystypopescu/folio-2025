@@ -79,7 +79,7 @@ export class Materials
 
     setNodes()
     {
-        this.lightBounceColor = uniform(color('#7d7f19'))
+        this.lightBounceColor = uniform(color('#646615'))
         this.lightBounceEdgeLow = uniform(float(-1))
         this.lightBounceEdgeHigh = uniform(float(1))
         this.lightBounceDistance = uniform(float(1.5))

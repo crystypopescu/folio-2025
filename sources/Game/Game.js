@@ -41,6 +41,7 @@ export class Game
                     { path: 'vehicle/wheel.glb', type: 'gltf', name: 'vehicleWheel' },
                     { path: 'playground/playgroundVisual.glb', type: 'gltf', name: 'playgroundVisual' },
                     { path: 'playground/playgroundPhysical.glb', type: 'gltf', name: 'playgroundPhysical' },
+                    { path: 'floor/keys.png', type: 'texture', name: 'floorKeysTexture' },
                 ],
                 (resources) =>
                 {

@@ -9,15 +9,45 @@ export class Floor
         this.game = new Game()
 
         // this.setVisual()
+        this.setKeys()
         this.setPhysical()
+    }
+
+    setKeys()
+    {
+        // Texture
+        // this.game.resources.floorKeysTexture.magFilter = THREE.NearestFilter
+        // this.game.resources.floorKeysTexture.minFilter = THREE.NearestFilter
+
+        // Geometry
+        const geometry = new THREE.PlaneGeometry(4, 1)
+
+        // Material
+        const material = new THREE.MeshBasicNodeMaterial({
+            alphaMap: this.game.resources.floorKeysTexture,
+            alphaTest: 0.5,
+            transparent: true,
+        })
+
+        // Mesh
+        this.keys = new THREE.Mesh(geometry, material)
+        // this.keys.castShadow = true
+        // this.keys.receiveShadow = true
+        this.keys.scale.setScalar(3)
+        this.keys.rotation.x = - Math.PI * 0.5
+        this.keys.rotation.z = Math.PI * 0.5
+        this.keys.position.y = 1
+        this.keys.position.x = 4
+        this.game.scene.add(this.keys)
     }
 
     setVisual()
     {
         const lines = [
-            // new MeshGridMaterialLine(0x444444, 0.1, 0.04),
-            new MeshGridMaterialLine(0x705df2, 1, 0.03, 0.2),
-            new MeshGridMaterialLine(0xffffff, 10, 0.003, 1),
+            // new MeshGridMaterialLine(0x705df2, 1, 0.03, 0.2),
+            // new MeshGridMaterialLine(0xffffff, 10, 0.003, 1),
+            new MeshGridMaterialLine(0x423f25, 1, 0.03, 0.2),
+            new MeshGridMaterialLine(0x696969, 10, 0.003, 1),
         ]
 
         const uvGridMaterial = new MeshGridMaterial({

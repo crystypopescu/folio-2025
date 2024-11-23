@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Game } from '../Game.js'
-import { output, color, sin, time, smoothstep, mix, matcapUV, float, mod, texture, transformNormalToView, uniformArray, varying, vertexIndex, rotateUV, cameraPosition, vec4, atan2, vec3, vec2, modelWorldMatrix, Fn, attribute, uniform } from 'three'
+import { mul, max, step, output, color, sin, time, smoothstep, mix, matcapUV, float, mod, texture, transformNormalToView, uniformArray, varying, vertexIndex, rotateUV, cameraPosition, vec4, atan2, vec3, vec2, modelWorldMatrix, Fn, attribute, uniform } from 'three'
 import getWind from '../tsl/getWind.js'
 
 export class Grass
@@ -117,12 +117,18 @@ export class Grass
             )
             const wheelsTracksHeight = groundDataColor.a.oneMinus().toVar()
 
+            // Landing mask
+            // const landingMask = max(step(20, bladePosition.x.abs()), step(20, bladePosition.y.abs())).mul(0.5).add(0.5)
+            // const landingMask = step(14, bladePosition.length()).mul(0.5).add(0.5)
+            const landingMask = bladePosition.length().smoothstep(10, 15).mul(0.5).add(0.5)
+            
             // Height
             const heightVariation = texture(this.game.resources.noisesTexture, bladePosition.mul(0.0321)).add(0.5)
             const height = bladeHeight
                 .mul(bladeHeightRandomness.mul(attribute('heightRandomness')).add(bladeHeightRandomness.oneMinus()))
                 .mul(heightVariation.r)
                 .mul(wheelsTracksHeight)
+                .mul(landingMask)
 
             // Shape
             const shape = vec3(
