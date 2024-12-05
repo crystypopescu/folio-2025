@@ -169,7 +169,10 @@ export class Grass
         const shadowMix = totalShadows.oneMinus().clamp(0, 1)
         const shadedColor = mix(ligthenColor, shadowColor, shadowMix)
 
-        this.material.outputNode = vec4(shadedColor, 1)
+        // Fog
+        const foggedColor = this.game.fog.fogStrength.mix(shadedColor, this.game.fog.fogColor)
+
+        this.material.outputNode = vec4(foggedColor, 1)
 
         // Debug
         if(this.game.debug.active)

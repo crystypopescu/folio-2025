@@ -48,6 +48,7 @@ export class Materials
             dummy.intensity = _intensity
 
             const material = new THREE.MeshBasicNodeMaterial({ color: threeColor })
+            material.fog = false
             this.save(_name, material)
             
             const update = () =>
@@ -163,8 +164,10 @@ export class Materials
             const shadowColor = baseColor.rgb.mul(this.shadowColor).rgb
             const shadedColor = mix(lightenColor, shadowColor, combinedShadowMix)
             
-            // return vec4(vec3(castShadowMix), 1)
-            return vec4(shadedColor.rgb, 1)
+            // Fog
+            const foggedColor = this.game.fog.fogStrength.mix(shadedColor, this.game.fog.fogColor)
+
+            return vec4(foggedColor.rgb, 1)
         })
         
         // Debug
@@ -191,7 +194,7 @@ export class Materials
         this.tests.sphereGeometry = new THREE.IcosahedronGeometry(1, 3)
         this.tests.boxGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5)
         this.tests.group = new THREE.Group()
-        this.tests.group.visible = true
+        this.tests.group.visible = false
         this.game.scene.add(this.tests.group)
         
         this.tests.update = () =>

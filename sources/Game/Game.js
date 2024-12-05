@@ -16,6 +16,7 @@ import { Monitoring } from './Monitoring.js'
 import { Lighting } from './Ligthing.js'
 import { Materials } from './Materials.js'
 import { Entities } from './Entities.js'
+import { Fog } from './Fog.js'
 
 export class Game
 {
@@ -62,7 +63,6 @@ export class Game
         this.domElement = document.querySelector('.game')
 
         this.scene = new THREE.Scene()
-        // this.scene.fogNode = rangeFog(color(0x1b191f), 20, 100)
 
         this.debug = new Debug()
         this.time = new Time()
@@ -88,6 +88,7 @@ export class Game
         this.viewport = new Viewport(this.domElement)
         // this.sounds = new Sounds()
         this.lighting = new Lighting()
+        this.fog = new Fog()
         this.materials = new Materials()
         this.entities = new Entities()
         this.physics = new Physics()

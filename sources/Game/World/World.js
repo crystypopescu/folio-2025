@@ -5,6 +5,7 @@ import { Floor } from './Floor.js'
 import { Grass } from './Grass.js'
 import { Playground } from './Playground.js'
 import { BricksWalls } from './BricksWalls.js'
+import { Fn, instance, positionLocal } from 'three/tsl'
 
 export class World
 {
@@ -18,14 +19,56 @@ export class World
         this.playground = new Playground()
         this.bricksWalls = new BricksWalls()
         // this.setTestCube()
+        // this.setTestShadow()
         // this.setAxesHelper()
     }
 
-    setAxesHelper()
+    setTestShadow()
     {
-        const axesHelper = new THREE.AxesHelper()
-        axesHelper.position.y = 1.5
-        this.game.scene.add(axesHelper)
+        const floor = new THREE.Mesh(
+            new THREE.PlaneGeometry(20, 20),
+            new THREE.MeshLambertNodeMaterial(),
+        )
+        floor.receiveShadow = true
+        floor.position.set(0, 0.5, 0)
+        floor.rotation.x = - Math.PI * 0.5
+        this.game.scene.add(floor)
+
+        const material = new THREE.MeshLambertNodeMaterial({
+            alphaMap: this.game.resources.bushesLeaves,
+            transparent: true
+        })
+        material.positionNode = Fn( ( { object } ) =>
+        {
+            instance(object.count, instanceMatrix).append()
+            return positionLocal
+        })()
+
+        const geometry = new THREE.BoxGeometry(1, 1, 1)
+
+        // const mesh = new THREE.Mesh(geometry, material)
+        // mesh.receiveShadow = true
+        // mesh.castShadow = true
+        // mesh.count = 1
+        // this.game.scene.add(mesh)
+
+        // const instanceMatrix = new THREE.InstancedBufferAttribute(new Float32Array(mesh.count * 16), 16)
+        // instanceMatrix.setUsage(THREE.DynamicDrawUsage)
+        
+        // const matrix = new THREE.Matrix4().makeTranslation(new THREE.Vector3(0, 2, 0))
+        // matrix.toArray(instanceMatrix.array, 0)
+
+        const dummy = new THREE.Mesh(
+            geometry,
+            new THREE.MeshLambertNodeMaterial({
+                alphaMap: this.game.resources.bushesLeaves,
+                transparent: true
+            }),
+        )
+        dummy.receiveShadow = true
+        dummy.castShadow = true
+        dummy.position.set(0, 2, 3)
+        this.game.scene.add(dummy)
     }
 
     setTestCube()
@@ -43,5 +86,12 @@ export class World
             },
             visualCube
         )
+    }
+
+    setAxesHelper()
+    {
+        const axesHelper = new THREE.AxesHelper()
+        axesHelper.position.y = 1.5
+        this.game.scene.add(axesHelper)
     }
 }

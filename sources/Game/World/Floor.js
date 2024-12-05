@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
 import MeshGridMaterial, { MeshGridMaterialLine } from '../Materials/MeshGridMaterial.js'
+import { output, vec4 } from 'three/tsl'
 
 export class Floor
 {
@@ -8,9 +9,28 @@ export class Floor
     {
         this.game = new Game()
 
-        // this.setVisual()
+        // this.setGrid()
+        this.setGround()
         this.setKeys()
         this.setPhysical()
+
+        this.game.time.events.on('tick', () =>
+        {
+            this.update()
+        }, 9)
+    }
+
+    setGround()
+    {
+        const geometry = new THREE.PlaneGeometry(80, 80, 1, 1)
+        geometry.rotateX(- Math.PI * 0.5)
+
+        const material = new THREE.MeshLambertNodeMaterial({ color: '#000000' })
+        const foggedColor = this.game.fog.fogStrength.mix(output.rgb, this.game.fog.fogColor)
+        material.outputNode = vec4(foggedColor, 1)
+
+        this.ground = new THREE.Mesh(geometry, material)
+        this.game.scene.add(this.ground)
     }
 
     setKeys()
@@ -41,7 +61,7 @@ export class Floor
         this.game.scene.add(this.keys)
     }
 
-    setVisual()
+    setGrid()
     {
         const lines = [
             // new MeshGridMaterialLine(0x705df2, 1, 0.03, 0.2),
@@ -100,5 +120,16 @@ export class Floor
             restitution: 0,
             colliders: [ { shape: 'cuboid', parameters: [ 1000, 1, 1000 ], position: { x: 0, y: - 1.01, z: 0 } } ]
         })
+    }
+
+    update()
+    {
+        // TODO: Mutualise formula as for grass
+        const offset = new THREE.Vector3(this.game.view.spherical.offset.x, 0, this.game.view.spherical.offset.z).setLength(80 / 2).negate()
+        this.ground.position.set(
+            this.game.view.position.x,
+            0,
+            this.game.view.position.z
+        ).add(offset)
     }
 }
