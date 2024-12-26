@@ -34,6 +34,7 @@ export class Vehicle
         this.setWheels()
         this.setStop()
         this.setFlip()
+        this.setInWater()
         this.setUnstuck()
         this.setReset()
         this.setHydraulics()
@@ -276,6 +277,25 @@ export class Vehicle
         {
             this.flip.active = false
             this.events.trigger('unflip')
+        }
+    }
+
+    setInWater()
+    {
+        this.inWater = {}
+        this.inWater.active = false
+        this.inWater.threshold = 0
+        
+        this.inWater.activate = () =>
+        {
+            this.inWater.active = true
+            this.events.trigger('inWater')
+        }
+        
+        this.inWater.deactivate = () =>
+        {
+            this.inWater.active = false
+            this.events.trigger('outWater')
         }
     }
 
@@ -535,6 +555,39 @@ export class Vehicle
             this.controller.setWheelBrake(i, brake * 0.2 * this.game.time.deltaScaled)
             this.controller.setWheelEngineForce(i, this.wheels.engineForce * 0.01)
         }
+
+        // Water controls
+        if(this.inWater.active && this.wheels.inContact <= 1)
+        {
+            const waterImpulse = new THREE.Vector3(0, 0, 0)
+
+            // Forward
+            if(this.game.inputs.keys.forward)
+                waterImpulse.add(this.forward)
+
+            // Backward
+            if(this.game.inputs.keys.backward)
+                waterImpulse.sub(this.forward)
+
+            waterImpulse.multiplyScalar(this.chassis.physical.body.mass() * 0.02)
+            this.chassis.physical.body.applyImpulse(waterImpulse)
+
+
+            // Water torque
+            let torqueY = 0
+            if(this.game.inputs.keys.left)
+                torqueY = 0.02
+            else if(this.game.inputs.keys.right)
+                torqueY = -0.02
+
+            if(this.upsideDownRatio > 0.5)
+                torqueY *= -1
+
+            const torque = new THREE.Vector3(0, torqueY, 0)
+            torque.applyQuaternion(this.chassis.physical.body.rotation())
+
+            this.chassis.physical.body.applyTorqueImpulse(torque)
+        }
     }
 
     updatePostPhysics()
@@ -577,6 +630,18 @@ export class Vehicle
         {
             if(this.flip.active)
                 this.flip.deactivate()
+        }
+
+        // In water
+        if(this.position.y < this.inWater.threshold)
+        {
+            if(!this.inWater.active)
+                this.inWater.activate()
+        }
+        else
+        {
+            if(this.inWater.active)
+                this.inWater.deactivate()
         }
         
         // Wheels

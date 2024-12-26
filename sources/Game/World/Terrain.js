@@ -38,6 +38,7 @@ export class Terrain
 
         this.ground = new THREE.Mesh(this.geometry, material)
         this.ground.receiveShadow = true
+        // this.ground.castShadow = true
         this.game.scene.add(this.ground)
     }
 
@@ -182,11 +183,6 @@ export class Terrain
             
             return this.game.materials.lightOutputNodeBuilder(vec3(1), totalShadow, false, false)
         })()
-
-
-        // const totalShadow = this.game.materials.getTotalShadow(material)
-
-        // material.outputNode = this.game.materials.lightOutputNodeBuilder(vec3(1), totalShadow)
 
         this.waterSurface = new THREE.Mesh(geometry, material)
         this.waterSurface.position.y = - 0.3
