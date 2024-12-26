@@ -38,10 +38,10 @@ export class Flowers
         this.colors = {}
         this.colors.presets = [
             new THREE.Color('#ffffff'),
-            new THREE.Color('#ff7dc7'),
-            new THREE.Color('#ffab67'),
-            new THREE.Color('#4183ff'),
-            new THREE.Color('#ccff7a'),
+            new THREE.Color('#cc99ff'),
+            new THREE.Color('#ffb037'),
+            new THREE.Color('#a0d5d3'),
+            new THREE.Color('#cef582'),
         ]
 
         this.colors.array = []
@@ -134,7 +134,7 @@ export class Flowers
         // this.material = new THREE.MeshLambertNodeMaterial({ wireframe: true })
         this.material = new THREE.MeshLambertNodeMaterial({
             alphaMap: this.game.resources.bushesLeaves,
-            alphaTest: 0.01
+            alphaTest: 0.1
         })
     
         // Received shadow position
@@ -158,16 +158,22 @@ export class Flowers
         // Output
         this.material.outputNode = Fn(() =>
         {
+            const bushLeavesColor = texture(this.game.resources.bushesLeaves, uv())
+
             const colorIndex = instancedBufferAttribute(this.instanceColorIndex, 'float', 1)
             const baseColor = vec3(
                 this.colors.uniform.element(colorIndex.mul(3).add(0)),
                 this.colors.uniform.element(colorIndex.mul(3).add(1)),
                 this.colors.uniform.element(colorIndex.mul(3).add(2))
-            ).add(float(instanceIndex).mod(5).div(6))
+            )
+
+            const baseLuminance = luminance(baseColor)
+
+            baseColor.addAssign(bushLeavesColor.r.sub(0.5).mul(0.75).mul(baseLuminance))
 
             const lightOutputColor = this.game.materials.lightOutputNodeBuilder(baseColor, totalShadows, true, false)
 
-            const emissiveColor = baseColor.div(luminance(baseColor)).mul(texture(this.game.resources.bushesLeaves, uv()).r.pow(2)).mul(10)
+            const emissiveColor = baseColor.div(baseLuminance).mul(bushLeavesColor.r.pow(2)).mul(10)
             return mix(lightOutputColor, emissiveColor, this.colors.emissiveIntensity)
         })()
     }
