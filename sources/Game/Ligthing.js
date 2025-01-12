@@ -12,7 +12,7 @@ export class Lighting
         this.phi = 0.73
         this.theta = 0.72
         this.phiAmplitude = 0.82
-        this.thetaAmplitude = 1
+        this.thetaAmplitude = 1.25
         this.spherical = new THREE.Spherical(25, this.phi, this.theta)
         this.direction = new THREE.Vector3().setFromSpherical(this.spherical).normalize()
         this.directionUniform = uniform(this.direction)
@@ -20,7 +20,7 @@ export class Lighting
         this.intensityUniform = uniform(1)
         this.count = 1
         this.lights = []
-        this.mapSizeMin = 1024
+        this.mapSizeMin = 2048
         this.shadowAmplitude = 20
         this.near = 1
         this.depth = 60
@@ -83,11 +83,11 @@ export class Lighting
         this.coreShadowEdgeLow = uniform(float(-0.25))
         this.coreShadowEdgeHigh = uniform(float(1))
 
-        this.cloudsFrequency = uniform(0.02)
-        this.cloudsSpeed = uniform(1)
-        this.cloudsEdgeLow = uniform(0.2)
-        this.cloudsEdgeHigh = uniform(0.5)
-        this.cloudsMultiplier = uniform(0.4)
+        // this.cloudsFrequency = uniform(0.02)
+        // this.cloudsSpeed = uniform(1)
+        // this.cloudsEdgeLow = uniform(0.2)
+        // this.cloudsEdgeHigh = uniform(0.5)
+        // this.cloudsMultiplier = uniform(0.4)
 
         this.waterThreshold = uniform(-0.3)
         this.waterAmplitude = uniform(0.3)
@@ -96,10 +96,10 @@ export class Lighting
         // Get total shadow
         this.addTotalShadowToMaterial = (material) =>
         {
-            const cloudsUv = positionWorld.xz.add(vec2(time.mul(this.cloudsSpeed.negate()), time.mul(this.cloudsSpeed))).mul(this.cloudsFrequency)
-            const clouds = texture(this.game.noises.texture, cloudsUv).r.smoothstep(this.cloudsEdgeLow, this.cloudsEdgeHigh).mul(this.cloudsMultiplier).add(this.cloudsMultiplier.oneMinus())
+            // const cloudsUv = positionWorld.xz.add(vec2(time.mul(this.cloudsSpeed.negate()), time.mul(this.cloudsSpeed))).mul(this.cloudsFrequency)
+            // const clouds = texture(this.game.noises.texture, cloudsUv).r.smoothstep(this.cloudsEdgeLow, this.cloudsEdgeHigh).mul(this.cloudsMultiplier).add(this.cloudsMultiplier.oneMinus())
 
-            const totalShadows = clouds.toVar()
+            const totalShadows = float(1).toVar()
 
             material.receivedShadowNode = Fn(([ shadow ]) => 
             {

@@ -6,8 +6,16 @@ export class Scenery
     {
         this.game = Game.getInstance()
 
-        this.game.materials.updateObject(this.game.resources.sceneryVisualModel.scene)
-        this.game.resources.sceneryVisualModel.scene.traverse(_child =>
+        this.setStatic()
+        this.setDynamics()
+    }
+
+    setStatic()
+    {
+        const visualModel = this.game.resources.sceneryStaticVisualModel
+        
+        this.game.materials.updateObject(visualModel.scene)
+        visualModel.scene.traverse(_child =>
         {
             if(_child.isMesh)
             {
@@ -16,6 +24,11 @@ export class Scenery
             }
         })
 
-        this.game.scene.add(this.game.resources.sceneryVisualModel.scene)
+        this.game.scene.add(visualModel.scene)
+    }
+
+    setDynamics()
+    {
+        
     }
 }
