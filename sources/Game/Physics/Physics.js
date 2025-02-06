@@ -1,9 +1,11 @@
 import { Game } from '../Game.js'
-import RAPIER from '@dimforge/rapier3d-compat'
+import RAPIER, { DynamicRayCastVehicleController } from '@dimforge/rapier3d-compat'
 import { PhysicsWireframe } from './PhysicsWireframe.js'
 import { remapClamp } from '../utilities/maths.js'
 import * as THREE from 'three'
-
+import { RawDynamicRayCastVehicleController } from '@dimforge/rapier3d-compat/rapier_wasm3d.js'
+console.log(DynamicRayCastVehicleController)
+// console.log(RawDynamicRayCastVehicleController)
 export class Physics
 {
     constructor()
@@ -154,10 +156,10 @@ export class Physics
     update()
     {
         this.world.timestep = this.game.ticker.deltaScaled
-        this.world.vehicleControllers.forEach((_vehicleController) =>
-        {
-            _vehicleController.updateVehicle(this.game.ticker.delta)
-        })
+        // this.world.vehicleControllers.forEach((_vehicleController) =>
+        // {
+        //     _vehicleController.updateVehicle(this.game.ticker.delta)
+        // })
     
         for(const physical of this.physicals)
         {

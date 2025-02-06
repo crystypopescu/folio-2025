@@ -3,6 +3,7 @@ import { Game } from './Game.js'
 import { Events } from './Events.js'
 import { remapClamp } from './utilities/maths.js'
 import { Track } from './GroundData/Track.js'
+import { RapierRaycastVehicle } from './Physics/RaycastVehicle.js'
 
 export class Vehicle
 {
@@ -46,11 +47,14 @@ export class Vehicle
 
         this.setParts()
         this.setChassis()
-        this.controller = this.game.physics.world.createVehicleController(this.chassis.entity.physical.body)
+        // this.controller = this.game.physics.world.createVehicleController(this.chassis.entity.physical.body)
+        this.controller = new RapierRaycastVehicle({
+            world: this.game.physics.world,
+            chassisRigidBody: this.chassis.entity.physical.body
+        })
         this.setWheels()
         this.setStop()
         this.setFlip()
-        // this.setInWater()
         this.setUnstuck()
         this.setReset()
         this.setHydraulics()
@@ -148,17 +152,62 @@ export class Vehicle
         const wheelGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 8)
         wheelGeometry.rotateX(Math.PI * 0.5)
 
+        const wheelsOffset = { x: 0.90, y: - 0.5, z: 0.75 }
+        const wheelsPositions = [
+            new THREE.Vector3(  wheelsOffset.x, wheelsOffset.y,   wheelsOffset.z),
+            new THREE.Vector3(  wheelsOffset.x, wheelsOffset.y, - wheelsOffset.z),
+            new THREE.Vector3(- wheelsOffset.x, wheelsOffset.y,   wheelsOffset.z),
+            new THREE.Vector3(- wheelsOffset.x, wheelsOffset.y, - wheelsOffset.z),
+        ]
+        
         // Create wheels
         for(let i = 0; i < 4; i++)
         {
             const wheel = {}
 
+
             // Default wheel with random parameters
-            this.controller.addWheel(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), 1, 1)
+            // this.controller.addWheel(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), 1, 1)
+            this.controller.addWheel({
+                radius: 0.38,
+
+                indexRightAxis: 2,
+                indexForwardAxis: 0,
+                indexUpAxis: 1,
+
+                directionLocal: new THREE.Vector3(0, -1, 0),
+                axleLocal: new THREE.Vector3(0, 0, 1),
+                chassisConnectionPointLocal: wheelsPositions[i],
+
+                suspensionStiffness: 30,
+                suspensionRestLength: 0.3,
+                maxSuspensionForce: 100000,
+                maxSuspensionTravel: 0.3,
+
+                sideFrictionStiffness: 1,
+                frictionSlip: 1.4,
+                dampingRelaxation: 2.3,
+                dampingCompression: 4.4,
+
+                rollInfluence: 0.01,
+
+                customSlidingRotationalSpeed: -30,
+                useCustomSlidingRotationalSpeed: true,
+
+                forwardAcceleration: 1,
+                sideAcceleration: 1,
+
+                vehicleWidth: 1.7,
+                vehicleHeight: -0.3,
+                vehicleFront: -1.35,
+                vehicleBack: 1.3,
+            })
+            this.game.scene.add(this.controller.wheels[i].debug.suspensionArrowHelper)
+            this.game.scene.add(this.controller.wheels[i].debug.wheelRaycastArrowHelper)
 
             // Visual
             wheel.visual = new THREE.Group()
-            this.chassis.entity.visual.add(wheel.visual)
+            // this.chassis.entity.visual.add(wheel.visual)
 
             const actualWheel = this.parts.wheel.clone(true)
             wheel.visual.add(actualWheel)
@@ -207,19 +256,18 @@ export class Vehicle
             {
                 wheel.basePosition.copy(wheelsPositions[i])
                 
-                this.controller.setWheelDirectionCs(i, this.wheels.settings.directionCs)
-                this.controller.setWheelAxleCs(i, this.wheels.settings.axleCs)
-                this.controller.setWheelRadius(i, this.wheels.settings.radius)
-                this.controller.setWheelChassisConnectionPointCs(i, wheel.basePosition)
-                this.controller.setWheelFrictionSlip(i, this.wheels.settings.frictionSlip)
-                this.controller.setWheelMaxSuspensionForce(i, this.wheels.settings.maxSuspensionForce)
-                this.controller.setWheelMaxSuspensionTravel(i, this.wheels.settings.maxSuspensionTravel)
-                this.controller.setWheelSideFrictionStiffness(i, this.wheels.settings.sideFrictionStiffness)
-                this.controller.setWheelSuspensionCompression(i, this.wheels.settings.suspensionCompression)
-                this.controller.setWheelSuspensionRelaxation(i, this.wheels.settings.suspensionRelaxation)
-                this.controller.setWheelSuspensionStiffness(i, this.wheels.settings.suspensionStiffness)
+                // this.controller.setWheelDirectionCs(i, this.wheels.settings.directionCs)
+                // this.controller.setWheelAxleCs(i, this.wheels.settings.axleCs)
+                // this.controller.setWheelRadius(i, this.wheels.settings.radius)
+                // this.controller.setWheelChassisConnectionPointCs(i, wheel.basePosition)
+                // this.controller.setWheelFrictionSlip(i, this.wheels.settings.frictionSlip)
+                // this.controller.setWheelMaxSuspensionForce(i, this.wheels.settings.maxSuspensionForce)
+                // this.controller.setWheelMaxSuspensionTravel(i, this.wheels.settings.maxSuspensionTravel)
+                // this.controller.setWheelSideFrictionStiffness(i, this.wheels.settings.sideFrictionStiffness)
+                // this.controller.setWheelSuspensionCompression(i, this.wheels.settings.suspensionCompression)
+                // this.controller.setWheelSuspensionRelaxation(i, this.wheels.settings.suspensionRelaxation)
+                // this.controller.setWheelSuspensionStiffness(i, this.wheels.settings.suspensionStiffness)
 
-                // wheel.visual.scale.set(this.wheels.settings.radius, this.wheels.settings.radius, 1)
                 wheel.visual.position.copy(wheel.basePosition)
 
                 i++
@@ -306,31 +354,6 @@ export class Vehicle
             this.events.trigger('unflip')
         }
     }
-
-    // setInWater()
-    // {
-    //     this.inWater = {}
-    //     this.inWater.active = false
-    //     this.inWater.threshold = 0
-        
-    //     this.inWater.activate = () =>
-    //     {
-    //         if(this.inWater.active)
-    //             return
-
-    //         this.inWater.active = true
-    //         this.events.trigger('inWater')
-    //     }
-        
-    //     this.inWater.deactivate = () =>
-    //     {
-    //         if(!this.inWater.active)
-    //             return
-                
-    //         this.inWater.active = false
-    //         this.events.trigger('outWater')
-    //     }
-    // }
 
     setUnstuck()
     {
@@ -431,8 +454,8 @@ export class Vehicle
         this.hydraulics.mid = 0.45
         this.hydraulics.high = 1
 
-        for(let i = 0; i < 4; i++)
-            this.controller.setWheelSuspensionRestLength(i, this.hydraulics.low)
+        // for(let i = 0; i < 4; i++)
+        //     this.controller.setWheelSuspensionRestLength(i, this.hydraulics.low)
 
         this.hydraulics.update = (_event) =>
         {
@@ -571,8 +594,8 @@ export class Vehicle
             this.wheels.steering -= this.wheels.steeringMax
         if(this.game.inputs.keys.left)
             this.wheels.steering += this.wheels.steeringMax
-        this.controller.setWheelSteering(0, this.wheels.steering)
-        this.controller.setWheelSteering(1, this.wheels.steering)
+        this.controller.setSteeringValue(this.wheels.steering, 0)
+        this.controller.setSteeringValue(this.wheels.steering, 1)
 
         let brake = 0
 
@@ -599,13 +622,15 @@ export class Vehicle
 
         for(let i = 0; i < 4; i++)
         {
-            this.controller.setWheelBrake(i, brake * 0.2 * this.game.ticker.deltaScaled)
-            this.controller.setWheelEngineForce(i, this.wheels.engineForce * 0.01)
+            this.controller.setBrakeValue(brake * 0.2 * this.game.ticker.deltaScaled, i)
+            this.controller.applyEngineForce(this.wheels.engineForce * 0.01, i)
         }
     }
 
     updatePostPhysics()
     {
+        this.controller.update(this.game.ticker.deltaScaled)
+        
         // Various measures
         const newPosition = new THREE.Vector3().copy(this.chassis.entity.physical.body.translation())
         this.velocity = newPosition.clone().sub(this.position)
@@ -614,7 +639,8 @@ export class Vehicle
         this.sideward.set(0, 0, 1).applyQuaternion(this.chassis.entity.physical.body.rotation())
         this.upward.set(0, 1, 0).applyQuaternion(this.chassis.entity.physical.body.rotation())
         this.forward.set(1, 0, 0).applyQuaternion(this.chassis.entity.physical.body.rotation())
-        this.speed = this.controller.currentVehicleSpeed()
+        // this.speed = this.controller.currentVehicleSpeed()
+        this.speed = this.controller.state.currentVehicleSpeedKmHour
         this.absoluteSpeed = Math.abs(this.speed)
         this.upsideDownRatio = this.upward.dot(new THREE.Vector3(0, - 1, 0)) * 0.5 + 0.5
         this.goingForward = this.direction.dot(this.forward) > 0.5
@@ -659,15 +685,15 @@ export class Vehicle
             if(i === 0 || i === 1)
                 wheel.visual.rotation.y = this.wheels.visualSteering
 
-            const suspensionY = wheel.basePosition.y - this.controller.wheelSuspensionLength(i)
-            wheel.visual.position.y += (suspensionY - wheel.visual.position.y) * 25 * this.game.ticker.deltaScaled
+            // const suspensionY = wheel.basePosition.y - this.controller.wheelSuspensionLength(i)
+            // wheel.visual.position.y += (suspensionY - wheel.visual.position.y) * 25 * this.game.ticker.deltaScaled
 
-            const inContact = this.controller.wheelIsInContact(i)
-            if(inContact)
-                this.wheels.inContact++
+            // const inContact = this.controller.wheelIsInContact(i)
+            // if(inContact)
+            //     this.wheels.inContact++
 
-            // Tracks
-            wheel.track.update(this.controller.wheelContactPoint(i), inContact)
+            // // Tracks
+            // wheel.track.update(this.controller.wheelContactPoint(i), inContact)
         }
 
         this.chassis.track.update(this.position, this.position.y < 1.5)
