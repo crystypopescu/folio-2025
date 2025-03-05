@@ -50,7 +50,7 @@ export class Modals
         for(const element of elements)
         {
             const name = element.dataset.name
-            const item = { element: element, visible: false }
+            const item = { element: element, mainFocus: element.querySelector('.js-main-focus') }
             this.items.set(name, item)
         }
     }
@@ -99,6 +99,10 @@ export class Modals
                 requestAnimationFrame(() =>
                 {
                     this.element.classList.add('is-visible')
+
+                    // Focus
+                    if(item.mainFocus)
+                        item.mainFocus.focus()
                 })
             })
 

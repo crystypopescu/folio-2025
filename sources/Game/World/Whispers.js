@@ -15,7 +15,7 @@ export class Whispers
 
         this.setMesh()
         this.setData()
-        this.setInput()
+        // this.setInput()
         this.setBubble()
         this.setModal()
         // this.connectServer()
@@ -29,9 +29,7 @@ export class Whispers
         this.game.inputs.events.on('whisper', (event) =>
         {
             if(event.down)
-            {
                 this.game.modals.open('whispers')
-            }
         })
     }
 
@@ -165,32 +163,32 @@ export class Whispers
         }
     }
 
-    setInput()
-    {
-        // Input
-        const input = document.createElement('input')
-        input.style.position = 'fixed'
-        input.style.bottom = 0
-        input.style.left = 0
-        input.style.zIndex = 1
-        document.body.append(input)
+    // setInput()
+    // {
+    //     // Input
+    //     const input = document.createElement('input')
+    //     input.style.position = 'fixed'
+    //     input.style.bottom = 0
+    //     input.style.left = 0
+    //     input.style.zIndex = 1
+    //     document.body.append(input)
 
-        input.addEventListener('keydown', async (event) =>
-        {
-            if(event.key === 'Enter' && input.value !== '')
-            {
-                // Insert
-                this.game.server.send({
-                    type: 'whispersInsert',
-                    message: input.value,
-                    x: this.game.vehicle.position.x,
-                    y: this.game.vehicle.position.y,
-                    z: this.game.vehicle.position.z
-                })
-                // input.value = ''
-            }
-        })
-    }
+    //     input.addEventListener('keydown', async (event) =>
+    //     {
+    //         if(event.key === 'Enter' && input.value !== '')
+    //         {
+    //             // Insert
+    //             this.game.server.send({
+    //                 type: 'whispersInsert',
+    //                 message: input.value,
+    //                 x: this.game.vehicle.position.x,
+    //                 y: this.game.vehicle.position.y,
+    //                 z: this.game.vehicle.position.z
+    //             })
+    //             // input.value = ''
+    //         }
+    //     })
+    // }
     
     setBubble()
     {
@@ -203,6 +201,64 @@ export class Whispers
     setModal()
     {
         this.modal = {}
+
+        const modalItem = this.game.modals.items.get('whispers')
+        this.modal.element = modalItem.element
+        this.modal.inputElement = modalItem.mainFocus
+        this.modal.inputGroupElement = this.modal.element.querySelector('.js-input-group')
+        this.modal.previewMessageElement = this.modal.element.querySelector('.js-preview-message')
+
+        const updateGroup = () =>
+        {
+            if(this.modal.inputElement.value.length)
+                this.modal.inputGroupElement.classList.add('is-valide')
+            else
+            this.modal.inputGroupElement.classList.remove('is-valide')
+        }
+
+        this.modal.inputElement.addEventListener('input', () =>
+        {
+            const sanatized = this.modal.inputElement.value.trim().substring(0, this.count)
+            this.modal.previewMessageElement.textContent = sanatized.length ? sanatized : 'Your message here'
+            updateGroup()
+        })
+
+        this.modal.previewMessageElement.addEventListener('input', (event) =>
+        {
+            const sanatized = this.modal.previewMessageElement.textContent.substring(0, this.count)
+            this.modal.previewMessageElement.textContent = sanatized
+            this.modal.inputElement.value = sanatized
+            updateGroup()
+        })
+
+        this.modal.previewMessageElement.addEventListener('blur', () =>
+        {
+            const sanatized = this.modal.inputElement.value.trim().substring(0, this.count)
+            this.modal.previewMessageElement.textContent = sanatized
+            updateGroup()
+        })
+
+        this.modal.inputGroupElement.addEventListener('submit', (event) =>
+        {
+            event.preventDefault()
+
+            // Insert
+            this.game.server.send({
+                type: 'whispersInsert',
+                message: this.modal.inputElement.value,
+                x: this.game.vehicle.position.x,
+                y: this.game.vehicle.position.y,
+                z: this.game.vehicle.position.z
+            })
+
+            // Reset input and preview
+            this.modal.inputElement.value = ''
+            this.modal.previewMessageElement.textContent = 'Your message here'
+            updateGroup()
+
+            // Close modal
+            this.game.modals.close()
+        })
     }
 
     update()
