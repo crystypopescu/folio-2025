@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu'
-import { Game } from './Game.js'
-import { Track } from './GroundData/Track.js'
-import { Trails } from './Trails.js'
+import { Game } from '../Game.js'
+import { Track } from '../GroundData/Track.js'
+import { Trails } from '../Trails.js'
 
 export class VisualVehicle
 {

@@ -27,7 +27,7 @@ import { Explosions } from './Explosions.js'
 import { YearCycles } from './Cycles/YearCycles.js'
 import { Server } from './Server.js'
 import { Modals } from './Modals.js'
-import { PhysicalVehicle } from './PhysicalVehicle.js'
+import { PhysicsVehicle } from './Physics/PhysicsVehicle.js'
 import { PhysicsWireframe } from './Physics/PhysicsWireframe.js'
 
 export class Game
@@ -159,7 +159,7 @@ export class Game
             this.explosions = new Explosions()
             this.physics = new Physics()
             this.wireframe = new PhysicsWireframe()
-            this.physicalVehicle = new PhysicalVehicle()
+            this.physicalVehicle = new PhysicsVehicle()
             this.player = new Player()
             this.world = new World()
             // this.monitoring = new Monitoring()

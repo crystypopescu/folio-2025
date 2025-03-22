@@ -1,9 +1,9 @@
 import * as THREE from 'three/webgpu'
-import { Game } from './Game.js'
-import { Events } from './Events.js'
-import { remapClamp } from './utilities/maths.js'
+import { Game } from '../Game.js'
+import { Events } from '../Events.js'
+import { remapClamp } from '../utilities/maths.js'
 
-export class PhysicalVehicle
+export class PhysicsVehicle
 {
     constructor()
     {
