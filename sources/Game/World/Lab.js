@@ -115,7 +115,7 @@ export class Lab
         this.cinematic.positionOffset = new THREE.Vector3(4.65, 4.20, 4.85)
         
         this.cinematic.target = new THREE.Vector3()
-        this.cinematic.targetOffset = new THREE.Vector3(-2.60, 1.12, -4.80)
+        this.cinematic.targetOffset = new THREE.Vector3(-2.60, 1.22, -4.80)
 
         const applyPositionAndTarget = () =>
         {
@@ -653,6 +653,9 @@ export class Lab
         this.scroller.chainLeft = this.references.get('chainLeft')[0]
         this.scroller.chainRight = this.references.get('chainRight')[0]
         this.scroller.chainPulley = this.references.get('chainPulley')[0]
+        this.scroller.gearA = this.references.get('gearA')[0]
+        this.scroller.gearB = this.references.get('gearB')[0]
+        this.scroller.gearC = this.references.get('gearC')[0]
         this.scroller.progress = 0
         this.scroller.targetProgress = 0
         this.scroller.wheelSensitivity = 0.1
@@ -716,7 +719,6 @@ export class Lab
             this.scroller.minis = {}
             this.scroller.minis.inter = 0.9
             this.scroller.minis.items = []
-            this.scroller.minis.amplitude = 3
             this.scroller.minis.total = this.data.length * this.scroller.minis.inter
             this.scroller.minis.current = null
 
@@ -861,19 +863,80 @@ export class Lab
             }
         }
 
+        // // Beam
+        // {
+        //     const material = new THREE.MeshBasicNodeMaterial({ side: THREE.DoubleSide, transparent: true, depthTest: true, depthWrite: false })
+
+        //     // const colorA = uniform(color('#ff0083'))
+        //     // const colorB = uniform(color('#3018eb'))
+        //     // const intensity = uniform(1.7)
+        //     this.colorBottom = uniform(color('#a64dff'))
+        //     this.emissiveBottom = uniform(8)
+        //     this.beamAttenuation = uniform(1)
+
+    
+        //     material.outputNode = Fn(() =>
+        //     {
+        //         const baseUv = uv().toVar()
+
+        //         // Noise
+        //         const noiseUv = vec2(
+        //             baseUv.x.mul(2).add(baseUv.y.mul(-0.2)).add(this.game.ticker.elapsedScaledUniform.mul(0.1)),
+        //             baseUv.y.mul(0.1).add(this.game.ticker.elapsedScaledUniform.mul(0.2))
+        //         )
+        //         const noise = texture(this.game.noises.others, noiseUv).r
+        //         noise.addAssign(baseUv.y.mul(2).fract().oneMinus())
+
+        //         // Emissive
+        //         const emissiveColor = this.colorBottom.mul(this.emissiveBottom)
+
+        //         // Goo
+        //         const gooColor = this.game.fog.strength.mix(vec3(0), this.game.fog.color) // Fog
+
+        //         // Mix
+        //         // const gooMask = step(noise, 0.95)
+        //         const gooMask = step(0.85, noise)
+        //         const finalColor = mix(emissiveColor, gooColor, gooMask)
+
+        //         // Discard
+        //         noise.greaterThan(1).discard()
+                
+        //         return vec4(finalColor, 1)
+        //     })()
+
+        //     const beam = this.references.get('beam')[0]
+        //     beam.material = material
+        //     beam.castShadow = false
+
+
+        //     if(this.game.debug.active)
+        //     {
+        //         this.game.debug.addThreeColorBinding(this.debugPanel, this.colorBottom.value, 'colorBottom')
+        //         // this.game.debug.addThreeColorBinding(this.debugPanel, colorB.value, 'colorB')
+        //     }
+        // }
+
+        this.scroller.gearA.rotation.reorder('YXZ')
+        this.scroller.gearB.rotation.reorder('YXZ')
+        this.scroller.gearC.rotation.reorder('YXZ')
+
         this.scroller.animate = () =>
         {
             this.scroller.chainLeft.position.y = - this.scroller.repeatAmplitude * 0.5 - this.scroller.offset % this.scroller.repeatAmplitude
             this.scroller.chainRight.position.y = - this.scroller.repeatAmplitude * 0.5 + (this.scroller.offset % this.scroller.repeatAmplitude)
             this.scroller.chainPulley.rotation.z = this.scroller.offset * 1.4
 
+            this.scroller.gearA.rotation.x = - this.scroller.offset * 1.4
+            this.scroller.gearB.rotation.x = - this.scroller.gearA.rotation.x * (6 / 12)
+            this.scroller.gearC.rotation.x = - this.scroller.gearB.rotation.x * (6 / 12)
+
             for(const mini of this.scroller.minis.items)
             {
                 mini.group.position.y = safeMod(mini.y - this.scroller.offset, this.scroller.minis.total) - 1
 
-                const scale = remapClamp(mini.group.position.y, 3.1, 3.7, 1, 0)
-                mini.group.scale.setScalar(scale)
-                mini.group.rotation.y = 0.523 - (1 - scale) * 3
+                const scale = remapClamp(mini.group.position.y, 3.3, 3.9, 1, 0)
+                mini.group.scale.y = scale
+                // mini.group.rotation.y = 0.523 - (1 - scale) * 3
 
                 mini.group.visible = scale > 0
                 mini.intersect.active = mini.group.visible && (this.state === Lab.STATE_OPEN || this.state === Lab.STATE_OPENING)
@@ -883,7 +946,8 @@ export class Lab
         this.scroller.update = () =>
         {
             // Scroll
-            const closestProgress = Math.round((this.scroller.progress + this.navigation.index - 3) / this.data.length) * this.data.length - this.navigation.index + 3
+            const centeringOffset = this.data.length - 3.25
+            const closestProgress = Math.round((this.scroller.progress + this.navigation.index - centeringOffset) / this.data.length) * this.data.length - this.navigation.index + centeringOffset
             this.scroller.targetProgress = closestProgress
 
             // Active text

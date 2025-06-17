@@ -1,44 +1,62 @@
 export default [
     {
         title: 'My Room in 3D',
-        titleSmall: [ 'My Room', 'in 3D' ],
         url: 'https://my-room-in-3d.vercel.app',
-        image: 'threejs-journey.webp',
-        imageMini: 'threejs-journey-mini.webp',
+        image: 'my-room-in-3d.png',
+        imageMini: 'my-room-in-3d-mini.png',
     },
     {
         title: 'Particles System',
-        titleSmall: [ 'Particles', 'System' ],
         url: 'https://three-js-tsl-particles-system.vercel.app',
-        image: 'chartogne-taillet.webp',
-        imageMini: 'chartogne-taillet-mini.webp'
+        image: 'particles-system.png',
+        imageMini: 'particles-system-mini.png'
     },
     {
         title: 'Holographic terrain',
-        titleSmall: [ 'Holographic', 'terrain' ],
         url: 'https://experiment-holographic-terrain.vercel.app',
-        image: 'bonhomme-10-ans.webp',
-        imageMini: 'bonhomme-10-ans-mini.webp'
+        image: 'holographic-terrain.png',
+        imageMini: 'holographic-terrain-mini.png'
     },
     {
         title: 'Woodkid Volcano Robot',
-        titleSmall: [ 'Woodkid', 'Volcano Robot' ],
         url: 'https://experiment-woodkid-volcano-robot.vercel.app',
-        image: 'madbox.webp',
-        imageMini: 'madbox-mini.webp'
+        image: 'woodkid-volcano-robot.png',
+        imageMini: 'woodkid-volcano-robot-mini.png'
     },
     {
         title: 'VFX flames',
-        titleSmall: [ 'VFX flames' ],
         url: 'https://threejs.org/examples/webgpu_tsl_vfx_flames.html',
-        image: 'luni.webp',
-        imageMini: 'luni-mini.webp'
+        image: 'vfx-flames.png',
+        imageMini: 'vfx-flames-mini.png'
     },
     {
-        title: [ 'VFX tornado' ],
-        titleSmall: [ 'VFX tornado' ],
+        title: 'VFX tornado',
         url: 'https://threejs.org/examples/webgpu_tsl_vfx_tornado.html',
-        image: 'scout.webp',
-        imageMini: 'scout-mini.webp'
+        image: 'vfx-tornado.png',
+        imageMini: 'vfx-tornado-mini.png'
+    },
+    {
+        title: 'DOOM Portal',
+        url: 'https://doom-portal-in-webgl.vercel.app',
+        image: 'doom-portal.png',
+        imageMini: 'doom-portal-mini.png'
+    },
+    {
+        title: 'Organic Sphere',
+        url: 'https://organic-sphere.vercel.app',
+        image: 'organic-sphere.png',
+        imageMini: 'organic-sphere-mini.png'
+    },
+    {
+        title: 'Attractors',
+        url: 'https://threejs.org/examples/…attractors_particles.html',
+        image: 'attractors.png',
+        imageMini: 'attractors-mini.png'
+    },
+    {
+        title: 'Black Hole',
+        url: 'https://awwwards-2022-workshop.vercel.app',
+        image: 'black-hole.png',
+        imageMini: 'black-hole-mini.png'
     }
 ]
