@@ -223,7 +223,7 @@ export class Player
             let angleDelta = smallestAngle(vehicleAngle, nippleAngle)
             let angleDeltaAbs = Math.abs(angleDelta)
 
-            const forward = angleDeltaAbs < Math.PI * 0.5
+            const forward = angleDeltaAbs < Math.PI * 0.65
             
             if(forward)
             {

@@ -472,9 +472,11 @@ export class View
                 {
                     this.focusPoint.isTracking = false
                     
-                    const mapMovement = new THREE.Vector2(this.game.inputs.pointer.delta.x, this.game.inputs.pointer.delta.y)
+                    const mapMovement = new THREE.Vector2(this.game.inputs.pointer.delta.x, this.game.inputs.pointer.delta.y)                    
                     mapMovement.rotateAround(new THREE.Vector2(), -this.spherical.theta)
-                    mapMovement.multiplyScalar(0.01)
+
+                    const smallestSide = Math.min(this.game.viewport.width, this.game.viewport.height)
+                    mapMovement.multiplyScalar(10 / smallestSide)
                     
                     this.focusPoint.position.x -= mapMovement.x
                     this.focusPoint.position.z -= mapMovement.y

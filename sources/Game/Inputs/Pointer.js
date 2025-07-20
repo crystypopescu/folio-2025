@@ -52,6 +52,8 @@ export class Pointer
 
         this.element.addEventListener('touchmove', (_event) =>
         {
+            _event.preventDefault()
+
             this.type = 'touch'
             
             let x = 0
@@ -67,10 +69,12 @@ export class Pointer
 
             this.upcoming.x = x
             this.upcoming.y = y
-        }, { passive: true })
+        })
 
         this.element.addEventListener('touchstart', (_event) =>
         {
+            _event.preventDefault()
+
             this.type = 'touch'
 
             this.upcomingDown = true
@@ -92,15 +96,17 @@ export class Pointer
             this.current.y = y
             this.upcoming.x = x
             this.upcoming.y = y
-        }, { passive: true })
+        })
 
         addEventListener('touchend', (_event) =>
         {
+            _event.preventDefault()
+
             this.touchesLength = _event.touches.length
 
             if(this.touchesLength === 0)
                 this.upcomingDown = false
-        }, { passive: true })
+        })
 
         this.element.addEventListener('contextmenu', (_event) =>
         {

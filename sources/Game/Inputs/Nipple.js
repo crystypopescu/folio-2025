@@ -7,7 +7,7 @@ export class Nipple
 
         this.edgeRadius = 80
         this.thumbRadius = 30
-        this.maxRadius = this.edgeRadius - this.thumbRadius
+        this.maxRadius = this.edgeRadius
 
         this.active = false
         this.anchorX = 0
@@ -103,14 +103,14 @@ export class Nipple
         {
             const overflow = this.radius - this.maxRadius
             const dampedOverflow = Math.sqrt(1 + overflow)
-            
-            const edgeX = Math.cos(this.angle) * dampedOverflow
-            const edgeY = Math.sin(this.angle) * dampedOverflow
+
+            const edgeX = Math.cos(this.angle) * dampedOverflow * 2
+            const edgeY = Math.sin(this.angle) * dampedOverflow * 2
 
             this.edge.style.transform = `translate(${edgeX}px, ${edgeY}px)`
 
-            this.x = Math.cos(this.angle) * (this.maxRadius + dampedOverflow * 2)
-            this.y = Math.sin(this.angle) * (this.maxRadius + dampedOverflow * 2)
+            this.x = Math.cos(this.angle) * (this.maxRadius + dampedOverflow * 3)
+            this.y = Math.sin(this.angle) * (this.maxRadius + dampedOverflow * 3)
         }
 
         this.strength = Math.min(this.radius / this.maxRadius, 1)
