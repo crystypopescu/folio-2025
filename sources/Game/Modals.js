@@ -171,24 +171,15 @@ export class Modals
 
     preopen()
     {
+        if(this.game.debug.active)
+            return
+
         this.items.forEach((item) => 
         {
             // Is preopened
-            if(item.element.classList.contains('is-displayed'))
+            if(item.element.classList.contains('is-preopen'))
             {
-                this.open(item.name)
-
-                // Debug > Wait two frames and close modal
-                if(this.game.debug.active)
-                {
-                    requestAnimationFrame(() =>
-                    {
-                        requestAnimationFrame(() =>
-                        {
-                            this.close()
-                        })
-                    })
-                }                    
+                this.open(item.name)               
             }
         })
     }
