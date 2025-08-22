@@ -31,20 +31,21 @@ export class Intro
             InteractiveAreas.ALIGN_RIGHT,
             () =>
             {
+                this.game.inputs.touchButtons.clearItems()
                 this.game.modals.open('intro')
                 this.interactiveArea.hide()
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems(['interact'])
+                this.game.inputs.touchButtons.addItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             }
         )
     }

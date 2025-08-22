@@ -47,15 +47,15 @@ export class Social
                 },
                 () =>
                 {
-                    this.game.inputs.touchButtons.updateItems(['interact'])
+                    this.game.inputs.touchButtons.addItems(['interact'])
                 },
                 () =>
                 {
-                    this.game.inputs.touchButtons.updateItems([])
+                    this.game.inputs.touchButtons.removeItems(['interact'])
                 },
                 () =>
                 {
-                    this.game.inputs.touchButtons.updateItems([])
+                    this.game.inputs.touchButtons.removeItems(['interact'])
                 }
             )
             

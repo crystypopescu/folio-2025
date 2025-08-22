@@ -8,6 +8,7 @@ export class TouchButtons
         this.active = false
         this.element = document.querySelector('.js-touch-buttons')
         this.overlay = this.element.querySelector('.js-overlay')
+        this.list = new Set()
 
         this.setItems()
     }
@@ -35,13 +36,13 @@ export class TouchButtons
         }
     }
 
-    updateItems(list = [])
+    updateItems()
     {
         let visibleCount = 0
 
         this.items.forEach((item) =>
         {
-            if(list.indexOf(item.name) !== -1)
+            if(this.list.has(item.name))
             {
                 if(!item.visible)
                 {
@@ -69,6 +70,29 @@ export class TouchButtons
         {
             this.overlay.classList.remove('is-visible')
         }
+    }
+
+    addItems(list = [])
+    {
+        for(const itemName of list)
+            this.list.add(itemName)
+
+        this.updateItems()
+    }
+
+    removeItems(list = [])
+    {
+        for(const itemName of list)
+            this.list.delete(itemName)
+
+        this.updateItems()
+    }
+
+    clearItems()
+    {
+        this.list.clear()
+
+        this.updateItems()
     }
 
     activate()

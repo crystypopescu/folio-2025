@@ -93,6 +93,7 @@ export class Bonfire
             InteractiveAreas.ALIGN_RIGHT,
             () =>
             {
+                this.game.inputs.touchButtons.clearItems()
                 this.game.player.respawn(null, () =>
                 {
                     this.particles.visible = true
@@ -103,15 +104,15 @@ export class Bonfire
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems(['interact'])
+                this.game.inputs.touchButtons.addItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             }
         )
     }

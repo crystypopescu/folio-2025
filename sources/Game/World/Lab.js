@@ -77,15 +77,15 @@ export class Lab
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems(['interact'])
+                this.game.inputs.touchButtons.addItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             },
             () =>
             {
-                this.game.inputs.touchButtons.updateItems([])
+                this.game.inputs.touchButtons.removeItems(['interact'])
             }
         )
     }
@@ -1212,7 +1212,8 @@ export class Lab
         this.game.physicalVehicle.deactivate()
 
         // Buttons
-        this.game.inputs.touchButtons.updateItems(['previous', 'next', 'open', 'close'])
+        this.game.inputs.touchButtons.clearItems()
+        this.game.inputs.touchButtons.setItems(['previous', 'next', 'open', 'close'])
     }
 
     close()
@@ -1260,7 +1261,7 @@ export class Lab
         this.game.physicalVehicle.activate()
             
         // Buttons
-        this.game.inputs.touchButtons.updateItems([])
+        this.game.inputs.touchButtons.setItems([])
     }
 
     previous()

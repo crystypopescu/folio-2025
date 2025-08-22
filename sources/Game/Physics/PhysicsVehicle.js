@@ -71,6 +71,7 @@ export class PhysicsVehicle
         this.setWheels()
         this.setStop()
         this.setUpsideDown()
+        this.setStuck()
         this.setExplosions()
         this.setTornado()
 
@@ -251,6 +252,60 @@ export class PhysicsVehicle
         }
     }
 
+    setStuck()
+    {
+        this.stuck = {}
+        this.stuck.durationTest = 3
+        this.stuck.durationSaved = 0
+        this.stuck.savedItems = []
+        this.stuck.distance = 0
+        this.stuck.distanceThreshold = 0.5
+        this.stuck.active = false
+
+        this.stuck.accumulate = (traveled, time) =>
+        {
+            this.stuck.savedItems.unshift([traveled, time])
+            this.stuck.distance = 0
+            this.stuck.durationSaved = 0
+
+            for(let i = 0; i < this.stuck.savedItems.length; i++)
+            {
+                const item = this.stuck.savedItems[i]
+
+                if(this.stuck.durationSaved >= this.stuck.durationTest)
+                {
+                    this.stuck.savedItems.splice(i)
+                    break
+                }
+                else
+                {
+                    this.stuck.distance += item[0]
+                    this.stuck.durationSaved += item[1]
+                }
+            }
+        }
+
+        this.stuck.test = () =>
+        {
+            if(this.stuck.durationSaved >= this.stuck.durationTest && this.stuck.distance < this.stuck.distanceThreshold)
+            {
+                if(!this.stuck.active)
+                {
+                    this.stuck.active = true
+                    this.events.trigger('stuck')
+                }
+            }
+            else
+            {
+                if(this.stuck.active)
+                {
+                    this.stuck.active = false
+                    this.events.trigger('unstuck')
+                }
+            }
+        }
+    }
+
     setExplosions()
     {
         this.game.explosions.events.on('explosion', (coordinates) =>
@@ -408,6 +463,9 @@ export class PhysicsVehicle
         this.speed = this.controller.currentVehicleSpeed()
         this.absoluteSpeed = Math.abs(this.speed)
         this.goingForward = this.direction.dot(this.forward) > 0.5
+        
+        if(Math.abs(this.game.player.accelerating) > 0.5)
+            this.stuck.accumulate(this.velocity.length(), this.game.ticker.deltaScaled)
 
         for(let i = 0; i < 4; i++)
         {
@@ -419,6 +477,7 @@ export class PhysicsVehicle
 
         this.stop.test()
         this.upsideDown.test()
+        this.stuck.test()
     }
 
     activate()

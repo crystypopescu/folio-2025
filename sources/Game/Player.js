@@ -124,6 +124,22 @@ export class Player
                     this.game.physicalVehicle.flip()
             }, this.unstuck.duration * 2000)
         })
+
+        this.game.physicalVehicle.events.on('stuck', () =>
+        {
+            this.game.inputs.touchButtons.addItems(['unstuck'])
+        })
+
+        this.game.physicalVehicle.events.on('unstuck', () =>
+        {
+            this.game.inputs.touchButtons.removeItems(['unstuck'])
+        })
+
+        this.game.inputs.touchButtons.events.on('unstuck', () =>
+        {
+            this.game.inputs.touchButtons.removeItems(['unstuck'])
+            this.respawn()
+        })
     }
 
     respawn(respawnName = null, callback = null)
