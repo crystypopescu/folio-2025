@@ -25,12 +25,8 @@ export class Controls
             this.interactiveArea.reveal()
         })
 
-        this.game.inputs.events.on('modeChange', () =>
+        this.modal.instance.events.on('open', () =>
         {
-            // Modal 
-            if(this.game.modals.state !== Modals.CLOSED)
-                return
-            
             if(this.game.inputs.mode === Inputs.MODE_GAMEPAD)
                 this.modal.instance.tabs.goTo('gamepad')
             else if(this.game.inputs.mode === Inputs.MODE_MOUSEKEYBOARD)
