@@ -192,7 +192,6 @@ export class Foliage
         let i = 0
         for(const matrix of this.transformMatrices)
         {
-            // this.mesh.setMatrixAt(i, matrix)
             matrix.toArray(this.instanceMatrix.array, i * 16)
             i++
         }
