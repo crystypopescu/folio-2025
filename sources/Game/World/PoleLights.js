@@ -59,7 +59,7 @@ export class PoleLights
         const positionAttribute = instancedArray(positions, 'vec3').toAttribute()
 
         const material = new THREE.SpriteNodeMaterial()
-        material.colorNode = this.emissive.onMaterial.colorNode
+        material.outputNode = this.emissive.onMaterial.outputNode
 
         const baseTime = this.game.ticker.elapsedScaledUniform.add(hash(instanceIndex).mul(999))
         const flyOffset = vec3(
