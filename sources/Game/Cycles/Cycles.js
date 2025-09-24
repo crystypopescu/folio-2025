@@ -20,7 +20,7 @@ export class Cycles
 
         this.name = name
         this.duration = duration
-        this.absoluteProgress = forcedProgress !== null ? forcedProgress : ((new Date()).getTime() / 1000 / this.duration)
+        this.absoluteProgress = forcedProgress !== null ? forcedProgress : (Date.now() / 1000 / this.duration)
         this.newAbsoluteProgress = this.absoluteProgress
         this.progress = this.absoluteProgress % 1
         this.progressDelta = 1

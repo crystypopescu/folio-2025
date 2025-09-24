@@ -5,6 +5,7 @@ import { InstancedGroup } from '../InstancedGroup.js'
 import gsap from 'gsap'
 import { InteractivePoints } from '../InteractivePoints.js'
 import { MeshDefaultMaterial } from '../Materials/MeshDefaultMaterial.js'
+import { alea } from 'seedrandom'
 
 export class CookieStand
 {

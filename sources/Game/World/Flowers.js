@@ -4,6 +4,9 @@ import { attribute, color, float, Fn, instance, instancedBufferAttribute, instan
 import { remap, smoothstep } from '../utilities/maths.js'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { MeshDefaultMaterial } from '../Materials/MeshDefaultMaterial.js'
+import { alea } from 'seedrandom'
+
+const rng = new alea('flowers')
 
 export class Flowers
 {
@@ -87,22 +90,22 @@ export class Flowers
 
             const colorIndex = i % this.colors.presets.length
 
-            const clusterCount = 3 + Math.floor(Math.random() * 8)
+            const clusterCount = 3 + Math.floor(rng() * 8)
             // const clusterCount = 1
             for(let j = 0; j < clusterCount; j++)
             {
                 // Transform matrix
                 const object = new THREE.Object3D()
                 
-                object.rotation.y = Math.PI * 2 * Math.random()
+                object.rotation.y = Math.PI * 2 * rng()
 
                 object.position.set(
-                    clusterPosition.x + (Math.random() - 0.5) * 3,
+                    clusterPosition.x + (rng() - 0.5) * 3,
                     clusterPosition.y,
-                    clusterPosition.z + (Math.random() - 0.5) * 3
+                    clusterPosition.z + (rng() - 0.5) * 3
                 )
 
-                const scale = 0.6 + Math.random() * 0.4
+                const scale = 0.6 + rng() * 0.4
                 object.scale.setScalar(scale)
                 
                 object.updateMatrix()
@@ -130,13 +133,13 @@ export class Flowers
             // Position
             const spherical = new THREE.Spherical(
                 1,
-                Math.PI * 0.5 * Math.random(),
-                Math.PI * 2 * Math.random()
+                Math.PI * 0.5 * rng(),
+                Math.PI * 2 * rng()
             )
             const direction = new THREE.Vector3().setFromSpherical(spherical)
-            const position = direction.clone().setLength(1 - Math.pow(Math.random(), 2))
+            const position = direction.clone().setLength(1 - Math.pow(rng(), 2))
             position.y *= 0.5
-            const randomUpAngle = Math.random() * Math.PI * 2
+            const randomUpAngle = rng() * Math.PI * 2
             
             const matrix = new THREE.Matrix4().lookAt(new THREE.Vector3(), direction, new THREE.Vector3(Math.sin(randomUpAngle), Math.cos(randomUpAngle), 0))
             matrix.setPosition(position)
@@ -144,7 +147,7 @@ export class Flowers
             plane.applyMatrix4(matrix)
 
             // Color mixer
-            const colorMixer = Math.random()
+            const colorMixer = rng()
             colorMixerArray[i * 4 + 0] = colorMixer
             colorMixerArray[i * 4 + 1] = colorMixer
             colorMixerArray[i * 4 + 2] = colorMixer

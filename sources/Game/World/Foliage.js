@@ -4,6 +4,9 @@ import { color, uniform, mix, output, instance, smoothstep, min, vec4, PI, verte
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { remap } from '../utilities/maths.js'
 import { MeshDefaultMaterial } from '../Materials/MeshDefaultMaterial.js'
+import { alea } from 'seedrandom'
+
+const rng = new alea('foliage')
 
 export class Foliage
 {
@@ -37,13 +40,13 @@ export class Foliage
 
             // Position
             const spherical = new THREE.Spherical(
-                1 - Math.pow(Math.random(), 3),
-                Math.PI * 2 * Math.random(),
-                Math.PI * Math.random()
+                1 - Math.pow(rng(), 3),
+                Math.PI * 2 * rng(),
+                Math.PI * rng()
             )
             const position = new THREE.Vector3().setFromSpherical(spherical)
 
-            plane.rotateZ(Math.random() * 9999)
+            plane.rotateZ(rng() * 9999)
             plane.rotateY(0)
             plane.translate(
                 position.x,
@@ -165,7 +168,7 @@ export class Foliage
             const object = new THREE.Object3D()
             
             // Rotate randomly but always facing the camera default angle
-            const angle = Math.PI * 2 * Math.random()
+            const angle = Math.PI * 2 * rng()
             object.up.set(Math.sin(angle), Math.cos(angle), 0)
             object.lookAt(towardCamera)
 

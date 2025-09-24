@@ -3,6 +3,9 @@ import { Game } from '../Game.js'
 import { attribute, cameraPosition, cameraProjectionMatrix, cameraViewMatrix, color, cross, float, floor, Fn, instancedArray, min, modelWorldMatrix, mul, positionGeometry, step, uniform, varying, vec3, vec4, vertexIndex } from 'three/tsl'
 import { LineGeometry } from '../Geometries/LineGeometry.js'
 import gsap from 'gsap'
+import { alea } from 'seedrandom'
+
+const rng = alea('lightning')
 
 export class Lightnings
 {
@@ -21,6 +24,7 @@ export class Lightnings
 
         this.frequency = 2
         this.hitChances = 0
+        this.currentSecond = Math.floor(Date.now() / 1000)
 
         // Debug
         this.hitChancesBinding = this.game.debug.addManualBinding(
@@ -44,7 +48,11 @@ export class Lightnings
         this.setAnticipationParticles()
         this.setArc()
         this.setExplosionParticles()
-        this.setInterval()
+
+        this.game.ticker.events.on('tick', () =>
+        {
+            this.update()
+        })
     }
 
     setAnticipationParticles()
@@ -65,13 +73,13 @@ export class Lightnings
         for(let i = 0; i < this.anticipationParticles.count; i++)
         {
             const i3 = i * 3
-            const angle = Math.PI * 2 * Math.random()
-            const radius = Math.random() * 3
+            const angle = Math.PI * 2 * rng()
+            const radius = rng() * 3
             positionArray[i3 + 0] = Math.sin(angle) * radius
-            positionArray[i3 + 1] = - Math.random()
+            positionArray[i3 + 1] = - rng()
             positionArray[i3 + 2] = Math.cos(angle) * radius
 
-            scaleArray[i] = Math.random() * 0.75 + 0.25
+            scaleArray[i] = rng() * 0.75 + 0.25
         }
 
         this.anticipationParticles.positionAttribute = instancedArray(positionArray, 'vec3').toAttribute()
@@ -105,7 +113,7 @@ export class Lightnings
         })
 
         // Create
-        this.anticipationParticles.create = (coordinates) =>
+        this.anticipationParticles.create = (coordinates, rng) =>
         {
             // Uniforms
             const startTime = uniform(this.game.ticker.elapsedScaled)
@@ -118,7 +126,7 @@ export class Lightnings
             
             const mesh = new THREE.Mesh(this.anticipationParticles.geometry, material)
             mesh.position.copy(coordinates)
-            mesh.rotation.y = Math.random() * Math.PI * 2
+            mesh.rotation.y = rng() * Math.PI * 2
             mesh.count = this.anticipationParticles.count
             this.game.scene.add(mesh)
 
@@ -150,9 +158,9 @@ export class Lightnings
         for(let i = 0; i < pointsCount; i++)
         {
             const point = new THREE.Vector3(
-                (Math.random() - 0.5) * 1,
+                (rng() - 0.5) * 1,
                 i * interY,
-                (Math.random() - 0.5) * 1
+                (rng() - 0.5) * 1
             )
             points.push(point)
         }
@@ -197,7 +205,7 @@ export class Lightnings
         })
 
         // Create
-        this.arc.create = (coordinates) =>
+        this.arc.create = (coordinates, rng) =>
         {
             // Uniforms
             const startTime = uniform(this.game.ticker.elapsedScaled)
@@ -209,7 +217,7 @@ export class Lightnings
 
             const mesh = new THREE.Mesh(this.arc.geometry, material)
             mesh.position.copy(coordinates)
-            mesh.rotation.y = Math.random() * Math.PI * 2
+            mesh.rotation.y = rng() * Math.PI * 2
             this.game.scene.add(mesh)
             
             return mesh
@@ -240,16 +248,16 @@ export class Lightnings
         {
             const i3 = i * 3
             const spherical = new THREE.Spherical(
-                Math.random(),
-                Math.random() * 0.5 * Math.PI,
-                Math.random() * Math.PI * 2
+                rng(),
+                rng() * 0.5 * Math.PI,
+                rng() * Math.PI * 2
             )
             const position = new THREE.Vector3().setFromSpherical(spherical)
             positionArray[i3 + 0] = position.x
             positionArray[i3 + 1] = position.y
             positionArray[i3 + 2] = position.z
 
-            scaleArray[i] = Math.random() * 0.75 + 0.25
+            scaleArray[i] = rng() * 0.75 + 0.25
         }
 
         this.explosionParticles.positionAttribute = instancedArray(positionArray, 'vec3').toAttribute()
@@ -285,7 +293,7 @@ export class Lightnings
         })
 
         // Create
-        this.explosionParticles.create = (coordinates) =>
+        this.explosionParticles.create = (coordinates, rng) =>
         {
             const startTime = uniform(this.game.ticker.elapsedScaled)
         
@@ -297,7 +305,7 @@ export class Lightnings
             const mesh = new THREE.Mesh(this.explosionParticles.geometry, material)
             mesh.position.copy(coordinates)
             mesh.count = this.explosionParticles.count
-            mesh.rotation.y = Math.random() * Math.PI * 2
+            mesh.rotation.y = rng() * Math.PI * 2
             this.game.scene.add(mesh)
 
             gsap.to(mesh.position, { y: - this.explosionParticles.fallAmplitude, duration: this.explosionParticles.duration })
@@ -316,22 +324,25 @@ export class Lightnings
         }
     }
 
-    createRandom()
+    createRandom(rng)
     {
         const focusPointPosition = this.game.view.focusPoint.position
-        this.create(new THREE.Vector3(
-            focusPointPosition.x + (Math.random() - 0.5) * this.game.view.optimalArea.radius * 2,
-            0,
-            focusPointPosition.z + (Math.random() - 0.5) * this.game.view.optimalArea.radius * 2
-        ))
+        this.create(
+            new THREE.Vector3(
+                focusPointPosition.x + (rng() - 0.5) * this.game.view.optimalArea.radius * 2,
+                0,
+                focusPointPosition.z + (rng() - 0.5) * this.game.view.optimalArea.radius * 2
+            ),
+            rng
+        )
     }
 
-    create(coordinates)
+    create(coordinates, rng)
     {
         const disposables = []
         
         // Anticipation
-        disposables.push(this.anticipationParticles.create(coordinates))
+        disposables.push(this.anticipationParticles.create(coordinates, rng))
 
         gsap.delayedCall(this.anticipationParticles.duration, () =>
         {
@@ -339,10 +350,10 @@ export class Lightnings
             this.game.explosions.explode(coordinates, 7, 4, true)
             
             // Arc
-            disposables.push(this.arc.create(coordinates))
+            disposables.push(this.arc.create(coordinates, rng))
 
             // Explosion particles
-            disposables.push(this.explosionParticles.create(coordinates))
+            disposables.push(this.explosionParticles.create(coordinates, rng))
 
             // Wait and destroy
             const duration = Math.max(this.arc.duration, this.explosionParticles.duration)
@@ -357,18 +368,20 @@ export class Lightnings
         })
     }
 
-    setInterval()
+    update()
     {
-        const tryCreate = () =>
+        const currentSecond = Math.floor(Date.now() / 1000)
+
+        if(currentSecond !== this.currentSecond)
         {
+            this.currentSecond = currentSecond
+
             this.hitChancesBinding.update()
 
-            if(Math.random() < this.hitChances)
-                this.createRandom()
+            const rng = alea(this.currentSecond)
 
-            gsap.delayedCall(1 / this.frequency, tryCreate)
+            if(rng() < this.hitChances)
+                this.createRandom(rng)
         }
-
-        tryCreate()
     }
 }

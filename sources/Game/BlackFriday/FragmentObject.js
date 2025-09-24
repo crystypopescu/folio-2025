@@ -1,6 +1,9 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
 import gsap from 'gsap'
+import { alea } from 'seedrandom'
+
+const rng = new alea('easterFragments')
 
 export class FragmentObject
 {
@@ -34,10 +37,10 @@ export class FragmentObject
             else
             {
                 this.fragments.push(_child)
-                _child.position.y = (Math.random() - 0.5) * 0.5
-                _child.userData.timeOffset = Math.random() * Math.PI
-                _child.userData.timeMultiplier = (0.25 + Math.random() * 0.75) * Math.sign(Math.random() - 0.5)
-                _child.userData.radius = 0.25 + Math.random() * 0.5
+                _child.position.y = (rng() - 0.5) * 0.5
+                _child.userData.timeOffset = rng() * Math.PI
+                _child.userData.timeMultiplier = (0.25 + rng() * 0.75) * Math.sign(rng() - 0.5)
+                _child.userData.radius = 0.25 + rng() * 0.5
             }
         }
 

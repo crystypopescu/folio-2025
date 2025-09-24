@@ -6,8 +6,11 @@ import { mix, uniform, vec4, Fn, positionGeometry, attribute } from 'three/tsl'
 import gsap from 'gsap'
 import { Pointer } from './Inputs/Pointer.js'
 import { Inputs } from './Inputs/Inputs.js'
+import { alea } from 'seedrandom'
 
 CameraControls.install( { THREE: THREE } )
+
+const rng = new alea('speedLines')
 
 export class View
 {
@@ -441,11 +444,11 @@ export class View
 
             // Base vertex
             const vertexMiddle = new THREE.Vector2(0, 1)
-            const angle = Math.PI * 2 * Math.random()
+            const angle = Math.PI * 2 * rng()
             vertexMiddle.rotateAround(new THREE.Vector2(), angle)
 
             // Side vertices 
-            const thickness = Math.random() * 0.01 + 0.002
+            const thickness = rng() * 0.01 + 0.002
             const vertexLeft = vertexMiddle.clone().rotateAround(new THREE.Vector2(), thickness)
             const vertexRight = vertexMiddle.clone().rotateAround(new THREE.Vector2(), - thickness)
             
@@ -473,7 +476,7 @@ export class View
             timeRandomnessArray[i3 + 2] = i
 
             // Distance
-            const distance = Math.random() * 0.4 + 0.4
+            const distance = rng() * 0.4 + 0.4
             distanceArray[i3 + 0] = distance
             distanceArray[i3 + 1] = distance
             distanceArray[i3 + 2] = distance

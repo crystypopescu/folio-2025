@@ -2,6 +2,7 @@ import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
 import { attribute, clamp, color, float, Fn, instancedArray, luminance, max, mix, smoothstep, step, texture, uniform, uv, vec2, vec3, vec4 } from 'three/tsl'
 import gsap from 'gsap'
+import { alea } from 'seedrandom'
 
 export class Altar
 {
