@@ -12,7 +12,7 @@ export class Controls
         this.references = references
 
         this.setModal()
-        this.setInteractiveArea()
+        this.setInteractivePoint()
     }
 
     setModal()
@@ -36,10 +36,10 @@ export class Controls
         })
     }
 
-    setInteractiveArea()
+    setInteractivePoint()
     {
         this.interactiveArea = this.game.interactivePoints.create(
-            this.references.get('interactiveArea')[0].position,
+            this.references.get('interactivePoint')[0].position,
             'Controls',
             InteractivePoints.ALIGN_RIGHT,
             () =>

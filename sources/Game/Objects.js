@@ -18,7 +18,8 @@ export class Objects
     {
         const object = {
             visual: null,
-            physical: null
+            physical: null,
+            needsUpdate: false
         }
 
         /**
@@ -77,6 +78,15 @@ export class Objects
         }
 
         /**
+         * Save physical in visual and vis versa
+         */
+        if(object.physical && object.visual)
+        {
+            object.visual.object3D.userData.object = object
+            object.physical.body.userData = { object: object }
+        }
+
+        /**
          * Save
          */
         this.key++
@@ -108,7 +118,12 @@ export class Objects
             
             if(typeof _physicalDescription.type === 'undefined')
             {
-                _physicalDescription.type = physical.name.match(/dynamic/i) ? 'dynamic' : 'fixed'
+                _physicalDescription.type = 'fixed'
+
+                if(physical.name.match(/dynamic/i))
+                    _physicalDescription.type = 'dynamic'
+                else if(physical.name.match(/kinematicPositionBased/i))
+                    _physicalDescription.type = 'kinematicPositionBased'
             }
 
             for(const _physical of physical.children)
@@ -165,7 +180,7 @@ export class Objects
         {
             if(object.physical)
             {
-                if(object.physical.type === 'dynamic')
+                if(object.physical.type === 'dynamic' || object.physical.type === 'kinematicPositionBased')
                 {
                     object.physical.body.setTranslation(object.physical.initialState.position)
                     object.physical.body.setRotation(object.physical.initialState.rotation)
@@ -204,13 +219,17 @@ export class Objects
     {
         this.list.forEach((_object) =>
         {
-            if(_object.visual && _object.physical)
+            if(
+                _object.needsUpdate ||
+                (
+                    _object.visual &&
+                    _object.physical &&
+                    !_object.physical.body.isSleeping()
+                )
+            )
             {
-                if(!_object.physical.body.isSleeping())
-                {
-                    _object.visual.object3D.position.copy(_object.physical.body.translation())
-                    _object.visual.object3D.quaternion.copy(_object.physical.body.rotation())
-                }
+                _object.visual.object3D.position.copy(_object.physical.body.translation())
+                _object.visual.object3D.quaternion.copy(_object.physical.body.rotation())
             }
         })
     }

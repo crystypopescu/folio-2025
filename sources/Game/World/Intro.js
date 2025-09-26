@@ -9,7 +9,7 @@ export class Intro
         
         this.references = references
 
-        this.setInteractiveArea()
+        this.setInteractivePoint()
 
         let firstTimeIntro = true
 
@@ -23,10 +23,10 @@ export class Intro
         })
     }
 
-    setInteractiveArea()
+    setInteractivePoint()
     {
         this.interactiveArea = this.game.interactivePoints.create(
-            this.references.get('interactiveArea')[0].position,
+            this.references.get('interactivePoint')[0].position,
             'Read me!',
             InteractivePoints.ALIGN_RIGHT,
             () =>

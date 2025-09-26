@@ -33,7 +33,7 @@ export class Projects
         this.references = references
         this.state = Projects.STATE_CLOSED
 
-        this.setInteractiveArea()
+        this.setInteractivePoint()
         this.setInputs()
         this.setCinematic()
         this.setShadeMix()
@@ -68,10 +68,10 @@ export class Projects
         })
     }
 
-    setInteractiveArea()
+    setInteractivePoint()
     {
         this.interactiveArea = this.game.interactivePoints.create(
-            this.references.get('interactiveArea')[0].position,
+            this.references.get('interactivePoint')[0].position,
             'Projects',
             InteractivePoints.ALIGN_RIGHT,
             () =>
@@ -169,7 +169,7 @@ export class Projects
 
         const applyPositionAndTarget = () =>
         {
-            const flatPosition = this.references.get('interactiveArea')[0].position.clone()
+            const flatPosition = this.references.get('interactivePoint')[0].position.clone()
             flatPosition.y = 0
             this.cinematic.position.copy(flatPosition).add(this.cinematic.positionOffset)
             this.cinematic.target.copy(flatPosition).add(this.cinematic.targetOffset)

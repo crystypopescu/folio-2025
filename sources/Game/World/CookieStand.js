@@ -29,7 +29,7 @@ export class CookieStand
         this.setOvenHeat()
         this.setCookies()
         this.setActualCookies()
-        this.setInteractiveArea()
+        this.setInteractivePoint()
         this.setCounter()
 
         this.game.ticker.events.on('tick', () =>
@@ -233,10 +233,10 @@ export class CookieStand
         }
     }
 
-    setInteractiveArea()
+    setInteractivePoint()
     {
         this.game.interactivePoints.create(
-            this.references.get('interactiveArea')[0].position,
+            this.references.get('interactivePoint')[0].position,
             'Accept cookie',
             InteractivePoints.ALIGN_RIGHT,
             () =>

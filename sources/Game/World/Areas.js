@@ -12,6 +12,7 @@ import { Career } from './Career.js'
 import { Social } from './Social.js'
 import { Toilet } from './Toilet.js'
 import { ExplosiveCrates } from './ExplosiveCrates.js'
+import { Bowling } from './Bowling.js'
 
 export class Areas
 {
@@ -73,6 +74,10 @@ export class Areas
         const controlsReferences = this.references.getStartingWith('controls')
         if(controlsReferences.size)
             this.controls = new Controls(controlsReferences)
+
+        const bowlingReferences = this.references.getStartingWith('bowling')
+        if(bowlingReferences.size)
+            this.bowling = new Bowling(bowlingReferences)
     }
 
     setReferences()

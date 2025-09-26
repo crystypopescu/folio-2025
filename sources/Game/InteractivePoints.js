@@ -12,7 +12,7 @@ export class InteractivePoints
 
     static STATE_HIDDEN = 3
     static STATE_OPEN = 4
-    static STATE_CLOSED = 5
+    static STATE_CONCEALED = 5
 
     constructor()
     {
@@ -358,6 +358,10 @@ export class InteractivePoints
 
             gsap.to(labelOffset, { value: 1, ease: 'power2.in', duration: 0.6, overwrite: true })
 
+            // Active item
+            if(this.activeItem && this.activeItem === item)
+                this.activeItem = null
+
             // Callback
             if(typeof item.hideCallback === 'function')
                 item.hideCallback()
@@ -390,15 +394,18 @@ export class InteractivePoints
         // Close
         item.conceal = () =>
         {
-            item.state = InteractivePoints.STATE_CLOSED
+            const previousState = item.state
+            item.state = InteractivePoints.STATE_CONCEALED
 
             item.intersect.active = true
             
             diamond.visible = true
 
-            gsap.to(threshold, { value: 0.250, ease: 'back.in(4.5)', duration: 0.6, delay: 0.2, overwrite: true })
-            gsap.to(lineThickness, { value: 0.150, ease: 'back.in(4.5)', duration: 0.6, delay: 0.2, overwrite: true })
-            gsap.to(lineOffset, { value: 0.175, ease: 'back.in(4.5)', duration: 0.6, delay: 0.2, overwrite: true, onComplete: () =>
+            const ease = previousState === InteractivePoints.STATE_HIDDEN ? 'power2.out' : 'back.in(4.5)'
+
+            gsap.to(threshold, { value: 0.250, ease: ease, duration: 0.6, delay: 0.2, overwrite: true })
+            gsap.to(lineThickness, { value: 0.150, ease: ease, duration: 0.6, delay: 0.2, overwrite: true })
+            gsap.to(lineOffset, { value: 0.175, ease: ease, duration: 0.6, delay: 0.2, overwrite: true, onComplete: () =>
             {
                 key.visible = false
                 label.visible = false
@@ -426,6 +433,15 @@ export class InteractivePoints
                 item.interactCallback()
         }
 
+        // Show
+        item.show = () =>
+        {
+            if(item.isIn)
+                item.reveal()
+            else
+                item.conceal()
+        }
+
 
         /**
          * Debug
@@ -451,23 +467,24 @@ export class InteractivePoints
         let activeItem = null
         for(const item of this.items)
         {
-            if(!item.state !== InteractivePoints.STATE_HIDDEN)
+            const itemDistance = Math.hypot(item.position.x - playerPosition2.x, item.position.y - playerPosition2.y)
+            const isIn = itemDistance < 2.5
+            
+            if(isIn)
             {
-                const itemDistance = Math.hypot(item.position.x - playerPosition2.x, item.position.y - playerPosition2.y)
-                const isIn = itemDistance < 2.5
-                
-                if(isIn)
+                if(itemDistance < distance && item.state !== InteractivePoints.STATE_HIDDEN)
                 {
-                    if(itemDistance < distance)
-                    {
-                        activeItem = item
-                    }
+                    activeItem = item
                 }
-                else
+            }
+            else
+            {
+                if(item.isIn)
                 {
-                    if(item.isIn)
+                    item.isIn = false
+
+                    if(item.state !== InteractivePoints.STATE_HIDDEN)
                     {
-                        item.isIn = false
                         item.conceal()
                     }
                 }
@@ -476,12 +493,15 @@ export class InteractivePoints
 
         if(activeItem)
         {
+            // Activate item change => Deactivate old
             if(activeItem !== this.activeItem && this.activeItem !== null)
             {
                 this.activeItem.isIn = false
                 this.activeItem.conceal()
             }
-            if(!activeItem.isIn)
+
+            // Activate new active item
+            if(!activeItem.isIn || this.activeItem === null)
             {
                 this.activeItem = activeItem
 

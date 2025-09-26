@@ -16,7 +16,7 @@ export class Bonfire
         this.position = this.references.get('bonfire')[0].position
 
         this.setParticles()
-        this.setInteractiveArea()
+        this.setInteractivePoint()
         this.setHashes()
         this.setBurn()
 
@@ -87,10 +87,10 @@ export class Bonfire
         this.game.scene.add(this.particles)
     }
     
-    setInteractiveArea()
+    setInteractivePoint()
     {
         this.game.interactivePoints.create(
-            this.references.get('interactiveArea')[0].position,
+            this.references.get('interactivePoint')[0].position,
             'Res(e)t',
             InteractivePoints.ALIGN_RIGHT,
             () =>

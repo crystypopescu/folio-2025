@@ -22,8 +22,8 @@ export class Altar
         this.value = 0
         this.position = this.references.get('altar')[0].position.clone()
 
-        this.colorBottom = uniform(color('#ff544d'))
-        this.emissiveBottom = uniform(8)
+        this.color = uniform(color('#ff544d'))
+        this.emissive = uniform(8)
 
         this.setBeam()
         this.setBeamParticles()
@@ -44,8 +44,8 @@ export class Altar
         // Debug
         if(this.game.debug.active)
         {
-            this.game.debug.addThreeColorBinding(this.debugPanel, this.colorBottom.value, 'colorBottom')
-            this.debugPanel.addBinding(this.emissiveBottom, 'value', { label: 'emissiveBottom', min: 0, max: 10, step: 0.1 })
+            this.game.debug.addThreeColorBinding(this.debugPanel, this.color.value, 'color')
+            this.debugPanel.addBinding(this.emissive, 'value', { label: 'emissive', min: 0, max: 10, step: 0.1 })
         }
     }
 
@@ -71,7 +71,7 @@ export class Altar
             noise.addAssign(baseUv.y.mul(this.beamAttenuation.add(1)))
 
             // Emissive
-            const emissiveColor = this.colorBottom.mul(this.emissiveBottom)
+            const emissiveColor = this.color.mul(this.emissive)
 
             // Goo
             const gooColor = this.game.fog.strength.mix(vec3(0), this.game.fog.color) // Fog
@@ -107,7 +107,7 @@ export class Altar
 
             const gooColor = this.game.fog.strength.mix(vec3(0), this.game.fog.color) // Fog
 
-            const emissiveColor = this.colorBottom.mul(this.emissiveBottom)
+            const emissiveColor = this.color.mul(this.emissive)
             
             const finalColor = mix(gooColor, emissiveColor, satanStar)
 
@@ -176,7 +176,7 @@ export class Altar
         {
             const distanceToCenter = uv().sub(0.5).length()
             const gooColor = this.game.fog.strength.mix(vec3(0), this.game.fog.color) // Fog
-            const emissiveColor = this.colorBottom.mul(this.emissiveBottom)
+            const emissiveColor = this.color.mul(this.emissive)
             const finalColor = mix(gooColor, emissiveColor, step(distanceToCenter, 0.35))
 
             // Discard
@@ -248,7 +248,7 @@ export class Altar
         {
             const textData = texture(this.textTexture, uv())
             const gooColor = this.game.fog.strength.mix(vec3(0), this.game.fog.color) // Fog
-            const emissiveColor = this.colorBottom.mul(this.emissiveBottom)
+            const emissiveColor = this.color.mul(this.emissive)
             const finalColor = mix(gooColor, emissiveColor, textData.g)
 
             // Discard
