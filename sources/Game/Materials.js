@@ -339,7 +339,7 @@ export class Materials
         {
             if(child.isMesh)
             {
-                if(typeof child.material.userData.preventConversion === 'undefined' || !child.material.userData.preventConversion)
+                if(typeof child.material.userData.prevent === 'undefined' || !child.material.userData.prevent)
                     child.material = this.getFromName(child.material.name, child.material)
             }
         })

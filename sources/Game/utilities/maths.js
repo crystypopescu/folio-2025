@@ -37,6 +37,49 @@ function signedModDelta(a, b, mod)
     return delta
 }
 
+function segmentCircleIntersection(x1, y1, x2, y2, cx, cy, r)
+{
+    const dx = x2 - x1
+    const dy = y2 - y1
+
+    const fx = x1 - cx
+    const fy = y1 - cy
+
+    const a = dx * dx + dy * dy
+    const b = 2 * (fx * dx + fy * dy)
+    const c = fx * fx + fy * fy - r * r
+
+    const discriminant = b * b - 4 * a * c
+    if (discriminant < 0)
+    {
+        return [] // No intersection
+    }
+
+    const intersections = []
+    const sqrtD = Math.sqrt(discriminant)
+
+    const t1 = (-b - sqrtD) / (2 * a)
+    const t2 = (-b + sqrtD) / (2 * a)
+
+    if(t1 >= 0 && t1 <= 1)
+    {
+        intersections.push({ 
+            x: x1 + t1 * dx, 
+            y: y1 + t1 * dy 
+        })
+    }
+
+    if(t2 >= 0 && t2 <= 1 && discriminant !== 0)
+    {
+        intersections.push({ 
+            x: x1 + t2 * dx, 
+            y: y1 + t2 * dy 
+        })
+    }
+
+    return intersections
+}
+
 const TAU = 2 * Math.PI
 var mod = function (a, n) { return ( a % n + n ) % n; } // modulo
 
@@ -44,7 +87,7 @@ var equivalent = function (a) { return mod(a + Math.PI, TAU) - Math.PI } // [-π
 
 function smallestAngle(current, target)
 {
-return equivalent(target - current);
+    return equivalent(target - current);
 }
 
-export { clamp, remap, remapClamp, lerp, smoothstep, safeMod, signedModDelta, smallestAngle }
+export { clamp, remap, remapClamp, lerp, smoothstep, safeMod, signedModDelta, smallestAngle, segmentCircleIntersection }

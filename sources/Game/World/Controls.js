@@ -22,7 +22,7 @@ export class Controls
 
         this.modal.instance.events.on('close', () =>
         {
-            this.interactiveArea.reveal()
+            this.interactivePoint.reveal()
         })
 
         this.modal.instance.events.on('open', () =>
@@ -38,7 +38,7 @@ export class Controls
 
     setInteractivePoint()
     {
-        this.interactiveArea = this.game.interactivePoints.create(
+        this.interactivePoint = this.game.interactivePoints.create(
             this.references.get('interactivePoint')[0].position,
             'Controls',
             InteractivePoints.ALIGN_RIGHT,
@@ -46,7 +46,7 @@ export class Controls
             {
                 this.game.inputs.interactiveButtons.clearItems()
                 this.game.modals.open('controls')
-                this.interactiveArea.hide()
+                this.interactivePoint.hide()
             },
             () =>
             {

@@ -13,6 +13,7 @@ import { Social } from './Social.js'
 import { Toilet } from './Toilet.js'
 import { ExplosiveCrates } from './ExplosiveCrates.js'
 import { Bowling } from './Bowling.js'
+import Circuit from './Circuit.js'
 
 export class Areas
 {
@@ -78,6 +79,10 @@ export class Areas
         const bowlingReferences = this.references.getStartingWith('bowling')
         if(bowlingReferences.size)
             this.bowling = new Bowling(bowlingReferences)
+
+        const circuitReferences = this.references.getStartingWith('circuit')
+        if(circuitReferences.size)
+            this.circuit = new Circuit(circuitReferences)
     }
 
     setReferences()
@@ -134,7 +139,7 @@ export class Areas
         for(const child of model)
         {
             // Add
-            if(typeof child.userData.preventAutoAdd === 'undefined' || child.userData.preventAutoAdd === false)
+            if(typeof child.userData.prevent === 'undefined' || child.userData.prevent === false)
             {
                 // Objects
                 this.game.objects.addFromModel(

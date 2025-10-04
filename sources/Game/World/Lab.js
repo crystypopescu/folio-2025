@@ -69,7 +69,7 @@ export class Lab
 
     setInteractivePoint()
     {
-        this.interactiveArea = this.game.interactivePoints.create(
+        this.interactivePoint = this.game.interactivePoints.create(
             this.references.get('interactivePoint')[0].position,
             'Lab',
             InteractivePoints.ALIGN_RIGHT,
@@ -1288,7 +1288,7 @@ export class Lab
         this.game.view.cinematic.start(this.cinematic.position, this.cinematic.target)
 
         // Interactive area
-        this.interactiveArea.hide()
+        this.interactivePoint.hide()
 
         // Shade mix
         gsap.to(this.shadeMix.images.mixUniform, { value: this.shadeMix.images.max, duration: 2, ease: 'power2.inOut', overwrite: true })
@@ -1345,7 +1345,7 @@ export class Lab
         // Interactive area
         gsap.delayedCall(1, () =>
         {
-            this.interactiveArea.reveal()
+            this.interactivePoint.reveal()
         })
 
         // // Cursor

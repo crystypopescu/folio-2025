@@ -407,7 +407,7 @@ export class Snow
         this.elevationBinding.update()
 
         // Glitter
-        this.glittersProgress.value = 1 + this.game.view.camera.position.x + this.game.view.camera.position.y + this.game.ticker.elapsedScaled * 0.4
+        this.glittersProgress.value = 1 + this.game.view.camera.position.x + this.game.view.camera.position.z + this.game.ticker.elapsedScaled * 0.4
         
         // Rounded position
         this.roundedPosition.value.x = Math.round(this.game.view.optimalArea.position.x / this.subdivisionSize) * this.subdivisionSize

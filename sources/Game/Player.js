@@ -7,7 +7,7 @@ import { Inputs } from './Inputs/Inputs.js'
 export class Player
 {
     static STATE_DEFAULT = 1
-    static STATE_DYING = 2
+    static STATE_LOCKED = 2
 
     constructor()
     {
@@ -204,7 +204,7 @@ export class Player
 
     die()
     {
-        this.state = Player.STATE_DYING
+        this.state = Player.STATE_LOCKED
         
         gsap.delayedCall(2, () =>
         {

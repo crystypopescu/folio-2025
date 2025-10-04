@@ -45,7 +45,7 @@ export class Social
             position.y = 1
             position.z -= Math.sin(angle) * radius
 
-            this.interactiveArea = this.game.interactivePoints.create(
+            this.interactivePoint = this.game.interactivePoints.create(
                 position,
                 link.name,
                 link.align === 'left' ? InteractivePoints.ALIGN_LEFT : InteractivePoints.ALIGN_RIGHT,

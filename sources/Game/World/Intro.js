@@ -19,13 +19,13 @@ export class Intro
                 this.game.audio?.music.play()
             
             firstTimeIntro = false
-            this.interactiveArea.reveal()
+            this.interactivePoint.reveal()
         })
     }
 
     setInteractivePoint()
     {
-        this.interactiveArea = this.game.interactivePoints.create(
+        this.interactivePoint = this.game.interactivePoints.create(
             this.references.get('interactivePoint')[0].position,
             'Read me!',
             InteractivePoints.ALIGN_RIGHT,
@@ -33,7 +33,7 @@ export class Intro
             {
                 this.game.inputs.interactiveButtons.clearItems()
                 this.game.modals.open('intro')
-                this.interactiveArea.hide()
+                this.interactivePoint.hide()
             },
             () =>
             {

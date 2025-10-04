@@ -20,7 +20,7 @@ export class Confetti
         }
 
         this.pool = []
-        this.poolSize = 3
+        this.poolSize = 4
         this.count = 500
         this.geometry = new THREE.PlaneGeometry(0.1, 0.2)
 
