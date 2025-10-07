@@ -236,6 +236,13 @@ export class Objects
         object.visual.object3D.removeFromParent()
     }
 
+    enable(object)
+    {
+        // this.game.physics.world.removeRigidBody(object.physical.body)
+        object.physical.body.setEnabled(true)
+        object.visual.parent.add(object.visual.object3D)
+    }
+
     update()
     {
         this.list.forEach((_object) =>

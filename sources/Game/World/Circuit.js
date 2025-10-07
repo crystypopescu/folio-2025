@@ -15,7 +15,7 @@ export default class Circuit
     static STATE_PENDING = 1
     static STATE_STARTING = 2
     static STATE_RUNNING = 3
-    static STATE_ENDED = 4
+    static STATE_ENDING = 4
 
     constructor(references)
     {
@@ -133,6 +133,7 @@ export default class Circuit
         this.timer.group = this.references.get('timer')[0]
         this.timer.group.rotation.y = Math.PI * 0.1
         this.timer.group.visible = false
+        this.timer.defaultPosition = this.references.get('interactivePoint')[0].position.clone()
 
         // Digits
         {
@@ -227,10 +228,10 @@ export default class Circuit
                     {
                         this.timer.group.scale.setScalar(value.scale)
                     },
-                    onComplete: () =>
-                    {
-                        this.timer.group.visible = false
-                    }
+                    // onComplete: () =>
+                    // {
+                    //     this.timer.group.visible = false
+                    // }
                 }
             )
             
@@ -256,11 +257,21 @@ export default class Circuit
         this.timer.update = () =>
         {
             // Group > Follow car
-            const target = new THREE.Vector3(
-                this.game.player.position.x -  2,
-                2.5,
-                this.game.player.position.z + 1
-            )
+            const target = new THREE.Vector3()
+
+            if(this.state === Circuit.STATE_PENDING)
+            {
+                target.x = this.timer.defaultPosition.x - 2
+                target.y = 2.5
+                target.z = this.timer.defaultPosition.z + 1
+            }
+            else
+            {
+                target.x = this.game.player.position.x - 2
+                target.y = 2.5
+                target.z = this.game.player.position.z + 1
+            }
+            
             this.timer.group.position.lerp(target, this.game.ticker.deltaScaled * 5)
             // this.timer.group.position.z = this.game.player.position2.y
 
@@ -518,9 +529,25 @@ export default class Circuit
 
     setRails()
     {
-        const rails = this.references.get('rails')[0]
-        rails.material = rails.material.clone()
-        rails.material.side = THREE.DoubleSide
+        this.rails = {}
+        
+        const railsMesh = this.references.get('rails')[0]
+        railsMesh.material = railsMesh.material.clone()
+        railsMesh.material.side = THREE.DoubleSide
+
+        this.rails.object = railsMesh.userData.object
+        
+        this.rails.activate = () =>
+        {
+            this.game.objects.enable(this.rails.object)
+        }
+        
+        this.rails.deactivate = () =>
+        {
+            this.game.objects.disable(this.rails.object)
+        }
+
+        this.rails.deactivate()
     }
 
     setInteractivePoint()
@@ -629,7 +656,7 @@ export default class Circuit
                     clouds: 0,
                     wind: 0
                 },
-                3
+                0
             )
     
             // Day cycles
@@ -644,11 +671,14 @@ export default class Circuit
                     fogNearRatio: lerp(this.game.dayCycles.presets.day.fogNearRatio, this.game.dayCycles.presets.dawn.fogNearRatio, dayPresetMix),
                     fogFarRatio: lerp(this.game.dayCycles.presets.day.fogFarRatio, this.game.dayCycles.presets.dawn.fogFarRatio, dayPresetMix)
                 },
-                1
+                0
             )
 
             // Timer
             this.timer.show()
+
+            // Rails
+            this.rails.activate()
 
             // Overlay > Hide
             this.game.overlay.hide(() =>
@@ -671,11 +701,12 @@ export default class Circuit
 
     finish()
     {
-        if(this.state === Circuit.STATE_ENDED)
+        // Not running
+        if(this.state !== Circuit.STATE_RUNNING)
             return
             
         // State
-        this.state = Circuit.STATE_ENDED
+        this.state = Circuit.STATE_ENDING
         
         // Timer
         this.timer.end()
@@ -684,33 +715,42 @@ export default class Circuit
         this.checkpoints.target = null
         this.checkpoints.doorTarget.mesh.visible = false
 
-        gsap.delayedCall(3, () =>
+        gsap.delayedCall(5, () =>
         {
-            this.end()
+            // Overlay > Show
+            this.game.overlay.show(() =>
+            {
+                // State
+                this.state = Circuit.STATE_PENDING
+                
+                // Update physical vehicle
+                this.game.physicalVehicle.moveTo(
+                    this.startPosition.position,
+                    this.startPosition.rotation
+                )
+
+                // Weather and day cycles
+                this.game.weather.override.end(0)
+                this.game.dayCycles.override.end(0)
+
+                // Checkpoints
+                this.checkpoints.doorReached.mesh.visible = false
+                this.checkpoints.doorTarget.mesh.visible = false
+
+                // Starting lights
+                this.startingLights.reset()
+
+                // Rails
+                this.rails.deactivate()
+
+                // Overlay > Hide
+                this.game.overlay.hide(() =>
+                {
+                    // State
+                    this.state = Circuit.STATE_PENDING
+                })
+            })
         })
-    }
-
-    end()
-    {
-        if(this.state === Circuit.STATE_PENDING)
-            return
-            
-        // State
-        this.state = Circuit.STATE_PENDING
-
-        // Timer
-        this.timer.hide()
-
-        // Weather and day cycles
-        this.game.weather.override.end()
-        this.game.dayCycles.override.end()
-
-        // Checkpoints
-        this.checkpoints.doorReached.mesh.visible = false
-        this.checkpoints.doorTarget.mesh.visible = false
-
-        // Starting lights
-        this.startingLights.reset()
     }
 
     update()

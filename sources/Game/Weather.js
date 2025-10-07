@@ -207,12 +207,18 @@ export class Weather
                     property.overrideValue = null
             }
 
-            gsap.to(this.override, { strength: 1, duration, overwrite: true })
+            if(duration === 0)
+                this.override.strength = 1
+            else
+                gsap.to(this.override, { strength: 1, duration, overwrite: true })
         }
 
         this.override.end = (duration = 5) =>
         {
-            gsap.to(this.override, { strength: 0, duration, overwrite: true })
+            if(duration === 0)
+                this.override.strength = 0
+            else
+                gsap.to(this.override, { strength: 0, duration, overwrite: true })
         }
     }
 
