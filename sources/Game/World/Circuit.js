@@ -730,7 +730,6 @@ export default class Circuit
         // Obstacles
         for(const obstacle of this.obstacles.items)
         {
-            // console.log(obstacle.object.physical.body)
             const newPosition = obstacle.basePosition.clone()
             const osciliation = Math.sin(this.timer.elapsedTime * 1.25 + obstacle.osciliationOffset) * 3.5
             newPosition.z += osciliation
