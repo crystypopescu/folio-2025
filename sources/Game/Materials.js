@@ -314,6 +314,7 @@ export class Materials
                 transparent: transparent
             })
             material.premultipliedAlpha = premultipliedAlpha
+            material.map = baseMaterial.map
             
             return material
         }

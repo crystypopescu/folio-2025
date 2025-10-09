@@ -98,7 +98,6 @@ export class Snow
             { label: 'elevation', min: -1, max: 1, step: 0.001 },
             () =>
             {
-                return 1
                 const elevationStrength = this.game.weather.snow.value * Math.max(this.game.dayCycles.progressDelta, 0) * 10
 
                 let newElevation = this.elevation.value + elevationStrength

@@ -163,14 +163,14 @@ export class Noises
         // helperMesh2.position.y = 5
         // this.game.scene.add(helperMesh2)
 
-        const helperMesh3 = new THREE.Mesh(
-            new THREE.BoxGeometry(5, 5, 5),
-            new THREE.MeshBasicNodeMaterial({ outputNode: vec4(texture(this.hash).r, 0, 0, 1) })
-        )
-        helperMesh3.position.x = 10
-        helperMesh3.position.y = 5
+        // const helperMesh3 = new THREE.Mesh(
+        //     new THREE.BoxGeometry(5, 5, 5),
+        //     new THREE.MeshBasicNodeMaterial({ outputNode: vec4(texture(this.hash).r, 0, 0, 1) })
+        // )
+        // helperMesh3.position.x = 10
+        // helperMesh3.position.y = 5
 
-        this.game.scene.add(helperMesh3)
+        // this.game.scene.add(helperMesh3)
     }
 
 	setVoronoi()
