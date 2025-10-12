@@ -1024,7 +1024,7 @@ export default class Circuit
         })
     }
 
-    finish()
+    finish(forced = false)
     {
         // Not running
         if(this.state !== Circuit.STATE_RUNNING)
@@ -1035,12 +1035,14 @@ export default class Circuit
         
         // Timer
         this.timer.end()
+        if(forced)
+            this.timer.hide()
 
         // Checkpoints
         this.checkpoints.target = null
         this.checkpoints.doorTarget.mesh.visible = false
 
-        gsap.delayedCall(5, () =>
+        gsap.delayedCall(forced ? 1 : 5, () =>
         {
             // Overlay > Show
             this.game.overlay.show(() =>
@@ -1056,7 +1058,13 @@ export default class Circuit
                 this.game.inputs.filters.add('wandering')
                 
                 // Update physical vehicle
-                this.game.physicalVehicle.moveTo(this.podium.respawn.position, this.podium.respawn.rotation.y)
+                if(forced)
+                {
+                    const respawn = this.game.respawns.getByName('circuit')
+                    this.game.physicalVehicle.moveTo(respawn.position, respawn.rotation)
+                }
+                else
+                    this.game.physicalVehicle.moveTo(this.podium.respawn.position, this.podium.respawn.rotation.y)
 
                 // Activate terrain physics
                 if(this.game.world.floor)
@@ -1080,7 +1088,8 @@ export default class Circuit
                 this.rails.deactivate()
 
                 // Podium => Show
-                this.podium.show()
+                if(!forced)
+                    this.podium.show()
 
                 // Overlay > Hide
                 this.game.overlay.hide(() =>
