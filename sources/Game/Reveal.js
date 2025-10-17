@@ -84,14 +84,15 @@ export class Reveal
             {
                 baseRatio: 0.3,
                 // smoothedRatio: 0.4,
-                ease: 'power3.out',
-                duration: 3,
+                ease: 'power1.inOut',
+                duration: 2,
                 onComplete: () =>
                 {
                     gsap.to(
                         this.game.view.zoom,
                         {
                             baseRatio: 0,
+                            delay: 1,
                             // smoothedRatio: 0,
                             ease: 'back.in(1.5)',
                             duration: 1.5,

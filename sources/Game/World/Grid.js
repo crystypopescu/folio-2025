@@ -11,8 +11,6 @@ export class Grid
     {
         this.game = Game.getInstance()
 
-        this.geometry = new THREE.PlaneGeometry(10, 10)
-
         if(this.game.debug.active)
         {
             this.debugPanel = this.game.debug.panel.addFolder({
@@ -30,8 +28,8 @@ export class Grid
         const lines = [
             // new MeshGridMaterialLine(0x705df2, 1, 0.03, 0.2),
             // new MeshGridMaterialLine(0xffffff, 10, 0.003, 1),
-            new MeshGridMaterialLine(0x6f53bf, 1, 0.03, 0.2),
-            new MeshGridMaterialLine(0xcfcfcf, 10, 0.003, 1),
+            new MeshGridMaterialLine(0x6f53bf, 10, 0.03, 0.2),
+            new MeshGridMaterialLine(0xcfcfcf, 100, 0.003, 1),
         ]
 
         const uvGridMaterial = new MeshGridMaterial({
@@ -60,11 +58,16 @@ export class Grid
         
 
         const ground = new THREE.Mesh(
-            new THREE.PlaneGeometry(1000, 1000),
+            new THREE.PlaneGeometry(100, 100),
             uvGridMaterial
         )
         ground.position.y -= 0.02
         ground.rotation.x = - Math.PI * 0.5
+
+        const defaultRespawn = this.game.respawns.getDefault()
+        ground.position.x = defaultRespawn.position.x
+        ground.position.z = defaultRespawn.position.z
+        
         this.game.scene.add(ground)
 
         // Debug
