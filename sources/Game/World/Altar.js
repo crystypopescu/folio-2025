@@ -335,10 +335,22 @@ export class Altar
     {
         let formatedValue = null
 
+        // Displaying number value
         if(typeof value === 'number')
+        {
+            // Same value
+            if(value === this.value)
+                return
+                
+            this.value = value
             formatedValue = value.toLocaleString('en-US')
+        }
+
+        // Displaying text value
         else
+        {
             formatedValue = value
+        }
 
         this.context.font = this.font
 
