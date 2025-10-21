@@ -266,7 +266,7 @@ export class Snow
 
             const furnitureTexture = this.game.terrain.terrainNode(position).r
 
-            return snowTextureElevation.mul(furnitureTexture.oneMinus())
+            return snowTextureElevation.sub(furnitureTexture.mul(2))
         })
 
         this.material = new MeshDefaultMaterial({

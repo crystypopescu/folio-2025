@@ -406,6 +406,6 @@ export class WaterSurface
         // Ice
         const friction = lerp(0.5, 0.02, this.iceRatio.value)
         this.ice.physical.body.collider(0).setFriction(friction)
-        this.ice.physical.body.setNextKinematicTranslation({ x: 0, y: lerp(- 2 - this.ice.halfThickness, this.game.water.elevation - this.ice.halfThickness, this.iceRatio.value), z: 0})
+        this.ice.physical.body.setNextKinematicTranslation({ x: 0, y: lerp(- 1.5 - this.ice.halfThickness, this.game.water.elevation - this.ice.halfThickness, this.iceRatio.value), z: 0})
     }
 }
