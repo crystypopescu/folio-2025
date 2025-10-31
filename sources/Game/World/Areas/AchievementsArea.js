@@ -299,6 +299,11 @@ export class AchievementsArea extends Area
                 this.game.inputs.interactiveButtons.removeItems(['interact'])
             }
         )
+
+        this.game.modals.items.get('achievements').events.on('close', () =>
+        {
+            this.interactivePoint.reveal()
+        })
     }
 
     setAchievement()

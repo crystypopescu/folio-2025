@@ -76,7 +76,7 @@ export default
     [
         'honk',
         'Honk',
-        'Honk me like one of your french driver',
+        'Honk me like one of your french driver.',
         10
     ],
     [

@@ -17,7 +17,6 @@ export class VisualVehicle
         this.model = model
 
         this.setParts()
-        this.setPaints()
         this.setMainGroundTrack()
         this.setWheels()
         this.setBlinkers()
@@ -25,8 +24,7 @@ export class VisualVehicle
         this.setBoostTrails()
         this.setBoostAnimation()
         this.setScreenPosition()
-        
-        this.paints.changeTo('abyssal')
+        this.setPaints()
 
         this.tickCallback = () =>
         {
@@ -233,6 +231,13 @@ export class VisualVehicle
             }
         }
         
+        // From achievemnts
+        this.paints.changeTo(this.game.achievements.rewards.current.name)
+
+        this.game.achievements.events.on('rewardActiveChange', (reward) =>
+        {
+            this.paints.changeTo(reward.name)
+        })
     }
 
     setMainGroundTrack()

@@ -3,6 +3,7 @@ import achievementsData from '../data/achievements.js'
 import { Game } from './Game.js'
 import { timeToReadableString } from './utilities/time.js'
 import { uniform } from 'three/tsl'
+import { Events } from './Events.js'
 
 export class Achievements
 {
@@ -10,11 +11,14 @@ export class Achievements
     {
         this.game = Game.getInstance()
 
+        this.events = new Events()
+
         this.setStorage()
         this.setModal()
         this.setGroups()
         this.setItems()
         this.setGlobalProgress()
+        this.setRewards()
         this.setReset()
 
         const localAchievements = this.storage.get()
@@ -29,8 +33,6 @@ export class Achievements
                 group.setProgress(progress, true)
             }
         }
-
-        this.globalProgress.update()
     }
 
     setStorage()
@@ -141,6 +143,124 @@ export class Achievements
             
             this.globalProgress.element.classList.remove('is-achieved')
         }
+
+        this.globalProgress.update()
+    }
+
+    setRewards()
+    {
+        this.rewards = {}
+        this.rewards.elements = this.modal.instance.element.querySelectorAll('.js-reward')
+        this.rewards.items = new Map()
+        this.rewards.default = null
+        this.rewards.count = this.rewards.elements.length
+
+        // Items
+        let i = 0
+        for(const rewardElement of this.rewards.elements)
+        {
+            const item = {}
+            item.name = rewardElement.dataset.name
+            item.element = rewardElement
+            item.threshold = Math.round(i / (this.rewards.count - 1) * this.globalProgress.totalCount)
+            item.locked = true
+
+            item.element.addEventListener('click', (event) =>
+            {
+                event.preventDefault()
+
+                const changed = this.rewards.set(item.name)
+
+                if(changed)
+                {
+                    this.game.modals.close()
+                }
+            })
+
+            if(typeof rewardElement.dataset.default !== 'undefined')
+                this.rewards.default = item
+
+            this.rewards.items.set(item.name, item)
+
+            i++
+        }
+
+        // Current
+        this.rewards.current = this.rewards.default
+
+        const localRewardName = localStorage.getItem('achievementsReward')
+        if(localRewardName)
+        {
+            const item = this.rewards.items.get(localRewardName)
+            if(item)
+                this.rewards.current = item
+        }
+        this.rewards.current.element.classList.add('is-active')
+
+        // Set method
+        this.rewards.set = (itemName) =>
+        {
+            const item = this.rewards.items.get(itemName)
+
+            if(item && !item.locked && item !== this.rewards.current)
+            {
+                if(this.rewards.current)
+                {
+                    this.rewards.current.element.classList.remove('is-active')
+                }
+
+                this.rewards.current = item
+                this.rewards.current.element.classList.add('is-active')
+
+                this.events.trigger('rewardActiveChange', [ this.rewards.current ])
+
+                // Save
+                localStorage.setItem('achievementsReward', item.name)
+
+                return true
+            }
+
+            return false
+        }
+
+        // Update
+        this.rewards.update = () =>
+        {
+            this.rewards.items.forEach(item =>
+            {
+                // Unlock
+                if(this.globalProgress.achievedCount >= item.threshold)
+                {
+                    if(item.locked)
+                    {
+                        item.locked = false
+                        item.element.classList.remove('is-locked')
+                    }
+                }
+                // Lock
+                else
+                {
+                    if(!item.locked)
+                    {
+                        item.locked = true
+                        item.element.classList.add('is-locked')
+
+                        if(item === this.rewards.current)
+                        {
+                            this.rewards.set(this.rewards.default.name)
+                        }
+                    }
+
+                    // Current should be locked (shouldn't happen but you never know)
+                    if(item === this.rewards.current)
+                    {
+                        this.rewards.set(this.rewards.default.name)
+                    }
+                }
+            })
+        }
+
+        this.rewards.update()
     }
 
     setGroups()
@@ -196,7 +316,7 @@ export class Achievements
         // Add progress method
         group.addProgress = (_progress) =>
         {
-            group.setProgress(group.progress + 1)
+            return group.setProgress(group.progress + 1)
         }
 
         // Update items of group
@@ -290,6 +410,9 @@ export class Achievements
             {
                 achievement.achieved = true
                 achievement.itemElement.classList.add('is-achieved')
+
+                this.globalProgress.update()
+                this.rewards.update()
 
                 if(!_silent)
                 {
@@ -386,7 +509,6 @@ export class Achievements
 
         if(progressDelta)
         {
-            this.globalProgress.update()
             this.storage.save()
         }
     }
@@ -398,10 +520,12 @@ export class Achievements
         if(!group)
             return
             
-        group.addProgress()
+        const progressDelta = group.addProgress()
 
-        this.globalProgress.update()
-        this.storage.save()
+        if(progressDelta)
+        {
+            this.storage.save()
+        }
     }
 
     reset()
@@ -412,6 +536,7 @@ export class Achievements
         })
 
         this.globalProgress.reset()
+        this.rewards.update()
         this.storage.save()
     }
 }

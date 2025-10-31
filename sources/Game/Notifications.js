@@ -56,7 +56,6 @@ export class Notifications
                 
                 if(this.pendings.length)
                 {
-                    console.log(this.pendings)
                     const pending = this.pendings.shift()
                     this.show(...pending)
                 }
