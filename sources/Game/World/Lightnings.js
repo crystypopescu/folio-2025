@@ -75,7 +75,7 @@ export class Lightnings
             {
                 this.sounds.near.push(
                     this.game.audio.register(
-                        'explosion',
+                        'thunderClose',
                         {
                             path: path,
                             autoplay: false,
@@ -109,7 +109,7 @@ export class Lightnings
             {
                 this.sounds.distant.push(
                     this.game.audio.register(
-                        'explosion',
+                        'thunderDistant',
                         {
                             path: path,
                             autoplay: false,
