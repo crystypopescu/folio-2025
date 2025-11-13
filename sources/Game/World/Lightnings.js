@@ -74,28 +74,25 @@ export class Lightnings
             for(const path of paths)
             {
                 this.sounds.near.push(
-                    this.game.audio.register(
-                        'thunderClose',
+                    this.game.audio.register({
+                        path: path,
+                        autoplay: false,
+                        loop: false,
+                        volume: 1,
+                        antiSpam: 0.2,
+                        positions: new THREE.Vector3(),
+                        onPlay: (item, coordinates) =>
                         {
-                            path: path,
-                            autoplay: false,
-                            loop: false,
-                            volume: 1,
-                            antiSpam: 0.2,
-                            positions: new THREE.Vector3(),
-                            onPlay: (item, coordinates) =>
-                            {
-                                const distance = Math.hypot(coordinates.x - this.game.player.position2.x, coordinates.z - this.game.player.position2.y)
-                                item.positions[0].copy(coordinates)
-            
-                                // const distanceVolumeEffect = Math.pow(mathRemapClamp(distance, 0, 20, 1, 0), 2)
-                                // item.volume = 0.1 + Math.random() * 0.1 + distanceVolumeEffect * 0.6
+                            const distance = Math.hypot(coordinates.x - this.game.player.position2.x, coordinates.z - this.game.player.position2.y)
+                            item.positions[0].copy(coordinates)
+        
+                            // const distanceVolumeEffect = Math.pow(mathRemapClamp(distance, 0, 20, 1, 0), 2)
+                            // item.volume = 0.1 + Math.random() * 0.1 + distanceVolumeEffect * 0.6
 
-                                const distanceRateEffect = mathRemapClamp(distance, 0, 20, 0, - 0.3)
-                                item.rate = 1.3 + Math.random() * 0.1 + distanceRateEffect
-                            }
+                            const distanceRateEffect = mathRemapClamp(distance, 0, 20, 0, - 0.3)
+                            item.rate = 1.3 + Math.random() * 0.1 + distanceRateEffect
                         }
-                    )
+                    })
                 )
             }
         }
@@ -112,21 +109,18 @@ export class Lightnings
             for(const path of paths)
             {
                 this.sounds.distant.push(
-                    this.game.audio.register(
-                        'thunderDistant',
+                    this.game.audio.register({
+                        path: path,
+                        autoplay: false,
+                        loop: false,
+                        volume: 0.4,
+                        antiSpam: 7,
+                        onPlay: (item) =>
                         {
-                            path: path,
-                            autoplay: false,
-                            loop: false,
-                            volume: 0.4,
-                            antiSpam: 7,
-                            onPlay: (item) =>
-                            {
-                                item.volume = 1 + Math.random() * 0.3
-                                item.rate = 1 + Math.random() * 0.3
-                            }
+                            item.volume = 1 + Math.random() * 0.3
+                            item.rate = 1 + Math.random() * 0.3
                         }
-                    )
+                    })
                 )
             }
         }

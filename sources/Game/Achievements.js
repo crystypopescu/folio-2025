@@ -475,27 +475,21 @@ export class Achievements
     {
         this.sounds = {}
         
-        this.sounds.achieve = this.game.audio.register(
-            'achievement',
-            {
-                path: 'sounds/achievements/Money Reward 2.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.5
-            }
-        )
+        this.sounds.achieve = this.game.audio.register({
+            path: 'sounds/achievements/Money Reward 2.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.5
+        })
 
-        this.sounds.paint = this.game.audio.register(
-            'paint',
-            {
-                path: 'sounds/paint/Spray Paint 14.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.5
-            }
-        )
+        this.sounds.paint = this.game.audio.register({
+            path: 'sounds/paint/Spray Paint 14.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.5
+        })
     }
 
     setReset()

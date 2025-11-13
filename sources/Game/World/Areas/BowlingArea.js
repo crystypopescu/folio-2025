@@ -43,42 +43,36 @@ export class BowlingArea extends Area
     {
         this.sounds = {}
 
-        this.sounds.pin = this.game.audio.register(
-            'hitPin',
+        this.sounds.pin = this.game.audio.register({
+            path: 'sounds/hits/pins/ComedyCrash 6115_16_4.mp3',
+            autoplay: false,
+            volume: 0.5,
+            antiSpam: 0.05,
+            positions: new THREE.Vector3(),
+            distanceFade: 35,
+            onPlay: (item, force, position) =>
             {
-                path: 'sounds/hits/pins/ComedyCrash 6115_16_4.mp3',
-                autoplay: false,
-                volume: 0.5,
-                antiSpam: 0.05,
-                positions: new THREE.Vector3(),
-                distanceFade: 35,
-                onPlay: (item, force, position) =>
-                {
-                    item.positions[0].copy(position)
-                    const forceRemaped = remapClamp(force, 3, 10, 0, 1)
-                    item.volume = forceRemaped * 0.5
-                    item.rate = 1.2 - forceRemaped * 0.2
-                }
+                item.positions[0].copy(position)
+                const forceRemaped = remapClamp(force, 3, 10, 0, 1)
+                item.volume = forceRemaped * 0.5
+                item.rate = 1.2 - forceRemaped * 0.2
             }
-        )
+        })
 
-        this.sounds.rolling = this.game.audio.register(
-            'rolling',
+        this.sounds.rolling = this.game.audio.register({
+            path: 'sounds/rolling/06290 medium ball rolling lp.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0.5,
+            rate: 0.8,
+            positions: new THREE.Vector3(),
+            distanceFade: 25,
+            onPlaying: (item) =>
             {
-                path: 'sounds/rolling/06290 medium ball rolling lp.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0.5,
-                rate: 0.8,
-                positions: new THREE.Vector3(),
-                distanceFade: 25,
-                onPlaying: (item) =>
-                {
-                    item.positions[0].copy(this.ball.position)
-                    item.volume = remapClamp(this.ball.speed, 0, 5, 0, 0.6)
-                }
+                item.positions[0].copy(this.ball.position)
+                item.volume = remapClamp(this.ball.speed, 0, 5, 0, 0.6)
             }
-        )
+        })
     }
 
     setPins()
@@ -480,15 +474,12 @@ export class BowlingArea extends Area
         this.references.get('jukebox')[0].add(points)
 
         // Sound
-        const sound = this.game.audio.register(
-            'jukebox',
-            {
-                path: 'sounds/jukebox/DVDPlayerChangeDisc_BW.49824.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.3,
-            }
-        )
+        const sound = this.game.audio.register({
+            path: 'sounds/jukebox/DVDPlayerChangeDisc_BW.49824.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.3,
+        })
         
         // Interactive point
         let switching = false

@@ -73,22 +73,19 @@ export class LabArea extends Area
     {
         this.sounds = {}
         
-        this.sounds.scroll = this.game.audio.register(
-            'mecanismScroll',
+        this.sounds.scroll = this.game.audio.register({
+            path: 'sounds/mecanism/05947 light wooden cart riding on cobblestone - looping.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0.5,
+            positions: this.references.get('mecanism')[0].position,
+            onPlaying: (item) =>
             {
-                path: 'sounds/mecanism/05947 light wooden cart riding on cobblestone - looping.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0.5,
-                positions: this.references.get('mecanism')[0].position,
-                onPlaying: (item) =>
-                {
-                    const absoluteSpeed = Math.abs(this.scroller.speed)
-                    item.volume = remapClamp(absoluteSpeed, 0, 6, 0, 0.5)
-                    item.rate = remapClamp(absoluteSpeed, 0, 6, 0.95, 1.05)
-                }
+                const absoluteSpeed = Math.abs(this.scroller.speed)
+                item.volume = remapClamp(absoluteSpeed, 0, 6, 0, 0.5)
+                item.rate = remapClamp(absoluteSpeed, 0, 6, 0.95, 1.05)
             }
-        )
+        })
 
     }
 
@@ -1459,9 +1456,9 @@ export class LabArea extends Area
         // Sounds
         if(!silent)
         {
-            this.game.audio.groups.get('click').items[0].play()
-            this.game.audio.groups.get('slide').items[0].play()
-            this.game.audio.groups.get('assemble').items[0].play()
+            this.game.audio.groups.get('click').play()
+            this.game.audio.groups.get('slide').play()
+            this.game.audio.groups.get('assemble').play()
         }
 
         // Achievements

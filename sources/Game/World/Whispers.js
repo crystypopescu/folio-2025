@@ -32,28 +32,22 @@ export class Whispers
     {
         this.sounds = {}
         
-        this.sounds.ignite = this.game.audio.register(
-            'ignite',
-            {
-                path: 'sounds/burning/ignite-1.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.1
-            }
-        )
+        this.sounds.ignite = this.game.audio.register({
+            path: 'sounds/burning/ignite-1.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.1
+        })
         
-        this.sounds.flicker = this.game.audio.register(
-            'flicker',
-            {
-                path: 'sounds/burning/Cloth_Movement_Hung_Clothes_Blowing_in_Wind_ODY-1520-031.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0.5,
-                positions: new THREE.Vector3(),
-                distanceFade: 10
-            }
-        )
+        this.sounds.flicker = this.game.audio.register({
+            path: 'sounds/burning/Cloth_Movement_Hung_Clothes_Blowing_in_Wind_ODY-1520-031.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0.5,
+            positions: new THREE.Vector3(),
+            distanceFade: 10
+        })
     }
 
     setFlames()

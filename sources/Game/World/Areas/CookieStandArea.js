@@ -43,21 +43,18 @@ export class CookieStandArea extends Area
     {
         this.sounds = {}
 
-        this.sounds.ding = this.game.audio.register(
-            'ding',
+        this.sounds.ding = this.game.audio.register({
+            path: 'sounds/ding/Cash Register 03.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.15,
+            onPlay: (item) =>
             {
-                path: 'sounds/ding/Cash Register 03.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.15,
-                onPlay: (item) =>
-                {
-                    item.volume = 0.3 + Math.random() * 0.2
-                    item.rate = 1 + Math.random() * 0.05
-                }
+                item.volume = 0.3 + Math.random() * 0.2
+                item.rate = 1 + Math.random() * 0.05
             }
-        )
+        })
     }
 
     setBlower()

@@ -69,23 +69,20 @@ export class ExplosiveCrates
         this.sounds = {}
 
         // Click sound
-        this.sounds.triggerClick = this.game.audio.register(
-            'triggerClick',
+        this.sounds.triggerClick = this.game.audio.register({
+            path: 'sounds/clicks/Source Metal Clicks Delicate Light Sharp Clip Mid 07.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.1,
+            positions: new THREE.Vector3(),
+            onPlay: (item, coordinates) =>
             {
-                path: 'sounds/clicks/Source Metal Clicks Delicate Light Sharp Clip Mid 07.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.1,
-                positions: new THREE.Vector3(),
-                onPlay: (item, coordinates) =>
-                {
-                    item.positions[0].copy(coordinates)
-                    item.volume = 1
-                    item.rate = 0.7 + Math.random() * 1.3
-                }
+                item.positions[0].copy(coordinates)
+                item.volume = 1
+                item.rate = 0.7 + Math.random() * 1.3
             }
-        )
+        })
 
         const paths = [
             'sounds/explosions/SmallImpactMediumE PE281202.mp3',
@@ -97,24 +94,21 @@ export class ExplosiveCrates
         for(const path of paths)
         {
             this.sounds.explosions.push(
-                this.game.audio.register(
-                    'explosion',
+                this.game.audio.register({
+                    path: path,
+                    autoplay: false,
+                    loop: false,
+                    volume: 0.4,
+                    antiSpam: 0.2,
+                    positions: new THREE.Vector3(),
+                    distanceFade: 25,
+                    onPlay: (item, coordinates) =>
                     {
-                        path: path,
-                        autoplay: false,
-                        loop: false,
-                        volume: 0.4,
-                        antiSpam: 0.2,
-                        positions: new THREE.Vector3(),
-                        distanceFade: 25,
-                        onPlay: (item, coordinates) =>
-                        {
-                            item.positions[0].copy(coordinates)
-                            item.volume = 1
-                            item.rate = 0.9 + Math.random() * 0.3
-                        }
+                        item.positions[0].copy(coordinates)
+                        item.volume = 1
+                        item.rate = 0.9 + Math.random() * 0.3
                     }
-                )
+                })
             )
         }
     }

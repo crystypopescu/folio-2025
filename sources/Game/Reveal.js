@@ -15,16 +15,13 @@ export class Reveal
         this.thickness = uniform(0.05)
         this.color = uniform(color('#e88eff'))
         this.intensity = uniform(6.5)
-        this.sound = this.game.audio.register(
-            'reveal',
-            {
-                path: 'sounds/reveal/reveal-1.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                preload: true
-            }
-        )
+        this.sound = this.game.audio.register({
+            path: 'sounds/reveal/reveal-1.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            preload: true
+        })
 
         if(this.game.debug.active)
         {

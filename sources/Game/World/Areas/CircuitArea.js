@@ -69,64 +69,49 @@ export class CircuitArea extends Area
     {
         this.sounds = {}
 
-        this.sounds.countdown1 = this.game.audio.register(
-            'countdown1',
-            {
-                path: 'sounds/circuit/countdown/Game Start Countdown 31-1.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1
-            }
-        )
+        this.sounds.countdown1 = this.game.audio.register({
+            path: 'sounds/circuit/countdown/Game Start Countdown 31-1.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1
+        })
 
-        this.sounds.countdown2 = this.game.audio.register(
-            'countdown2',
-            {
-                path: 'sounds/circuit/countdown/Game Start Countdown 31-2.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1
-            }
-        )
+        this.sounds.countdown2 = this.game.audio.register({
+            path: 'sounds/circuit/countdown/Game Start Countdown 31-2.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1
+        })
 
-        this.sounds.checkpoint = this.game.audio.register(
-            'checkpoint',
+        this.sounds.checkpoint = this.game.audio.register({
+            path: 'sounds/circuit/checkpoint/Win Score 1.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1,
+            onPlay: (item, reachedCount) =>
             {
-                path: 'sounds/circuit/checkpoint/Win Score 1.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1,
-                onPlay: (item, reachedCount) =>
-                {
-                    item.rate = 1 + (reachedCount - 1) * 0.06
-                }
+                item.rate = 1 + (reachedCount - 1) * 0.06
             }
-        )
+        })
 
-        this.sounds.finish = this.game.audio.register(
-            'finish',
-            {
-                path: 'sounds/circuit/finish/Big Win Fanfare 2.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1
-            }
-        )
+        this.sounds.finish = this.game.audio.register({
+            path: 'sounds/circuit/finish/Big Win Fanfare 2.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1
+        })
 
-        this.sounds.applause = this.game.audio.register(
-            'applause',
-            {
-                path: 'sounds/circuit/applause/huge win.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1
-            }
-        )
+        this.sounds.applause = this.game.audio.register({
+            path: 'sounds/circuit/applause/huge win.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1
+        })
     }
 
     setStartPosition()

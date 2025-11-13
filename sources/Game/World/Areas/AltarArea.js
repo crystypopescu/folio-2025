@@ -55,36 +55,27 @@ export class AltarArea extends Area
     {
         this.sounds = {}
 
-        this.sounds.chimers = this.game.audio.register(
-            'chimers',
-            {
-                path: 'sounds/magic/Ghostly Whisper Background Loop 9.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0.15,
-                positions: this.references.get('altar')[0].position,
-                distanceFade: 20
-            }
-        )
+        this.sounds.chimers = this.game.audio.register({
+            path: 'sounds/magic/Ghostly Whisper Background Loop 9.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0.15,
+            positions: this.references.get('altar')[0].position,
+            distanceFade: 20
+        })
 
-        this.sounds.deathBell1 = this.game.audio.register(
-            'deathBell',
-            {
-                path: 'sounds/bell/Death Hit.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4
-            }
-        )
-        this.sounds.deathBell2 = this.game.audio.register(
-            'deathBell',
-            {
-                path: 'sounds/bell/Epic Bell Impact Hit.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4
-            }
-        )
+        this.sounds.deathBell1 = this.game.audio.register({
+            path: 'sounds/bell/Death Hit.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4
+        })
+        this.sounds.deathBell2 = this.game.audio.register({
+            path: 'sounds/bell/Epic Bell Impact Hit.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4
+        })
     }
 
     setBeam()

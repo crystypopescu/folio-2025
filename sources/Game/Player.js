@@ -55,237 +55,205 @@ export class Player
     setSounds()
     {
         this.sounds = {}
-        this.sounds.suspensions = this.game.audio.register(
-            'suspensions',
+        this.sounds.suspensions = this.game.audio.register({
+            path: 'sounds/suspensions/Robotic_Lifeforms_2_-_Air_Source_-_Piston_Studio_Chair_07.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.1,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/suspensions/Robotic_Lifeforms_2_-_Air_Source_-_Piston_Studio_Chair_07.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.1,
-                onPlay: (item, count) =>
-                {
-                    item.volume = 0.3 + count * 0.08
-                    item.rate = 0.9 + Math.random() * 0.2
-                }
+                item.volume = 0.3 + count * 0.08
+                item.rate = 0.9 + Math.random() * 0.2
             }
-        )
+        })
         this.sounds.honk = this.game.audio.register(
-            'honk',
+        {
+            path: 'sounds/honk/Car Horn Honking v1.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.1,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/honk/Car Horn Honking v1.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.1,
-                onPlay: (item, count) =>
-                {
-                    // item.volume = 0.25 + count * 0.05
-                    item.rate = 1 + Math.random() * 0.01
-                }
+                // item.volume = 0.25 + count * 0.05
+                item.rate = 1 + Math.random() * 0.01
             }
-        )
-        this.sounds.spring1 = this.game.audio.register(
-            'spring',
+        })
+        this.sounds.spring1 = this.game.audio.register({
+            path: 'sounds/springs/HandleSqueak_BW.60329.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 1,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/springs/HandleSqueak_BW.60329.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 1,
-                onPlay: (item, count) =>
-                {
-                    item.volume = 0.05 + count * 0.02
-                    item.rate = 1 + Math.random() * 0.1
-                }
+                item.volume = 0.05 + count * 0.02
+                item.rate = 1 + Math.random() * 0.1
             }
-        )
-        this.sounds.spring2 = this.game.audio.register(
-            'spring',
+        })
+        this.sounds.spring2 = this.game.audio.register({
+            path: 'sounds/springs/SpringMetalMovements_1u54Y_01.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.4,
+            antiSpam: 0.2,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/springs/SpringMetalMovements_1u54Y_01.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.4,
-                antiSpam: 0.2,
-                onPlay: (item, count) =>
-                {
-                    item.volume = 0.05 + count * 0.1
-                    item.rate = 0.9 + Math.random() * 0.4
-                }
+                item.volume = 0.05 + count * 0.1
+                item.rate = 0.9 + Math.random() * 0.4
             }
-        )
-        this.sounds.respawn = this.game.audio.register(
-            'respawnIn',
+        })
+        this.sounds.respawn = this.game.audio.register({
+            path: 'sounds/tears/Napkin Tear 2.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.15,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/tears/Napkin Tear 2.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.15,
-                onPlay: (item, count) =>
-                {
-                    // item.volume = 0.05 + count * 0.1
-                    // item.rate = 0.9 + Math.random() * 0.4
-                }
+                // item.volume = 0.05 + count * 0.1
+                // item.rate = 0.9 + Math.random() * 0.4
             }
-        )
-        this.sounds.respawnReverse = this.game.audio.register(
-            'respawnOut',
+        })
+        this.sounds.respawnReverse = this.game.audio.register({
+            path: 'sounds/tears/Napkin Tear 2-reverse.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.15,
+            rate: 0.8,
+            onPlay: (item, count) =>
             {
-                path: 'sounds/tears/Napkin Tear 2-reverse.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.15,
-                rate: 0.8,
-                onPlay: (item, count) =>
-                {
-                    // item.volume = 0.05 + count * 0.1
-                    // item.rate = 0.9 + Math.random() * 0.4
-                }
+                // item.volume = 0.05 + count * 0.1
+                // item.rate = 0.9 + Math.random() * 0.4
             }
-        )
+        })
 
         // Wheels on floor
         {
             // Default pebbles
-            this.game.audio.register(
-                'wheelsOnFloor',
-                {
-                    path: 'sounds/floor/Source Stone Loop Small Rubbing Pebbles On Rubber 01.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: 0,
-                    onPlaying: (item) =>
-                    {
-                        const defaultElevation = 1.08
-                        const inAirEffect = remapClamp(Math.abs(this.game.physicalVehicle.position.y - defaultElevation), 0, 2, 1, 0)
-                        const speedEffect = Math.min(1, this.game.physicalVehicle.xzSpeed * 0.1)
-                        // console.log(speedEffect)
-                        item.volume = inAirEffect * speedEffect * 0.15
-                        item.rate = 1.15
-                    }
-                }
-            )
-
-            // Default pebbles (TODO: merge)
-            this.game.audio.register(
-                'wheelsOnFloor',
-                {
-                    path: 'sounds/floor/Earth Loop Dumping Gravel Sack Bulk Falling 01.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: 0,
-                    onPlaying: (item) =>
-                    {
-                        item.volume = this.game.audio.groups.get('wheelsOnFloor').items[0].volume * 0.5
-                        
-                        item.rate = 1.2
-                    }
-                }
-            )
-
-            // Brake pebbles
-            this.game.audio.register(
-                'wheelsOnFloor',
-                {
-                    path: 'sounds/floor/Source Stone Loop Small Rubbing Pebbles On Concrete 02.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: 0,
-                    onPlaying: (item) =>
-                    {
-                        const directionRatio = (1 - Math.abs(this.game.physicalVehicle.forwardRatio)) * 0.6
-                        
-                        let brakeEffect = Math.max(directionRatio, this.game.player.braking) * this.game.physicalVehicle.xzSpeed * 0.15 * this.game.physicalVehicle.wheels.inContactCount / 4
-                        brakeEffect = clamp(brakeEffect, 0, 1)
-
-                        const volume = brakeEffect * 0.4
-                        const delta = volume - item.volume
-
-                        if(delta > 0)
-                            item.volume += delta * this.game.ticker.deltaScaled * 20
-                        else
-                            item.volume += delta * this.game.ticker.deltaScaled * 5
-                        
-                        item.rate = 0.8
-                    }
-                }
-            )
-        }
-
-        // Engine and speed
-        {
-            // Engine
-            this.game.audio.register(
-                'engine',
-                {
-                    path: 'sounds/engine/muscle car engine loop idle.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: 0,
-                    onPlaying: (item) =>
-                    {
-                        const accelerating = Math.abs(this.game.player.accelerating) * 0.5
-                        const boosting = this.game.player.boosting + 1
-                        const volume = Math.max(0.05, accelerating * boosting * 0.8)
-                        const delta = volume - item.volume
-                        const easing = delta > 0 ? 10 : 2.5
-                        
-                        item.volume += delta * this.game.ticker.deltaScaled * easing
-
-                        const rate = remapClamp(accelerating * boosting, 0, 1, 0.6, 1.1)
-                        item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
-                    }
-                }
-            )
-
-            // Spin and wind
-            this.game.audio.register(
-                'spin',
-                {
-                    path: 'sounds/spin/41051 Glass stone turning loop 09-full.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: 0,
-                    onPlaying: (item) =>
-                    {
-                        const speedEffect = clamp(this.game.physicalVehicle.xzSpeed * 0.1, 0, 1)
-                        const volume = speedEffect * 0.3
-                        const delta = volume - item.volume
-                        const easing = delta > 0 ? 10 : 2.5
-                        
-                        item.volume += delta * this.game.ticker.deltaScaled * easing
-
-                        const rate = remapClamp(speedEffect, 0, 1, 1, 2)
-                        item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
-                    }
-                }
-            )
-        }
-
-        // Boost
-        this.game.audio.register(
-            'boost',
-            {
-                path: 'sounds/energy/Energy_-_force_field_8_loop.mp3',
+            this.game.audio.register({
+                group: 'wheelsOnFloor',
+                path: 'sounds/floor/Source Stone Loop Small Rubbing Pebbles On Rubber 01.mp3',
                 autoplay: true,
                 loop: true,
                 volume: 0,
                 onPlaying: (item) =>
                 {
-                    const accelerating = 0.5 + Math.abs(this.game.player.accelerating) * 0.5
-                    const boosting = this.game.player.boosting
-                    const volume = accelerating * boosting * 0.3
+                    const defaultElevation = 1.08
+                    const inAirEffect = remapClamp(Math.abs(this.game.physicalVehicle.position.y - defaultElevation), 0, 2, 1, 0)
+                    const speedEffect = Math.min(1, this.game.physicalVehicle.xzSpeed * 0.1)
+                    // console.log(speedEffect)
+                    item.volume = inAirEffect * speedEffect * 0.15
+                    item.rate = 1.15
+                }
+            })
+
+            // Default pebbles (TODO: merge)
+            this.game.audio.register({
+                group: 'wheelsOnFloor',
+                path: 'sounds/floor/Earth Loop Dumping Gravel Sack Bulk Falling 01.mp3',
+                autoplay: true,
+                loop: true,
+                volume: 0,
+                onPlaying: (item) =>
+                {
+                    item.volume = this.game.audio.groups.get('wheelsOnFloor').items[0].volume * 0.5
+                    
+                    item.rate = 1.2
+                }
+            })
+
+            // Brake pebbles
+            this.game.audio.register({
+                group: 'wheelsOnFloor',
+                path: 'sounds/floor/Source Stone Loop Small Rubbing Pebbles On Concrete 02.mp3',
+                autoplay: true,
+                loop: true,
+                volume: 0,
+                onPlaying: (item) =>
+                {
+                    const directionRatio = (1 - Math.abs(this.game.physicalVehicle.forwardRatio)) * 0.6
+                    
+                    let brakeEffect = Math.max(directionRatio, this.game.player.braking) * this.game.physicalVehicle.xzSpeed * 0.15 * this.game.physicalVehicle.wheels.inContactCount / 4
+                    brakeEffect = clamp(brakeEffect, 0, 1)
+
+                    const volume = brakeEffect * 0.4
                     const delta = volume - item.volume
-                    const easing = delta > 0 ? 10 : 1
+
+                    if(delta > 0)
+                        item.volume += delta * this.game.ticker.deltaScaled * 20
+                    else
+                        item.volume += delta * this.game.ticker.deltaScaled * 5
+                    
+                    item.rate = 0.8
+                }
+            })
+        }
+
+        // Engine and speed
+        {
+            // Engine
+            this.game.audio.register({
+                path: 'sounds/engine/muscle car engine loop idle.mp3',
+                autoplay: true,
+                loop: true,
+                volume: 0,
+                onPlaying: (item) =>
+                {
+                    const accelerating = Math.abs(this.game.player.accelerating) * 0.5
+                    const boosting = this.game.player.boosting + 1
+                    const volume = Math.max(0.05, accelerating * boosting * 0.8)
+                    const delta = volume - item.volume
+                    const easing = delta > 0 ? 10 : 2.5
                     
                     item.volume += delta * this.game.ticker.deltaScaled * easing
 
-                    const rate = 0.95 + Math.abs(this.game.player.accelerating) * 2
+                    const rate = remapClamp(accelerating * boosting, 0, 1, 0.6, 1.1)
                     item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
                 }
+            })
+
+            // Spin and wind
+            this.game.audio.register({
+                path: 'sounds/spin/41051 Glass stone turning loop 09-full.mp3',
+                autoplay: true,
+                loop: true,
+                volume: 0,
+                onPlaying: (item) =>
+                {
+                    const speedEffect = clamp(this.game.physicalVehicle.xzSpeed * 0.1, 0, 1)
+                    const volume = speedEffect * 0.3
+                    const delta = volume - item.volume
+                    const easing = delta > 0 ? 10 : 2.5
+                    
+                    item.volume += delta * this.game.ticker.deltaScaled * easing
+
+                    const rate = remapClamp(speedEffect, 0, 1, 1, 2)
+                    item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
+                }
+            })
+        }
+
+        // Boost
+        this.game.audio.register({
+            path: 'sounds/energy/Energy_-_force_field_8_loop.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0,
+            onPlaying: (item) =>
+            {
+                const accelerating = 0.5 + Math.abs(this.game.player.accelerating) * 0.5
+                const boosting = this.game.player.boosting
+                const volume = accelerating * boosting * 0.3
+                const delta = volume - item.volume
+                const easing = delta > 0 ? 10 : 1
+                
+                item.volume += delta * this.game.ticker.deltaScaled * easing
+
+                const rate = 0.95 + Math.abs(this.game.player.accelerating) * 2
+                item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
             }
-        )
+        })
     }
 
     setInputs()

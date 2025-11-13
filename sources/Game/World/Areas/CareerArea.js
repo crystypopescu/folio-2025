@@ -34,41 +34,35 @@ export class CareerArea extends Area
     setSounds()
     {
         this.sounds = {}
-        this.sounds.stoneOut = this.game.audio.register(
-            'stoneOut',
+        this.sounds.stoneOut = this.game.audio.register({
+            path: 'sounds/stoneSlides/stoneSlideOut.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.3,
+            antiSpam: 0.1,
+            positions: new THREE.Vector3(),
+            distanceFade: 14,
+            onPlay: (item, line) =>
             {
-                path: 'sounds/stoneSlides/stoneSlideOut.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.3,
-                antiSpam: 0.1,
-                positions: new THREE.Vector3(),
-                distanceFade: 14,
-                onPlay: (item, line) =>
-                {
-                    item.positions[0].copy(line.origin)
-                    item.rate = 1.2 + line.index * 0.1
-                }
+                item.positions[0].copy(line.origin)
+                item.rate = 1.2 + line.index * 0.1
             }
-        )
-        this.sounds.stoneIn = this.game.audio.register(
-            'stoneIn',
+        })
+        this.sounds.stoneIn = this.game.audio.register({
+            path: 'sounds/stoneSlides/stoneSlideIn.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.2,
+            rate: 0.8,
+            antiSpam: 0.1,
+            positions: new THREE.Vector3(),
+            distanceFade: 14,
+            onPlay: (item, line) =>
             {
-                path: 'sounds/stoneSlides/stoneSlideIn.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.2,
-                rate: 0.8,
-                antiSpam: 0.1,
-                positions: new THREE.Vector3(),
-                distanceFade: 14,
-                onPlay: (item, line) =>
-                {
-                    item.positions[0].copy(line.origin)
-                    // item.rate = 0.9 + Math.random() * 0.2
-                }
+                item.positions[0].copy(line.origin)
+                // item.rate = 0.9 + Math.random() * 0.2
             }
-        )
+        })
     }
 
     setLines()

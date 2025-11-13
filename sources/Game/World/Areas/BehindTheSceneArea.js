@@ -37,17 +37,14 @@ export class BehindTheSceneArea extends Area
     {
         this.sounds = {}
 
-        this.sounds.chimers = this.game.audio.register(
-            'chimers',
-            {
-                path: 'sounds/magic/Environmental Loop Scifi Bright Glassy Wandering Tones Layered 02.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0.15,
-                positions: this.references.get('interactivePoint')[0].position,
-                distanceFade: 20
-            }
-        )
+        this.sounds.chimers = this.game.audio.register({
+            path: 'sounds/magic/Environmental Loop Scifi Bright Glassy Wandering Tones Layered 02.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0.15,
+            positions: this.references.get('interactivePoint')[0].position,
+            distanceFade: 20
+        })
     }
 
     setSlabs()

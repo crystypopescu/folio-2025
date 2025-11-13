@@ -40,8 +40,35 @@ export class Audio
         })
     }
 
-    register(name, options = {})
+    register(options = {})
     {
+        // Group
+        const groupName = options.group ?? 'all'
+        let group = this.groups.get(groupName)
+
+        if(!group)
+        {
+            group = {}
+            group.items = []
+            group.lastPlayedId = -1
+            group.playRandomNext = (...parameters) =>
+            {
+                const delta = 1 + Math.floor(Math.random() * (group.items.length - 2))
+                const id = (group.lastPlayedId + delta) % group.items.length
+
+                const item = group.items[id]
+                item.play(...parameters)
+            }
+            group.play = (...parameters) =>
+            {
+                const id = (group.lastPlayedId + 1) % group.items.length
+
+                const item = group.items[id]
+                item.play(...parameters)
+            }
+            this.groups.set(groupName, group)
+        }
+
         const item = {}
         item.howl = new Howl({
             src: [ options.path ],
@@ -72,6 +99,7 @@ export class Audio
         item.loaded = options.preload ?? true
         item.autoplay = options.autoplay ?? false
         item.playing = (this.initiated && options.autoplay) ?? false
+        item.id = group.items.length
 
         item.play = (...parameters) =>
         {
@@ -104,27 +132,11 @@ export class Audio
             // Save last play for anti spam
             item.lastPlay = this.game.ticker.elapsed
             item.playing = true
+
+            // Save for group
+            group.lastPlayedId = item.id
         }
 
-        // Save into groups
-        let group = this.groups.get(name)
-
-        if(!group)
-        {
-            group = {}
-            group.items = []
-            group.lastPlayedId = -1
-            group.playRandomNext = (...parameters) =>
-            {
-                const delta = 1 + Math.floor(Math.random() * (group.items.length - 2))
-                const id = (group.lastPlayedId + delta) % (group.items.length - 1)
-
-                const item = group.items[id]
-                item.play(...parameters)
-                group.lastPlayedId = id
-            }
-            this.groups.set(name, group)
-        }
         group.items.push(item)
 
         return item
@@ -215,22 +227,20 @@ export class Audio
             const tweets = []
             for(const path of tweetsPaths)
                 tweets.push(
-                    this.register(
-                        'birdTweet',
+                    this.register({
+                        group: 'birdTweet',
+                        path: path,
+                        autoplay: false,
+                        loop: false,
+                        volume: 0.3,
+                        positions: new THREE.Vector3(),
+                        onPlay: (item) =>
                         {
-                            path: path,
-                            autoplay: false,
-                            loop: false,
-                            volume: 0.3,
-                            positions: new THREE.Vector3(),
-                            onPlay: (item) =>
-                            {
-                                item.volume = 0.2 + Math.random() * 0.15
-                                item.rate = 1 + Math.random() * 0.7
-                                item.positions[0].copy(getRandomDirection())
-                            }
+                            item.volume = 0.2 + Math.random() * 0.15
+                            item.rate = 1 + Math.random() * 0.7
+                            item.positions[0].copy(getRandomDirection())
                         }
-                    )
+                    })
                 )
 
 
@@ -251,22 +261,20 @@ export class Audio
         
         // Owl
         {
-            const sound = this.register(
-                'owl',
+            const sound = this.register({
+                group: 'owl',
+                path: 'sounds/owl/OwlHootingReverberantSeveral_Rik8a_03.mp3',
+                autoplay: false,
+                loop: false,
+                volume: 0.3,
+                positions: new THREE.Vector3(),
+                onPlay: (item) =>
                 {
-                    path: 'sounds/owl/OwlHootingReverberantSeveral_Rik8a_03.mp3',
-                    autoplay: false,
-                    loop: false,
-                    volume: 0.3,
-                    positions: new THREE.Vector3(),
-                    onPlay: (item) =>
-                    {
-                        item.volume = 0.2 + Math.random() * 0.15
-                        item.rate = 1 + Math.random() * 0.3
-                        item.positions[0].copy(getRandomDirection())
-                    }
+                    item.volume = 0.2 + Math.random() * 0.15
+                    item.rate = 1 + Math.random() * 0.3
+                    item.positions[0].copy(getRandomDirection())
                 }
-            )
+            })
 
             const tryPlay = () =>
             {
@@ -284,21 +292,19 @@ export class Audio
 
         // Rooster
         {
-            const sound = this.register(
-                'rooster',
-                {
-                    path: 'sounds/rooster/rooster-crowing.mp3',
-                    autoplay: false,
-                    loop: false,
-                    volume: 0.1,
-                    positions: new THREE.Vector3(),
-                    onPlay: (item) =>
-                    {   
-                        item.volume = 0.05 + Math.random() * 0.15
-                        item.positions[0].copy(getRandomDirection())
-                    }
+            const sound = this.register({
+                group: 'rooster',
+                path: 'sounds/rooster/rooster-crowing.mp3',
+                autoplay: false,
+                loop: false,
+                volume: 0.1,
+                positions: new THREE.Vector3(),
+                onPlay: (item) =>
+                {   
+                    item.volume = 0.05 + Math.random() * 0.15
+                    item.positions[0].copy(getRandomDirection())
                 }
-            )
+            })
 
             this.game.dayCycles.events.on('night', (inInterval) =>
             {
@@ -309,21 +315,19 @@ export class Audio
 
         // Wolf
         {
-            const sound = this.register(
-                'wolf',
-                {
-                    path: 'sounds/wolf/TimberWolvesGroupHowlingSomeWhimpering_S2h0E_04.mp3',
-                    autoplay: false,
-                    loop: false,
-                    volume: 0.1,
-                    positions: new THREE.Vector3(),
-                    onPlay: (item) =>
-                    {   
-                        item.volume = 0.05 + Math.random() * 0.15
-                        item.positions[0].copy(getRandomDirection())
-                    }
+            const sound = this.register({
+                group: 'wolf',
+                path: 'sounds/wolf/TimberWolvesGroupHowlingSomeWhimpering_S2h0E_04.mp3',
+                autoplay: false,
+                loop: false,
+                volume: 0.1,
+                positions: new THREE.Vector3(),
+                onPlay: (item) =>
+                {   
+                    item.volume = 0.05 + Math.random() * 0.15
+                    item.positions[0].copy(getRandomDirection())
                 }
-            )
+            })
 
             this.game.dayCycles.events.on('deepNight', (inInterval) =>
             {
@@ -335,16 +339,13 @@ export class Audio
         // Crickets
         {
 
-            const sound = this.register(
-                'crickets',
-                {
+            const sound = this.register({
+                group: 'crickets',
                     path: 'sounds/crickets/Crickets.mp3',
-                    autoplay: true,
-                    loop: true,
-                    volume: this.game.dayCycles.intervalEvents.get('night').inInterval ? 0.4 : 0
-                }
-            )
-
+                autoplay: true,
+                loop: true,
+                volume: this.game.dayCycles.intervalEvents.get('night').inInterval ? 0.4 : 0
+            })
 
             this.game.dayCycles.events.on('night', (inInterval) =>
             {
@@ -353,73 +354,65 @@ export class Audio
         }
 
         // Jingle bells
-        this.register(
-            'jingleBells',
+        this.register({
+            group: 'jingleBells',
+            path: 'sounds/jingleBells/Mountain Audio - Christmas Bells.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0,
+            onPlaying: (item) =>
             {
-                path: 'sounds/jingleBells/Mountain Audio - Christmas Bells.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0,
-                onPlaying: (item) =>
-                {
-                    const sine = Math.sin(this.game.ticker.elapsedScaled * 0.1) * 0.5 + 0.5
-                    const targetVolume = Math.max(0, this.game.weather.snow.value) * 0.3 * sine
+                const sine = Math.sin(this.game.ticker.elapsedScaled * 0.1) * 0.5 + 0.5
+                const targetVolume = Math.max(0, this.game.weather.snow.value) * 0.3 * sine
 
-                    const easing = targetVolume > item.volume ? 0.005 : 0.05
-                    item.volume += (targetVolume - item.volume) * this.game.ticker.deltaScaled * easing
-                }
+                const easing = targetVolume > item.volume ? 0.005 : 0.05
+                item.volume += (targetVolume - item.volume) * this.game.ticker.deltaScaled * easing
             }
-        )
+        })
 
         // Rain
-        this.register(
-            'rain',
+        this.register({
+            group: 'rain',
+            path: 'sounds/rain/soundjay_rain-on-leaves_main-01.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0,
+            onPlaying: (item) =>
             {
-                path: 'sounds/rain/soundjay_rain-on-leaves_main-01.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0,
-                onPlaying: (item) =>
-                {
-                    const snowAttenuation = remapClamp(this.game.weather.snow.value, 0, 0.6, 1, 0)
-                    item.volume = Math.pow(this.game.weather.rain.value * snowAttenuation, 2)
-                }
+                const snowAttenuation = remapClamp(this.game.weather.snow.value, 0, 0.6, 1, 0)
+                item.volume = Math.pow(this.game.weather.rain.value * snowAttenuation, 2)
             }
-        )
+        })
 
         // Wind
-        this.register(
-            'wind',
+        this.register({
+            group: 'wind',
+            path: 'sounds/wind/13582-wind-in-forest-loop.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0,
+            onPlaying: (item) =>
             {
-                path: 'sounds/wind/13582-wind-in-forest-loop.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0,
-                onPlaying: (item) =>
-                {
-                    item.volume = Math.pow(remapClamp(this.game.weather.wind.value, 0.3, 1, 0, 1), 3) * 0.7
-                }
+                item.volume = Math.pow(remapClamp(this.game.weather.wind.value, 0.3, 1, 0, 1), 3) * 0.7
             }
-        )
+        })
 
         // Waves
-        this.register(
-            'waves',
+        this.register({
+            group: 'waves',
+            path: 'sounds/waves/lake-waves.mp3',
+            autoplay: true,
+            loop: true,
+            volume: 0,
+            onPlaying: (item) =>
             {
-                path: 'sounds/waves/lake-waves.mp3',
-                autoplay: true,
-                loop: true,
-                volume: 0,
-                onPlaying: (item) =>
-                {
-                    const distanceToSide = Math.min(
-                        this.game.terrain.size / 2 - Math.abs(this.game.player.position.x),
-                        this.game.terrain.size / 2 - Math.abs(this.game.player.position.z)
-                    )
-                    item.volume = Math.pow(remapClamp(distanceToSide, 0, 40, 1, 0.1), 2) * 0.5
-                }
+                const distanceToSide = Math.min(
+                    this.game.terrain.size / 2 - Math.abs(this.game.player.position.x),
+                    this.game.terrain.size / 2 - Math.abs(this.game.player.position.z)
+                )
+                item.volume = Math.pow(remapClamp(distanceToSide, 0, 40, 1, 0.1), 2) * 0.5
             }
-        )
+        })
 
         // Oven fire (Project Area + Cookie Area)
         {
@@ -431,17 +424,15 @@ export class Audio
 
             if(positions.length)
             {
-                this.game.audio.register(
-                    'ovenFire',
-                    {
-                        path: 'sounds/burning/Mountain Audio - Fire Burning in a Wood Stove 1.mp3',
-                        autoplay: true,
-                        loop: true,
-                        volume: 0.4,
-                        positions: positions,
-                        distanceFade: 13,
-                    }
-                )
+                this.game.audio.register({
+                    group: 'ovenFire',
+                    path: 'sounds/burning/Mountain Audio - Fire Burning in a Wood Stove 1.mp3',
+                    autoplay: true,
+                    loop: true,
+                    volume: 0.4,
+                    positions: positions,
+                    distanceFade: 13,
+                })
             }
         }
 
@@ -453,53 +444,45 @@ export class Audio
 
             if(positions.length)
             {
-                this.game.audio.register(
-                    'campfire',
-                    {
-                        path: 'sounds/burning/Fire Burning.mp3',
-                        autoplay: true,
-                        loop: true,
-                        volume: 0.4,
-                        positions: positions,
-                        distanceFade: 13,
-                    }
-                )
+                this.game.audio.register({
+                    group: 'campfire',
+                    path: 'sounds/burning/Fire Burning.mp3',
+                    autoplay: true,
+                    loop: true,
+                    volume: 0.4,
+                    positions: positions,
+                    distanceFade: 13,
+                })
             }
         }
     }
 
     setOneOffs()
     {
-        this.register(
-            'slide',
-            {
-                path: 'sounds/mecanism/slide.mp3',
-                autoplay: false,
-                volume: 0.18
-            }
-        )
+        this.register({
+            group: 'slide',
+            path: 'sounds/mecanism/slide.mp3',
+            autoplay: false,
+            volume: 0.18
+        })
 
-        this.register(
-            'click',
+        this.register({
+            group: 'click',
+            path: 'sounds/mecanism/click.mp3',
+            autoplay: false,
+            volume: 0.25,
+            onPlay: (item, isOpen = true) =>
             {
-                path: 'sounds/mecanism/click.mp3',
-                autoplay: false,
-                volume: 0.25,
-                onPlay: (item, isOpen = true) =>
-                {
-                    item.rate = isOpen ? 1 : 0.6
-                }
+                item.rate = isOpen ? 1 : 0.6
             }
-        )
+        })
 
-        this.register(
-            'assemble',
-            {
-                path: 'sounds/mecanism/assemble.mp3',
-                autoplay: false,
-                volume: 0.3
-            }
-        )
+        this.register({
+            group: 'assemble',
+            path: 'sounds/mecanism/assemble.mp3',
+            autoplay: false,
+            volume: 0.3
+        })
 
         // Hits default
         {
@@ -515,24 +498,22 @@ export class Audio
 
             for(const [path, baseVolume] of paths)
             {
-                this.register(
-                    'hitDefault',
+                this.register({
+                    group: 'hitDefault',
+                    path: path,
+                    autoplay: false,
+                    volume: baseVolume,
+                    antiSpam: 0.1,
+                    positions: new THREE.Vector3(),
+                    distanceFade: 20,
+                    onPlay: (item, force, position) =>
                     {
-                        path: path,
-                        autoplay: false,
-                        volume: baseVolume,
-                        antiSpam: 0.1,
-                        positions: new THREE.Vector3(),
-                        distanceFade: 20,
-                        onPlay: (item, force, position) =>
-                        {
-                            item.positions[0].copy(position)
-                            const forceVolume = remapClamp(force, 0, 200, 0, 1)
-                            item.volume = baseVolume * forceVolume
-                            item.rate = 0.9 + Math.random() * 0.2
-                        }
+                        item.positions[0].copy(position)
+                        const forceVolume = remapClamp(force, 0, 200, 0, 1)
+                        item.volume = baseVolume * forceVolume
+                        item.rate = 0.9 + Math.random() * 0.2
                     }
-                )
+                })
             }
         }
 
@@ -547,23 +528,21 @@ export class Audio
 
             for(const [path, baseVolume] of paths)
             {
-                this.register(
-                    'hitBrick',
+                this.register({
+                    group: 'hitBrick',
+                    path: path,
+                    autoplay: false,
+                    volume: baseVolume,
+                    antiSpam: 0.1,
+                    positions: new THREE.Vector3(),
+                    distanceFade: 20,
+                    onPlay: (item, force, position) =>
                     {
-                        path: path,
-                        autoplay: false,
-                        volume: baseVolume,
-                        antiSpam: 0.1,
-                        positions: new THREE.Vector3(),
-                        distanceFade: 20,
-                        onPlay: (item, force, position) =>
-                        {
-                            item.positions[0].copy(position)
-                            item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
-                            item.rate = 0.9 + Math.random() * 0.2
-                        }
+                        item.positions[0].copy(position)
+                        item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
+                        item.rate = 0.9 + Math.random() * 0.2
                     }
-                )
+                })
             }
         }
 
@@ -577,23 +556,21 @@ export class Audio
 
             for(const [path, baseVolume] of paths)
             {
-                this.register(
-                    'hitMetal',
+                this.register({
+                    group: 'hitMetal',
+                    path: path,
+                    autoplay: false,
+                    volume: baseVolume,
+                    antiSpam: 0.1,
+                    positions: new THREE.Vector3(),
+                    distanceFade: 20,
+                    onPlay: (item, force, position) =>
                     {
-                        path: path,
-                        autoplay: false,
-                        volume: baseVolume,
-                        antiSpam: 0.1,
-                        positions: new THREE.Vector3(),
-                        distanceFade: 20,
-                        onPlay: (item, force, position) =>
-                        {
-                            item.positions[0].copy(position)
-                            item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
-                            item.rate = 0.9 + Math.random() * 0.2
-                        }
+                        item.positions[0].copy(position)
+                        item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
+                        item.rate = 0.9 + Math.random() * 0.2
                     }
-                )
+                })
             }
         }
     }

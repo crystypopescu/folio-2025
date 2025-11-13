@@ -74,24 +74,20 @@ export class ProjectsArea extends Area
     {
         this.sounds = {}
 
-
-        this.sounds.anvil = this.game.audio.register(
-            'anvil',
+        this.sounds.anvil = this.game.audio.register({
+            path: 'sounds/anvil/METLImpt_Anvil Single Hammer Strike Hammers_GENHD1-01372.mp3',
+            autoplay: false,
+            loop: false,
+            volume: 0.5,
+            antiSpam: 0.1,
+            positions: this.references.get('anvil')[0].position,
+            distanceFade: 18,
+            onPlay: (item) =>
             {
-                path: 'sounds/anvil/METLImpt_Anvil Single Hammer Strike Hammers_GENHD1-01372.mp3',
-                autoplay: false,
-                loop: false,
-                volume: 0.5,
-                antiSpam: 0.1,
-                positions: this.references.get('anvil')[0].position,
-                distanceFade: 18,
-                onPlay: (item) =>
-                {
-                    item.volume = 0.1 + Math.random() * 0.1
-                    item.rate = 1 + Math.random() * 0.02
-                }
+                item.volume = 0.1 + Math.random() * 0.1
+                item.rate = 1 + Math.random() * 0.02
             }
-        )
+        })
     }
 
     setInteractivePoint()
@@ -1539,8 +1535,8 @@ export class ProjectsArea extends Area
         // Sound
         if(!silent)
         {
-            this.game.audio.groups.get('click').items[0].play()
-            this.game.audio.groups.get('assemble').items[0].play()
+            this.game.audio.groups.get('click').play()
+            this.game.audio.groups.get('assemble').play()
         }
 
         this.changeImage(imageIndex, direction, silent)
@@ -1564,8 +1560,8 @@ export class ProjectsArea extends Area
         // Sounds
         if(!silent)
         {
-            this.game.audio.groups.get('click').items[0].play()
-            this.game.audio.groups.get('slide').items[0].play()
+            this.game.audio.groups.get('click').play()
+            this.game.audio.groups.get('slide').play()
         }
     }
 
