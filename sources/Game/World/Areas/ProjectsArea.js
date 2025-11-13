@@ -85,7 +85,7 @@ export class ProjectsArea extends Area
                 antiSpam: 0.1,
                 positions: this.references.get('anvil')[0].position,
                 distanceFade: 18,
-                playBinding: (item) =>
+                onPlay: (item) =>
                 {
                     item.volume = 0.1 + Math.random() * 0.1
                     item.rate = 1 + Math.random() * 0.02

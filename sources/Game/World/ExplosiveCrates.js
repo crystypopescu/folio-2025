@@ -78,7 +78,7 @@ export class ExplosiveCrates
                 volume: 0.4,
                 antiSpam: 0.1,
                 positions: new THREE.Vector3(),
-                playBinding: (item, coordinates) =>
+                onPlay: (item, coordinates) =>
                 {
                     item.positions[0].copy(coordinates)
                     item.volume = 1
@@ -107,7 +107,7 @@ export class ExplosiveCrates
                         antiSpam: 0.2,
                         positions: new THREE.Vector3(),
                         distanceFade: 25,
-                        playBinding: (item, coordinates) =>
+                        onPlay: (item, coordinates) =>
                         {
                             item.positions[0].copy(coordinates)
                             item.volume = 1

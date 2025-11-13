@@ -81,7 +81,7 @@ export class LabArea extends Area
                 loop: true,
                 volume: 0.5,
                 positions: this.references.get('mecanism')[0].position,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const absoluteSpeed = Math.abs(this.scroller.speed)
                     item.volume = remapClamp(absoluteSpeed, 0, 6, 0, 0.5)

@@ -44,7 +44,7 @@ export class CareerArea extends Area
                 antiSpam: 0.1,
                 positions: new THREE.Vector3(),
                 distanceFade: 14,
-                playBinding: (item, line) =>
+                onPlay: (item, line) =>
                 {
                     item.positions[0].copy(line.origin)
                     item.rate = 1.2 + line.index * 0.1
@@ -62,7 +62,7 @@ export class CareerArea extends Area
                 antiSpam: 0.1,
                 positions: new THREE.Vector3(),
                 distanceFade: 14,
-                playBinding: (item, line) =>
+                onPlay: (item, line) =>
                 {
                     item.positions[0].copy(line.origin)
                     // item.rate = 0.9 + Math.random() * 0.2

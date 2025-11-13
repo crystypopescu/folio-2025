@@ -83,7 +83,7 @@ export class Lightnings
                             volume: 1,
                             antiSpam: 0.2,
                             positions: new THREE.Vector3(),
-                            playBinding: (item, coordinates) =>
+                            onPlay: (item, coordinates) =>
                             {
                                 const distance = Math.hypot(coordinates.x - this.game.player.position2.x, coordinates.z - this.game.player.position2.y)
                                 item.positions[0].copy(coordinates)
@@ -120,7 +120,7 @@ export class Lightnings
                             loop: false,
                             volume: 0.4,
                             antiSpam: 7,
-                            playBinding: (item) =>
+                            onPlay: (item) =>
                             {
                                 item.volume = 1 + Math.random() * 0.3
                                 item.rate = 1 + Math.random() * 0.3

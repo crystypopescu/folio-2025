@@ -51,7 +51,7 @@ export class CookieStandArea extends Area
                 loop: false,
                 volume: 0.4,
                 antiSpam: 0.15,
-                playBinding: (item) =>
+                onPlay: (item) =>
                 {
                     item.volume = 0.3 + Math.random() * 0.2
                     item.rate = 1 + Math.random() * 0.05

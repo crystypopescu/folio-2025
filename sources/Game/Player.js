@@ -62,7 +62,7 @@ export class Player
                 loop: false,
                 volume: 0.4,
                 antiSpam: 0.1,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     item.volume = 0.3 + count * 0.08
                     item.rate = 0.9 + Math.random() * 0.2
@@ -77,7 +77,7 @@ export class Player
                 loop: false,
                 volume: 0.4,
                 antiSpam: 0.1,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     // item.volume = 0.25 + count * 0.05
                     item.rate = 1 + Math.random() * 0.01
@@ -92,7 +92,7 @@ export class Player
                 loop: false,
                 volume: 0.4,
                 antiSpam: 1,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     item.volume = 0.05 + count * 0.02
                     item.rate = 1 + Math.random() * 0.1
@@ -107,7 +107,7 @@ export class Player
                 loop: false,
                 volume: 0.4,
                 antiSpam: 0.2,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     item.volume = 0.05 + count * 0.1
                     item.rate = 0.9 + Math.random() * 0.4
@@ -121,7 +121,7 @@ export class Player
                 autoplay: false,
                 loop: false,
                 volume: 0.15,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     // item.volume = 0.05 + count * 0.1
                     // item.rate = 0.9 + Math.random() * 0.4
@@ -136,7 +136,7 @@ export class Player
                 loop: false,
                 volume: 0.15,
                 rate: 0.8,
-                playBinding: (item, count) =>
+                onPlay: (item, count) =>
                 {
                     // item.volume = 0.05 + count * 0.1
                     // item.rate = 0.9 + Math.random() * 0.4

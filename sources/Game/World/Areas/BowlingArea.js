@@ -52,7 +52,7 @@ export class BowlingArea extends Area
                 antiSpam: 0.05,
                 positions: new THREE.Vector3(),
                 distanceFade: 35,
-                playBinding: (item, force, position) =>
+                onPlay: (item, force, position) =>
                 {
                     item.positions[0].copy(position)
                     const forceRemaped = remapClamp(force, 3, 10, 0, 1)
@@ -72,7 +72,7 @@ export class BowlingArea extends Area
                 rate: 0.8,
                 positions: new THREE.Vector3(),
                 distanceFade: 25,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     item.positions[0].copy(this.ball.position)
                     item.volume = remapClamp(this.ball.speed, 0, 5, 0, 0.6)

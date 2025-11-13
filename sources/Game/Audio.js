@@ -67,8 +67,8 @@ export class Audio
         item.volume = options.volume ?? 0.5
         item.antiSpam = options.antiSpam ?? 0.1
         item.lastPlay = -Infinity
-        item.tickBinding = options.tickBinding ?? null
-        item.playBinding = options.playBinding ?? null
+        item.onPlaying = options.onPlaying ?? null
+        item.onPlay = options.onPlay ?? null
         item.loaded = options.preload ?? true
         item.autoplay = options.autoplay ?? false
         item.playing = (this.initiated && options.autoplay) ?? false
@@ -95,8 +95,8 @@ export class Audio
             }
 
             // Play binding
-            if(typeof item.playBinding === 'function')
-                item.playBinding(item, ...parameters)
+            if(typeof item.onPlay === 'function')
+                item.onPlay(item, ...parameters)
                 
             // Play
             item.howl.play()
@@ -223,7 +223,7 @@ export class Audio
                             loop: false,
                             volume: 0.3,
                             positions: new THREE.Vector3(),
-                            playBinding: (item) =>
+                            onPlay: (item) =>
                             {
                                 item.volume = 0.2 + Math.random() * 0.15
                                 item.rate = 1 + Math.random() * 0.7
@@ -259,7 +259,7 @@ export class Audio
                     loop: false,
                     volume: 0.3,
                     positions: new THREE.Vector3(),
-                    playBinding: (item) =>
+                    onPlay: (item) =>
                     {
                         item.volume = 0.2 + Math.random() * 0.15
                         item.rate = 1 + Math.random() * 0.3
@@ -292,7 +292,7 @@ export class Audio
                     loop: false,
                     volume: 0.1,
                     positions: new THREE.Vector3(),
-                    playBinding: (item) =>
+                    onPlay: (item) =>
                     {   
                         item.volume = 0.05 + Math.random() * 0.15
                         item.positions[0].copy(getRandomDirection())
@@ -317,7 +317,7 @@ export class Audio
                     loop: false,
                     volume: 0.1,
                     positions: new THREE.Vector3(),
-                    playBinding: (item) =>
+                    onPlay: (item) =>
                     {   
                         item.volume = 0.05 + Math.random() * 0.15
                         item.positions[0].copy(getRandomDirection())
@@ -360,7 +360,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const sine = Math.sin(this.game.ticker.elapsedScaled * 0.1) * 0.5 + 0.5
                     const targetVolume = Math.max(0, this.game.weather.snow.value) * 0.3 * sine
@@ -379,7 +379,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const snowAttenuation = remapClamp(this.game.weather.snow.value, 0, 0.6, 1, 0)
                     item.volume = Math.pow(this.game.weather.rain.value * snowAttenuation, 2)
@@ -395,7 +395,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     item.volume = Math.pow(remapClamp(this.game.weather.wind.value, 0.3, 1, 0, 1), 3) * 0.7
                 }
@@ -410,7 +410,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const distanceToSide = Math.min(
                         this.game.terrain.size / 2 - Math.abs(this.game.player.position.x),
@@ -429,7 +429,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const defaultElevation = 1.08
                     const elevationEffect = remapClamp(Math.abs(this.game.physicalVehicle.position.y - defaultElevation), 0, 2, 1, 0)
@@ -449,7 +449,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const directionRatio = (1 - Math.abs(this.game.physicalVehicle.forwardRatio)) * 0.6
                     
@@ -477,7 +477,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     item.volume = this.groups.get('floor').items[0].volume * 0.5
                     
@@ -494,7 +494,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const accelerating = Math.abs(this.game.player.accelerating) * 0.5
                     const boosting = this.game.player.boosting + 1
@@ -518,7 +518,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     // const accelerating = Math.abs(this.game.player.accelerating) * 0.5
                     // const boosting = this.game.player.boosting + 1
@@ -546,7 +546,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const accelerating = 0.5 + Math.abs(this.game.player.accelerating) * 0.5
                     const boosting = this.game.player.boosting
@@ -570,7 +570,7 @@ export class Audio
                 autoplay: true,
                 loop: true,
                 volume: 0,
-                tickBinding: (item) =>
+                onPlaying: (item) =>
                 {
                     const accelerating = 0.5 + Math.abs(this.game.player.accelerating) * 0.5
                     const boosting = this.game.player.boosting
@@ -647,7 +647,7 @@ export class Audio
                 path: 'sounds/mecanism/click.mp3',
                 autoplay: false,
                 volume: 0.25,
-                playBinding: (item, isOpen = true) =>
+                onPlay: (item, isOpen = true) =>
                 {
                     item.rate = isOpen ? 1 : 0.6
                 }
@@ -686,7 +686,7 @@ export class Audio
                         antiSpam: 0.1,
                         positions: new THREE.Vector3(),
                         distanceFade: 20,
-                        playBinding: (item, force, position) =>
+                        onPlay: (item, force, position) =>
                         {
                             item.positions[0].copy(position)
                             const forceVolume = remapClamp(force, 0, 200, 0, 1)
@@ -718,7 +718,7 @@ export class Audio
                         antiSpam: 0.1,
                         positions: new THREE.Vector3(),
                         distanceFade: 20,
-                        playBinding: (item, force, position) =>
+                        onPlay: (item, force, position) =>
                         {
                             item.positions[0].copy(position)
                             item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
@@ -748,7 +748,7 @@ export class Audio
                         antiSpam: 0.1,
                         positions: new THREE.Vector3(),
                         distanceFade: 20,
-                        playBinding: (item, force, position) =>
+                        onPlay: (item, force, position) =>
                         {
                             item.positions[0].copy(position)
                             item.volume = baseVolume * Math.pow(remapClamp(force, 5, 20, 0, 1), 2)
@@ -838,9 +838,9 @@ export class Audio
             for(const item of group.items)
             {
                 // Apply tick binding
-                if(typeof item.tickBinding === 'function')
+                if(typeof item.onPlaying === 'function')
                 {
-                    item.tickBinding(item)
+                    item.onPlaying(item)
                 }
 
                 // Positional and distance fade

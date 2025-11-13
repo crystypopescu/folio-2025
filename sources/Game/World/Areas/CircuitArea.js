@@ -99,7 +99,7 @@ export class CircuitArea extends Area
                 loop: false,
                 volume: 0.5,
                 antiSpam: 0.1,
-                playBinding: (item, reachedCount) =>
+                onPlay: (item, reachedCount) =>
                 {
                     item.rate = 1 + (reachedCount - 1) * 0.06
                 }
