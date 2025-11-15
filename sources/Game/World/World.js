@@ -26,6 +26,8 @@ import { Confetti } from './Confetti.js'
 import { IntroLoader } from './IntroLoader.js'
 import { PoleLights } from './PoleLights.js'
 import { Lanterns } from './Lanterns.js'
+import { Fences } from './Fences.js'
+import { Benches } from './Benches.js'
 
 export class World
 {
@@ -69,6 +71,8 @@ export class World
             this.cherryTrees = new Trees('Cherry Tree', this.game.resources.cherryTreesVisualModel.scene, this.game.resources.cherryTreesReferencesModel.scene.children, '#ff6da8')
             this.flowers = new Flowers()
             this.bricks = new Bricks()
+            this.fences = new Fences()
+            this.benches = new Benches()
             this.explosiveCrates = new ExplosiveCrates()
             this.poleLights = new PoleLights()
             this.lanterns = new Lanterns()

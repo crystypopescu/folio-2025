@@ -87,7 +87,19 @@ export class BowlingArea extends Area
 
         // Instances
         const basePin = this.references.get('pinPhysicalDynamic')[0]
+        basePin.traverse(child =>
+        {
+            if(child.isMesh)
+            {
+                child.castShadow = true
+                child.receiveShadow = true
+                child.frustumCulled = true
+            }
+        })
 
+        // Update materials 
+        this.game.materials.updateObject(basePin)
+        
         const descriptions = this.game.objects.getFromModel(basePin, {}, {}) // To extract colliders
 
         let i = 0
@@ -104,8 +116,6 @@ export class BowlingArea extends Area
                 {
                     model: reference,
                     updateMaterials: false,
-                    castShadow: false,
-                    receiveShadow: false,
                     parent: null,
                 },
                 {
@@ -144,14 +154,14 @@ export class BowlingArea extends Area
         basePin.rotation.set(0, 0, 0)
         basePin.frustumCulled = false
 
-        this.game.objects.add(
-            {
-                model: basePin,
-                parent: null
-            },
-            null
-        )
-        basePin.removeFromParent()
+        // this.game.objects.add(
+        //     {
+        //         model: basePin,
+        //         parent: null
+        //     },
+        //     null
+        // )
+        // basePin.removeFromParent()
 
         this.instancedGroup = new InstancedGroup(references, basePin, true)
 

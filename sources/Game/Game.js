@@ -115,6 +115,8 @@ export class Game
                 [ 'playgroundPhysical',                    'playground/playgroundPhysical.glb',                    'gltf'    ],
                 [ 'flowersReferencesModel',                'flowers/flowersReferences.glb',                        'gltf'    ],
                 [ 'bricksModel',                           'bricks/bricks.glb',                                    'gltf'    ],
+                [ 'fencesModel',                           'fences/fences.glb',                                    'gltf'    ],
+                [ 'benchesModel',                          'benches/benches.glb',                                  'gltf'    ],
                 [ 'explosiveCratesModel',                  'explosiveCrates/explosiveCrates.glb',                  'gltf'    ],
                 [ 'lanternsModel',                         'lanterns/lanterns.glb',                                'gltf'    ],
                 [ 'terrainTexture',                        'terrain/terrain.png',                                  'texture', (resource) => { resource.flipY = false; } ],
