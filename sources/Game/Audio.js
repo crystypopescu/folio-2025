@@ -144,17 +144,18 @@ export class Audio
 
     setPlaylist()
     {
-        this.playlist = {}
-        this.playlist.songs = []
-        this.playlist.index = -1
-        this.playlist.current = null
-        
         const paths = [
             'sounds/musics/scarborough-fair-dance_stem-04.mp3',
             'sounds/musics/Moonglow.mp3',
             'sounds/musics/Healing Native Flute 01.mp3',
             'sounds/musics/omaha_main-full.mp3',
         ]
+
+        this.playlist = {}
+        this.playlist.songs = []
+        this.playlist.index = (Math.floor(Date.now() / 1000 / 60 / 3) % paths.length) - 1 // Different music every X minutes
+        this.playlist.current = null
+
         for(const path of paths)
         {
             const song = {}
@@ -198,7 +199,10 @@ export class Audio
             this.playlist.current.sound.play()
         }
 
-        this.playlist.next()
+        if(import.meta.env.VITE_MUSIC)
+        {
+            this.playlist.next()
+        }
     }
 
     setAmbiants()
