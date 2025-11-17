@@ -252,8 +252,6 @@ export class BowlingArea extends Area
                 this.game.inputs.interactiveButtons.removeItems(['interact'])
             }
         )
-        
-        this.restartInteractivePoint.hide()
     }
 
     setScreen()
