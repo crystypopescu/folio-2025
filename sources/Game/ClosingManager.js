@@ -71,9 +71,6 @@ export class ClosingManager
             }
         })
 
-        // TODO: Handle if both menu and modal are open (make it so it never happens)
-        // TODO: Simplify bellow
-
         // On modal open => Close menu
         this.game.modals.events.on('open', () =>
         {
