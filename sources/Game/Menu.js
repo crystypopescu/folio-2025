@@ -43,18 +43,7 @@ export class Menu
             this.events.trigger('closed')
             this.current.events.trigger('closed')
             
-            // // Pending => Open pending
-            // if(this.pending)
-            // {
-            //     this.open(this.pending)
-            //     this.pending = null
-            // }
-
-            // // No pending => Fully hide
-            // else
-            // {
-                this.element.classList.remove('is-displayed')
-            // }
+            this.element.classList.remove('is-displayed')
         }
     }
 
@@ -76,6 +65,7 @@ export class Menu
             item.name = item.navigationElement.dataset.name
             item.previewElement = previewElements.find(element => element.classList.contains(`${item.name}-preview`))
             item.contentElement = contentElements.find(element => element.classList.contains(`${item.name}-content`))
+            item.mainFocus = item.contentElement.querySelector('.js-main-focus')
             item.isOpen = false
             item.events = new Events()
 
@@ -87,8 +77,6 @@ export class Menu
 
             // TODO: setup scroller
             
-            // TODO: setup default (?)
-
             item.navigationElement.addEventListener('click', (event) =>
             {
                 event.preventDefault()
@@ -177,13 +165,17 @@ export class Menu
         // if(item.tabs)
         //     item.tabs.resize()
 
-        // TODO: main focus
-        // if(item.mainFocus)
-        //     item.mainFocus.focus()
+        if(item.mainFocus)
+        {
+            requestAnimationFrame(() =>
+            {
+                item.mainFocus.focus()
+            })
+        }
 
         // Input filters
         this.game.inputs.filters.clear()
-        this.game.inputs.filters.add('menu') // TODO: change to "menu"
+        this.game.inputs.filters.add('menu')
 
         // Events
         this.events.trigger('open')

@@ -12,8 +12,8 @@ export class ClosingManager
         this.game = Game.getInstance()
 
         this.game.inputs.addActions([
-            { name: 'close', categories: [ 'modal', 'racing', 'cinematic', 'wandering' ], keys: [ 'Keyboard.Escape', 'Gamepad.cross' ] },
-            { name: 'pause', categories: [ 'modal', 'racing', 'cinematic', 'wandering' ], keys: [ 'Gamepad.start' ] }
+            { name: 'close', categories: [ 'modal', 'menu', 'racing', 'cinematic', 'wandering' ], keys: [ 'Keyboard.Escape', 'Gamepad.cross' ] },
+            { name: 'pause', categories: [ 'modal', 'menu', 'racing', 'cinematic', 'wandering' ], keys: [ 'Gamepad.start' ] }
         ])
         
         // Close input => Go through everything that can be closed
@@ -21,17 +21,20 @@ export class ClosingManager
         {
             if(action.active)
             {
-                // TODO: add circuit end inputFlag
                 // Whispers flag select => Close
                 if(this.game.world.whispers?.menu.inputFlag.isOpen)
                     this.game.world.whispers.menu.inputFlag.close()
+                
+                // Circuit flag select => Close
+                else if(this.game.world.areas?.circuit?.menu.inputFlag.isOpen)
+                    this.game.world.areas.circuit.menu.inputFlag.close()
                 
                 // Modal open => Close
                 else if(this.game.modals.state === Modals.OPEN)
                     this.game.modals.close()
                 
                 // Menu open => Close
-                else if(this.game.menu.state === Menu.OPEN)
+                else if(this.game.menu.state === Menu.OPEN || this.game.menu.state === Menu.OPENING)
                     this.game.menu.close()
 
                 // Circuit running

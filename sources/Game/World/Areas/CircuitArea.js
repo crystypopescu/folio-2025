@@ -1530,6 +1530,7 @@ export class CircuitArea extends Area
 
     finish(forced = false)
     {
+        console.log('finish', forced)
         // Not running
         if(this.state !== CircuitArea.STATE_RUNNING)
             return
@@ -1623,7 +1624,7 @@ export class CircuitArea extends Area
                 }
 
                 // Circuit en modal (if server connected)
-                if(this.game.server.connected)
+                if(this.game.server.connected && !forced)
                 {
                     gsap.delayedCall(1, () =>
                     {
