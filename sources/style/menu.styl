@@ -134,13 +134,14 @@
             padding 25px 40px 40px 40px
 
             @media only screen and (orientation portrait)
-                width 100%
+                width @css{ min(600px, calc(100vw - 70px)) }
 
             @media only screen and (max-width 520px)
-                padding 20px 30px 30px 30px
+                padding 15px 20px 20px 20px
 
             @media only screen and (max-width 420px)
-                padding 15px 20px 20px 20px
+                padding 10px 15px 15px 15px
+                width calc(100vw - 10px)
 
     /**
      * Navigation
