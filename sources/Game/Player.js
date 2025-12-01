@@ -572,7 +572,15 @@ export class Player
          */
         if(this.game.inputs.nipple.active && this.game.inputs.nipple.progress > 0)
         {
-            this.game.view.focusPoint.isTracking = true
+            if(!this.game.view.focusPoint.isTracking)
+            {
+                // Wait a few frames in case it a multi-touch
+                this.game.ticker.wait(5, () =>
+                {
+                    if(this.game.inputs.nipple.active)
+                        this.game.view.focusPoint.isTracking = true
+                })
+            }
             this.accelerating = Math.pow(this.game.inputs.nipple.progress, 3)
             // this.boosting = this.game.inputs.nipple.progress > 0.999
 
