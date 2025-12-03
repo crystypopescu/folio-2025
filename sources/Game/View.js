@@ -731,7 +731,7 @@ export class View
         
         this.optimalArea.position
             .copy(this.optimalArea.basePosition)
-            .add(new THREE.Vector3(this.focusPoint.position.x, 0, this.focusPoint.position.z))
+            .add(new THREE.Vector3(this.focusPoint.smoothedPosition.x, 0, this.focusPoint.smoothedPosition.z))
 
         for(const point of this.optimalArea.quad2)
         {

@@ -1409,7 +1409,8 @@ export class CircuitArea extends Area
             this.game.dayCycles.override.start(
                 {
                     progress: 0.85,
-                    fogFarRatio: 2
+                    fogNearRatio: 0.65,
+                    fogFarRatio: 1.25
                 },
                 0
             )

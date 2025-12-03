@@ -61,7 +61,7 @@ export class Ticker
                 i--
             }
         }
-
+        
         this.events.trigger('tick')
     }
 
