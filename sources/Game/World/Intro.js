@@ -190,7 +190,7 @@ export class Intro
         // Texture
         const texture = this.game.resources.soundTexture
         
-        if(this.game.audio.muteToggle.active)
+        if(this.game.audio.mute.active)
             texture.offset.x = 0.5
 
         // Geometry
@@ -222,8 +222,8 @@ export class Intro
             shape: new THREE.Sphere(position, 0.5),
             onClick: () =>
             {
-                this.game.audio.muteToggle.toggle()
-                texture.offset.x = this.game.audio.muteToggle.active ? 0.5 : 0
+                this.game.audio.mute.toggle()
+                texture.offset.x = this.game.audio.mute.active ? 0.5 : 0
             },
             onEnter: () =>
             {

@@ -64,16 +64,18 @@ export class Inputs
     {
         this.keyboard = new Keyboard()
 
-        this.keyboard.events.on('down', (key) =>
+        this.keyboard.events.on('down', (key, code) =>
         {
             this.updateMode(Inputs.MODE_MOUSEKEYBOARD)
             this.start(`Keyboard.${key}`)
+            this.start(`Keyboard.${code}`)
         })
 
-        this.keyboard.events.on('up', (key) =>
+        this.keyboard.events.on('up', (key, code) =>
         {
             this.updateMode(Inputs.MODE_MOUSEKEYBOARD)
             this.end(`Keyboard.${key}`)
+            this.end(`Keyboard.${code}`)
         })
     }
 

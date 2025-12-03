@@ -17,20 +17,29 @@ export default class Keyboard
             this.pressed = []
         })
 
+        // Key down event
         addEventListener('keydown', (_event) =>
         {
-            this.pressed.push(_event.code)
-            this.events.trigger('down', [ _event.code ])
+            this.pressed.push(_event.code, _event.key)
+            this.events.trigger('down', [ _event.code, _event.key ])
         })
 
+        // Key up event
         addEventListener('keyup', (_event) =>
         {
-            const index = this.pressed.indexOf(_event.code)
+            // Code
+            const indexCode = this.pressed.indexOf(_event.code)
 
-            if(index !== -1)
-                this.pressed.splice(index, 1)
+            if(indexCode !== -1)
+                this.pressed.splice(indexCode, 1)
 
-            this.events.trigger('up', [ _event.code ])
+            // Key
+            const indexKey = this.pressed.indexOf(_event.key)
+
+            if(indexKey !== -1)
+                this.pressed.splice(indexKey, 1)
+
+            this.events.trigger('up', [ _event.code, _event.key ])
         })
     }
 }

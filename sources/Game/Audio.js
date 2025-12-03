@@ -13,7 +13,7 @@ export class Audio
         this.initiated = false
         this.groups = new Map()
 
-        this.setMuteToggle()
+        this.setMute()
 
         this.game.ticker.events.on('tick', () =>
         {
@@ -633,59 +633,79 @@ export class Audio
         }
     }
 
-    setMuteToggle()
+    setMute()
     {
-        this.muteToggle = {}
-        this.muteToggle.buttonElement = this.game.domElement.querySelector('.js-audio-toggle')
+        this.mute = {}
+        this.mute.buttonElement = this.game.domElement.querySelector('.js-audio-toggle')
 
-        this.muteToggle.active = false
+        this.mute.active = false
 
-        this.muteToggle.toggle = () =>
+        this.mute.toggle = () =>
         {
-            if(this.muteToggle.active)
-                this.muteToggle.deactivate()
+            if(this.mute.active)
+                this.mute.deactivate()
             else
-                this.muteToggle.activate()
+                this.mute.activate()
         }
 
-        this.muteToggle.activate = () =>
+        this.mute.activate = () =>
         {
-            if(this.muteToggle.active)
+            if(this.mute.active)
                 return
             
             Howler.mute(true)
-            this.muteToggle.active = true
-            this.muteToggle.buttonElement.classList.remove('is-active')
+            this.mute.active = true
+            this.mute.buttonElement.classList.remove('is-active')
             localStorage.setItem('soundToggle', '1')
         }
 
-        this.muteToggle.deactivate = () =>
+        this.mute.deactivate = () =>
         {
-            if(!this.muteToggle.active)
+            if(!this.mute.active)
                 return
             
             Howler.mute(false)
-            this.muteToggle.active = false
-            this.muteToggle.buttonElement.classList.add('is-active')
+            this.mute.active = false
+            this.mute.buttonElement.classList.add('is-active')
             localStorage.setItem('soundToggle', '0')
         }
 
+        // From local storage
         const soundToggleLocal = localStorage.getItem('soundToggle')
         if(soundToggleLocal !== null && soundToggleLocal === '1')
-            this.muteToggle.activate()
+            this.mute.activate()
 
-        this.muteToggle.buttonElement.addEventListener('click', this.muteToggle.toggle)
+        // Button click
+        this.mute.buttonElement.addEventListener('click', this.mute.toggle)
+
+        // Inputs keyboard
+        this.game.inputs.addActions([
+            { name: 'mute', categories: [ 'intro', 'modal', 'menu', 'racing', 'cinematic', 'wandering' ], keys: [ 'Keyboard.m' ] },
+        ])
+        this.game.inputs.events.on('mute', (action) =>
+        {
+            if(action.active)
+                this.mute.toggle()
+        })
 
         // Tab focus / blur
         window.addEventListener('blur', () =>
         {
             Howler.mute(true)
+
+            if(this.playlist)
+                this.playlist.current.sound.pause()
         })
 
         window.addEventListener('focus', () =>
         {
-            if(!this.muteToggle.active)
+            if(!this.mute.active)
+            {
                 Howler.mute(false)
+
+                if(this.playlist)
+                    this.playlist.current.sound.play()
+            }
         })
 
     }
