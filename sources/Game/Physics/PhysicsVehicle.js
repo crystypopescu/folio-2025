@@ -19,7 +19,6 @@ export class PhysicsVehicle
         this.brakeAmplitude = 35
         this.idleBrake = 0.06
         this.reverseBrake = 0.4
-        this.flipForce = 5
 
         this.sideward = new THREE.Vector3(0, 0, 1)
         this.upward = new THREE.Vector3(0, 1, 0)
@@ -56,7 +55,6 @@ export class PhysicsVehicle
             this.debugPanel.addBinding(this, 'brakeAmplitude', { min: 0, max: 200, step: 0.01 })
             this.debugPanel.addBinding(this, 'idleBrake', { min: 0, max: 1, step: 0.001 })
             this.debugPanel.addBinding(this, 'reverseBrake', { min: 0, max: 1, step: 0.001 })
-            this.debugPanel.addBinding(this, 'flipForce', { min: 0, max: 10, step: 0.01 })
 
             this.debugPanel.addBinding(this.suspensionsHeights, 'low', { min: 0, max: 2, step: 0.01 })
             this.debugPanel.addBinding(this.suspensionsHeights, 'mid', { min: 0, max: 2, step: 0.01 })
@@ -346,6 +344,7 @@ export class PhysicsVehicle
     setFlip()
     {
         this.flip = {}
+        this.flip.force = 5
         let inAir = false
         
         let previousXAngle = 0
@@ -416,7 +415,7 @@ export class PhysicsVehicle
             const forwardAbsolute = Math.abs(forwardDot)
             const upwarddAbsolute = Math.abs(upwarddDot)
 
-            const impulse = new THREE.Vector3(0, 1, 0).multiplyScalar(this.flipForce * this.chassis.mass)
+            const impulse = new THREE.Vector3(0, 1, 0).multiplyScalar(this.flip.force * this.chassis.mass)
             this.chassis.physical.body.applyImpulse(impulse)
 
             // Upside down
@@ -436,6 +435,11 @@ export class PhysicsVehicle
                 torque.applyQuaternion(this.chassis.physical.body.rotation())
                 this.chassis.physical.body.applyTorqueImpulse(torque)
             }
+        }
+
+        if(this.game.debug.active)
+        {
+            this.debugPanel.addBinding(this.flip, 'force', { label: 'flipForce', min: 0, max: 10, step: 0.01 })
         }
     }
 

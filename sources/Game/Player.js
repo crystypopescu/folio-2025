@@ -355,13 +355,8 @@ export class Player
                 this.unstuck.delay.kill()
         })
 
-        this.game.physicalVehicle.events.on('upsideDown', (ratio) =>
+        const waitAndTest = () =>
         {
-            // Reset delay
-            if(this.unstuck.delay)
-                this.unstuck.delay.kill()
-
-            // Wait a moment
             this.unstuck.delay = gsap.delayedCall(this.unstuck.duration, () =>
             {
                 this.unstuck.delay = null
@@ -380,8 +375,21 @@ export class Player
                     // Achievement
                     if(this.game.physicalVehicle.upsideDown.ratio > 0.75)
                         this.game.achievements.setProgress('upsideDown', 1)
+
+                    // Again in case it didn't work
+                    waitAndTest()
                 }
             })
+        }
+
+        this.game.physicalVehicle.events.on('upsideDown', (ratio) =>
+        {
+            // Reset delay
+            if(this.unstuck.delay)
+                this.unstuck.delay.kill()
+
+            // Wait a moment
+            waitAndTest()
         })
 
         this.game.physicalVehicle.events.on('stuck', () =>
