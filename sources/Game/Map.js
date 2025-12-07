@@ -17,6 +17,8 @@ export class Map
         {
             if(!this.initiated)
                 this.init()
+
+            this.texture.update()
         })
     }
 
@@ -26,6 +28,7 @@ export class Map
         
         this.setLocations()
         this.setPlayer()
+        this.setTexture()
 
         this.game.ticker.events.on('tick', () =>
         {
@@ -37,16 +40,16 @@ export class Map
     {
         this.locations = {}
         this.locations.items = [
-            { name: 'Achievements', respawnName: 'achievements', offset: { x: 0, y: -0.02 } },
-            { name: 'Altar', respawnName: 'altar', offset: { x: 0, y: -0.03 } },
-            { name: 'Behind the scene', respawnName: 'behindTheScene', offset: { x: 0.02, y: 0 } },
+            { name: 'Achievements', respawnName: 'achievements', offset: { x: 0, y: -0.01 } },
+            { name: 'Altar', respawnName: 'altar', offset: { x: 0, y: -0.05 } },
+            { name: 'Behind<br /> the scene', respawnName: 'behindTheScene', offset: { x: 0.01, y: 0 } },
             { name: 'Bowling', respawnName: 'bowling', offset: { x: -0.08, y: 0.03 } },
-            { name: 'Career', respawnName: 'career', offset: { x: 0, y: -0.05 } },
+            { name: 'Career', respawnName: 'career', offset: { x: 0, y: -0.06 } },
             { name: 'Circuit', respawnName: 'circuit', offset: { x: -0.08, y: -0.05 } },
             { name: 'Cookie', respawnName: 'cookie', offset: { x: -0.02, y: -0.01 } },
-            { name: 'Lab', respawnName: 'lab', offset: { x: -0.02, y: 0 } },
+            { name: 'Lab', respawnName: 'lab', offset: { x: -0.03, y: 0 } },
             { name: 'Landing', respawnName: 'landing', offset: { x: 0.02, y: 0 } },
-            { name: 'Projects', respawnName: 'projects', offset: { x: 0, y: -0.01 } },
+            { name: 'Projects', respawnName: 'projects', offset: { x: 0, y: -0.02 } },
             { name: 'Social', respawnName: 'social', offset: { x: -0.01, y: -0.04 } },
         ]
 
@@ -68,6 +71,7 @@ export class Map
             element.innerHTML = html
             element.style.left = `${(mapPosition.x + item.offset.x)* 100}%`
             element.style.top = `${(mapPosition.y + item.offset.y)* 100}%`
+            element.style.zIndex = Math.round(mapPosition.y * 1000)
             
             this.element.append(element)
 
@@ -81,23 +85,36 @@ export class Map
             })
         }
     }
-    // achievements
-    // altar
-    // behindTheScene
-    // bowling
-    // career
-    // circuit
-    // cookie
-    // lab
-    // landing
-    // projects
-    // social
-    // toilet
+    
     setPlayer()
     {
         this.player = {}
         this.player.element = this.element.querySelector('.js-player')
         this.player.roundedPosition = { x: 0, y: 0 }
+    }
+    
+    setTexture()
+    {
+        this.texture = {}
+        this.texture.element = this.element.querySelector('.js-texture')
+        this.texture.previousUrl = null
+
+        this.texture.element.addEventListener('load', () =>
+        {
+            this.texture.element.classList.add('is-visible')
+        })
+        
+        this.texture.update = () =>
+        {
+            const url = this.game.dayCycles.intervalEvents.get('night').inInterval ? 'ui/map/map-night.webp' : 'ui/map/map-day.webp'
+
+            if(url !== this.texture.previousUrl)
+            {
+                this.texture.element.classList.remove('is-visible')
+                this.texture.previousUrl = url
+                this.texture.element.src = url
+            }
+        }
     }
 
     setTrigger()

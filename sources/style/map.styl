@@ -72,6 +72,10 @@
     position relative
     width 1024px
     height 1024px
+    max-width 100vmin
+    max-height 100vmin
+    aspect-ratio 1 / 1
+    background radial-gradient(ellipse at top left, #251f2b, #1d1721)
 
     @media only screen and (max-width 1100px)
         width 768px
@@ -195,48 +199,83 @@
         left 0
         width 100%
         height 100%
+        pointer-events none
+        opacity 0
+        transition opacity 0.3s
+
+        &.is-visible
+            opacity 1
 
     .player
         display block
         position absolute
         top 0
         left 0
+        pointer-events none
+
+        &.is-bouncing
+            &::after
+                animation map-player-animation 1s 0.5s
+
+                @keyframes map-player-animation
+                    0%
+                        transform scale(1, 1)
+                    20%
+                        transform scale(1.2, 1.2)
+                    40%
+                        transform scale(1, 1)
+                    60%
+                        transform scale(1.2, 1.2)
+                    80%
+                        transform scale(1, 1)
 
         &::after
             content ''
             position absolute
-            width 44px
-            height 44px
-            top -22px
-            left -22px
-            background url('../ui/map/player.png')
+            width 80px
+            height 80px
+            top -40px
+            left -40px
+            background url('../ui/map/player.webp')
             background-size cover
     
     .location
+        --size 40px
         position absolute
-        width 40px
-        height 40px
-        margin-top -20px
-        margin-left -20px
+        width var(--size)
+        height var(--size)
+        margin-top calc(var(--size) / -2)
+        margin-left calc(var(--size) / -2)
         cursor pointer
 
         html:not(.is-mode-touch) &:hover
+        html.is-mode-touch &
             .name
                 transform scale(1, 1)
                 transition-timing-function cubic-bezier(0.49, 2.2, 0.53, 0.75)
 
+                @media only screen and (max-width 1100px)
+                    transform scale(0.8, 0.8)
+
+                @media only screen and (max-width 520px)
+                    transform scale(0.65, 0.65)
+
         .pin
-            --size 16px
+            --size 20px
 
             position absolute
             top calc(50% - calc(var(--size) / 2))
             left calc(50% - calc(var(--size) / 2))
             width var(--size)
             height var(--size)
-            background #000000
-            border 2px solid #ffffff
+            background #ffffff
+            border 4px solid #251f2b
             transform rotate(45deg)
-            box-shadow 0 0 4px #00000077
+            box-shadow 0 0 4px #251f2b77
+
+            @media only screen and (max-width 520px)
+                --size 12px
+                border-width 3px
 
         .name-container
             display flex
@@ -247,14 +286,24 @@
             width 0
             pointer-events none
 
+            @media only screen and (max-width 520px)
+                bottom calc(100% - 12px)
+
             .name
                 background #000000
                 text-transform uppercase
                 color #ffffff
                 padding 2px 6px
                 letter-spacing 1px
+                text-align center
                 box-shadow 0 0 4px #00000077
                 white-space nowrap
                 transform-origin 50% 80%
                 transform scale(0, 0)
                 transition transform 0.3s cubic-bezier(0.65,-1, 0.45, 1)
+
+                br
+                    display none
+                    
+                    @media only screen and (max-width 520px)
+                        display initial
