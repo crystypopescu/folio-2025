@@ -126,6 +126,10 @@ export class CircuitArea extends Area
         this.startingLights.redMaterial = this.game.materials.getFromName('emissiveOrangeRadialGradient')
         this.startingLights.greenMaterial = this.game.materials.getFromName('emissiveGreenRadialGradient')
         this.startingLights.baseZ = this.startingLights.mesh.position.z
+
+        // this.startingLights.mesh.visible = true
+        // this.startingLights.mesh.position.z = this.startingLights.baseZ + 0.03
+        // this.startingLights.mesh.material = this.startingLights.greenMaterial
         
         this.startingLights.reset = () =>
         {
