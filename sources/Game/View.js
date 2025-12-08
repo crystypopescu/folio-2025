@@ -329,13 +329,13 @@ export class View
     setSpherical()
     {
         this.spherical = {}
-        this.spherical.phi = Math.PI * 0.32
+        this.spherical.phi = Math.PI * (this.game.quality.level === 0 ? 0.31 : 0.27)
         this.spherical.theta = Math.PI * 0.25
 
         this.spherical.radius = {}
         this.spherical.radius.edges = { min: 15, max: 30 }
         this.spherical.radius.current = lerp(this.spherical.radius.edges.min, this.spherical.radius.edges.max, 1 - this.zoom.smoothedRatio)
-        this.spherical.radius.nonIdealRatioOffset = 12
+        this.spherical.radius.nonIdealRatioOffset = 9
 
         this.spherical.offset = new THREE.Vector3()
         this.spherical.offset.setFromSphericalCoords(this.spherical.radius.current, this.spherical.phi, this.spherical.theta)

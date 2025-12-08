@@ -131,7 +131,7 @@ export class Game
                 [ 'flowersReferencesModel',                'flowers/flowersReferences-compressed.glb',                   'gltf' ],
                 [ 'bricksModel',                           'bricks/bricks-compressed.glb',                               'gltf' ],
                 [ 'fencesModel',                           'fences/fences-compressed.glb',                               'gltf' ],
-                [ 'benchesModel',                          'benches/benches-compressed.glb',                             'gltf' ],
+                [ 'benchesModel',                          'benches/benches.glb',                             'gltf' ],
                 [ 'explosiveCratesModel',                  'explosiveCrates/explosiveCrates-compressed.glb',             'gltf' ],
                 [ 'lanternsModel',                         'lanterns/lanterns-compressed.glb',                           'gltf' ],
                 [ 'terrainTexture',                        'terrain/terrain.ktx',                                        'textureKtx', (resource) => { resource.flipY = false; } ],

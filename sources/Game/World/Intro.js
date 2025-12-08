@@ -24,10 +24,28 @@ export class Intro
     {
         this.label = new THREE.Group()
         this.label.position.copy(this.center)
-        this.label.position.x += 3.5
-        this.label.position.z -= 1
-        this.label.position.y = 3.3
-        this.label.rotation.y = 0.4
+        this.label.rotation.reorder('YXZ')
+        
+        if(this.game.quality.level === 0)
+        {
+            this.label.position.x += 3.5
+            this.label.position.z -= 1
+            this.label.position.y = 3.3
+            
+            this.label.rotation.y = 0.4
+        }
+        else
+        {
+            this.label.position.x += 2.3
+            this.label.position.z -= 1.8
+            this.label.position.y = 3.3
+
+            this.label.rotation.y = 0.4
+            this.label.rotation.x = -0.4
+        }
+        
+        
+        
         this.label.scale.setScalar(0.01)
         this.game.scene.add(this.label)
     }
