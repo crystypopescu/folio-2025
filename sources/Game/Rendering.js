@@ -43,7 +43,7 @@ export class Rendering
         this.renderer.sortObjects = true
         this.renderer.domElement.classList.add('experience')
         this.renderer.shadowMap.enabled = true
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.renderer.setOpaqueSort((a, b) =>
         {
             return a.renderOrder - b.renderOrder

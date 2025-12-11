@@ -20,12 +20,12 @@ export class Lighting
         this.colorUniform = uniform(color('#ffffff'))
         this.intensityUniform = uniform(1)
         this.count = 1
-        this.lights = []
-        this.mapSizeMin = 2048
+        this.mapSize = this.game.quality.level === 0 ? 2048 : 512
         this.shadowAmplitude = this.game.view.optimalArea.radius
         this.depth = this.game.view.optimalArea.radius * 2
         this.shadowBias = -0.001
         this.shadowNormalBias = 0.1
+        this.shadowRadius = this.game.quality.level === 0 ? 3 : 2
 
         if(this.game.debug.active)
         {
@@ -36,7 +36,7 @@ export class Lighting
         }
 
         this.setNodes()
-        this.setLights()
+        this.setLight()
         this.updateShadow()
         this.setHelpers()
 
@@ -67,6 +67,7 @@ export class Lighting
             this.debugPanel.addBinding(this, 'shadowAmplitude', { min: 1, max: 50 }).on('change', () => this.updateShadow())
             this.debugPanel.addBinding(this, 'shadowBias', { min: -0.02, max: 0.02 }).on('change', () => this.updateShadow())
             this.debugPanel.addBinding(this, 'shadowNormalBias', { min: -0.3, max: 0.3 }).on('change', () => this.updateShadow())
+            this.debugPanel.addBinding(this, 'shadowRadius', { min: 0, max: 10 }).on('change', () => this.updateShadow())
 
             const mapSizes = {}
             for(let i = 0; i < 12; i++)
@@ -104,19 +105,14 @@ export class Lighting
         }
     }
 
-    setLights()
+    setLight()
     {
-        for(let i = 0; i < this.count; i++)
-        {
-            const light = new THREE.DirectionalLight(0xffffff, 5)
-            light.position.setFromSpherical(this.spherical)
-            light.castShadow = true
-            
-            this.game.scene.add(light)
-            this.game.scene.add(light.target)
-
-            this.lights.push(light)
-        }
+        this.light = new THREE.DirectionalLight(0xffffff, 5)
+        this.light.position.setFromSpherical(this.spherical)
+        this.light.castShadow = true
+        
+        this.game.scene.add(this.light)
+        this.game.scene.add(this.light.target)
     }
 
     setHelpers()
@@ -142,7 +138,7 @@ export class Lighting
         this.game.scene.add(this.directionHelper)
 
         // Shadow helper
-        this.shadowHelper = new THREE.CameraHelper(this.lights[0].shadow.camera)
+        this.shadowHelper = new THREE.CameraHelper(this.light.shadow.camera)
         this.shadowHelper.visible = false
         this.shadowHelper.userData.preventPreRender = true
         this.game.scene.add(this.shadowHelper)
@@ -156,25 +152,18 @@ export class Lighting
 
     updateShadow()
     {
-        let i = 0
-        for(const light of this.lights)
-        {
-            light.shadow.camera.top = this.shadowAmplitude
-            light.shadow.camera.right = this.shadowAmplitude
-            light.shadow.camera.bottom = - this.shadowAmplitude
-            light.shadow.camera.left = - this.shadowAmplitude
-            light.shadow.camera.near = this.near
-            light.shadow.camera.far = this.near + this.depth
-            light.shadow.bias = this.shadowBias
-            light.shadow.normalBias = this.shadowNormalBias
+        this.light.shadow.camera.top = this.shadowAmplitude
+        this.light.shadow.camera.right = this.shadowAmplitude
+        this.light.shadow.camera.bottom = - this.shadowAmplitude
+        this.light.shadow.camera.left = - this.shadowAmplitude
+        this.light.shadow.camera.near = this.near
+        this.light.shadow.camera.far = this.near + this.depth
+        this.light.shadow.bias = this.shadowBias
+        this.light.shadow.normalBias = this.shadowNormalBias
+        this.light.shadow.radius = this.shadowRadius
 
-            light.shadow.camera.updateProjectionMatrix()
-
-            const mapSize = this.mapSizeMin * Math.pow(2, i)
-            light.shadow.mapSize.set(mapSize, mapSize)
-
-            i++
-        }
+        this.light.shadow.camera.updateProjectionMatrix()
+        this.light.shadow.mapSize.set(this.mapSize, this.mapSize)
     }
 
     updateCoordinates()
@@ -201,11 +190,13 @@ export class Lighting
         this.direction.setFromSpherical(this.spherical).normalize()
         
         // Actual lights transform
-        for(const light of this.lights)
-        {
-            light.position.setFromSpherical(this.spherical).add(this.game.view.optimalArea.position)
-            light.target.position.copy(this.game.view.optimalArea.position)
-        }
+        const optimalRoundedPosition = this.game.view.optimalArea.position.clone()
+        // optimalRoundedPosition.x = Math.round(optimalRoundedPosition.x)
+        // optimalRoundedPosition.y = Math.round(optimalRoundedPosition.y)
+        // optimalRoundedPosition.z = Math.round(optimalRoundedPosition.z)
+        
+        this.light.position.setFromSpherical(this.spherical).add(optimalRoundedPosition)
+        this.light.target.position.copy(optimalRoundedPosition)
 
         // Helper
         this.directionHelper.position.copy(this.direction).multiplyScalar(5).add(this.game.view.focusPoint.position)

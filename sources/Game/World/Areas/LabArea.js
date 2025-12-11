@@ -1201,11 +1201,8 @@ export class LabArea extends Area
 
         // Burning wood
         {
-            // TODO : Use palette material directly
-            const material = new MeshDefaultMaterial({
-                colorNode: color('#a88c7f')
-            })
             const baseMaterial = this.game.materials.getFromName('palette')
+            const material = baseMaterial.clone()
             
             const colorA = uniform(color('#ff6b2b'))
             const colorB = uniform(color('#ff4100'))
@@ -1228,7 +1225,7 @@ export class LabArea extends Area
 
             this.cauldron.wood = this.references.items.get('wood')[0]
             this.cauldron.wood.material = material
-
+            
             if(this.game.debug.active)
             {
                 const debugPanel = this.debugPanel.addFolder({
