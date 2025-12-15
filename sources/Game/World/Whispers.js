@@ -133,13 +133,14 @@ export class Whispers
             }
         }
 
-        this.data.upsert = (input) =>
+        this.data.insert = (input) =>
         {
             let item = this.data.findById(input.id)
 
             // Update
             if(item)
             {
+                // Hide
                 const dummy = { value: 1 }
                 gsap.to(
                     dummy,
@@ -152,6 +153,7 @@ export class Whispers
                         },
                         onComplete: () =>
                         {
+                            // Show update
                             item.message = input.message
                             item.countryCode = input.countrycode
                             item.position.set(input.x, input.y, input.z)
@@ -223,10 +225,10 @@ export class Whispers
         this.game.server.events.on('message', (data) =>
         {
             // Init and insert
-            if(data.type === 'init' || data.type === 'whispersUpsert')
+            if(data.type === 'init' || data.type === 'whispersInsert')
             {
                 for(const whisper of data.whispers)
-                    this.data.upsert(whisper)
+                    this.data.insert(whisper)
             }
 
             // Delete
@@ -243,7 +245,7 @@ export class Whispers
         if(this.game.server.initData)
         {
             for(const whisper of this.game.server.initData.whispers)
-                this.data.upsert(whisper)
+                this.data.insert(whisper)
         }
     }
 
