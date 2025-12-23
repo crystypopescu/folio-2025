@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { MeshDefaultMaterial } from '../Materials/MeshDefaultMaterial.js'
 import { add, cameraProjectionMatrix, cameraViewMatrix, color, cos, float, Fn, instance, instancedArray, instanceIndex, modelWorldMatrix, positionGeometry, positionLocal, positionWorld, remapClamp, sin, uniform, uniformArray, vec3, vec4 } from 'three/tsl'
 import gsap from 'gsap'
@@ -38,7 +39,7 @@ export class Confetti
             this.game.debug.addThreeColorBinding(this.debugPanel, this.colorsUniform.array[0], 'color0')
             this.game.debug.addThreeColorBinding(this.debugPanel, this.colorsUniform.array[1], 'color1')
             this.game.debug.addThreeColorBinding(this.debugPanel, this.colorsUniform.array[2], 'color2')
-            this.debugPanel.addButton({ title: 'pop' }).on('click', () => { this.pop(this.game.player.position) })
+            this.debugPanel.addButton({ title: 'pop' }).on('click', () => { this.pop(Player.getInstance().position) })
         }
     }
 

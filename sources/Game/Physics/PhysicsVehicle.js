@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { Events } from '../Events.js'
 import { lerp, remap, remapClamp, smallestAngle } from '../utilities/maths.js'
 
@@ -457,21 +458,21 @@ export class PhysicsVehicle
     updatePrePhysics()
     {
         // Engine force
-        const topSpeed = lerp(this.topSpeed, this.topSpeedBoost, this.game.player.boosting)
+        const topSpeed = lerp(this.topSpeed, this.topSpeedBoost, Player.getInstance().boosting)
         const overflowSpeed = Math.max(0, this.speed - topSpeed)
-        let engineForce = (this.game.player.accelerating * (1 + this.game.player.boosting * this.boostMultiplier)) * this.engineForceAmplitude / (1 + overflowSpeed) * this.game.ticker.deltaScaled
+        let engineForce = (Player.getInstance().accelerating * (1 + Player.getInstance().boosting * this.boostMultiplier)) * this.engineForceAmplitude / (1 + overflowSpeed) * this.game.ticker.deltaScaled
 
         // Brake
-        let brake = this.game.player.braking
+        let brake = Player.getInstance().braking
 
-        if(!this.game.player.braking && Math.abs(this.game.player.accelerating) < 0.1)
+        if(!Player.getInstance().braking && Math.abs(Player.getInstance().accelerating) < 0.1)
             brake = this.idleBrake
     
         if(
             this.speed > 0.5 &&
             (
-                (this.game.player.accelerating > 0 && !this.goingForward) ||
-                (this.game.player.accelerating < 0 && this.goingForward)
+                (Player.getInstance().accelerating > 0 && !this.goingForward) ||
+                (Player.getInstance().accelerating < 0 && this.goingForward)
             )
         )
         {
@@ -482,7 +483,7 @@ export class PhysicsVehicle
         brake *= this.brakeAmplitude * this.game.ticker.deltaScaled
 
         // Steer
-        const steer = this.game.player.steering * this.steeringAmplitude
+        const steer = Player.getInstance().steering * this.steeringAmplitude
 
         // Update wheels
         this.controller.setWheelSteering(0, steer)
@@ -492,8 +493,8 @@ export class PhysicsVehicle
         {
             this.controller.setWheelBrake(i, brake)
             this.controller.setWheelEngineForce(i, engineForce)
-            this.controller.setWheelSuspensionRestLength(i, this.suspensionsHeights[this.game.player.suspensions[i]])
-            this.controller.setWheelSuspensionStiffness(i, this.suspensionsStiffness[this.game.player.suspensions[i]])
+            this.controller.setWheelSuspensionRestLength(i, this.suspensionsHeights[Player.getInstance().suspensions[i]])
+            this.controller.setWheelSuspensionStiffness(i, this.suspensionsStiffness[Player.getInstance().suspensions[i]])
 
             // Ice slip
             const groundObject = this.controller.wheelGroundObject(i)
@@ -534,7 +535,7 @@ export class PhysicsVehicle
         this.yRotation = new THREE.Euler().setFromQuaternion(this.quaternion, 'YXZ').y
         this.zRotation = new THREE.Euler().setFromQuaternion(this.quaternion, 'ZYX').z
 
-        if(Math.abs(this.game.player.accelerating) > 0.5)
+        if(Math.abs(Player.getInstance().accelerating) > 0.5)
             this.stuck.accumulate(this.velocity.length(), this.game.ticker.deltaScaled)
 
         let inContactCount = 0

@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../../Game.js'
+import { Player } from '../../Player.js'
 import { color, float, Fn, luminance, max, mix, positionGeometry, step, texture, uniform, uv, vec4 } from 'three/tsl'
 import gsap from 'gsap'
 import { clamp } from 'three/src/math/MathUtils.js'
@@ -270,7 +271,7 @@ export class CareerArea extends Area
         // Lines
         for(const line of this.lines.items)
         {
-            const delta = line.origin.z - this.game.player.position.z
+            const delta = line.origin.z - Player.getInstance().position.z
 
             // Is in
             if(delta > - this.lines.padding && delta < line.size + this.lines.padding * 2)
@@ -353,7 +354,7 @@ export class CareerArea extends Area
         }
 
         // Year
-        const delta = this.year.originZ - this.game.player.position.z
+        const delta = this.year.originZ - Player.getInstance().position.z
 
         if(delta > this.year.size)
             this.year.offsetTarget = this.year.size

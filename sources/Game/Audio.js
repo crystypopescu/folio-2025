@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
 import { Howl, Howler } from 'howler'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 import { remap, remapClamp, clamp } from './utilities/maths.js'
 import gsap from 'gsap'
 import { Events } from './Events.js'
@@ -459,8 +460,8 @@ export class Audio
             onPlaying: (item) =>
             {
                 const distanceToSide = Math.min(
-                    this.game.terrain.size / 2 - Math.abs(this.game.player.position.x),
-                    this.game.terrain.size / 2 - Math.abs(this.game.player.position.z)
+                    this.game.terrain.size / 2 - Math.abs(Player.getInstance().position.x),
+                    this.game.terrain.size / 2 - Math.abs(Player.getInstance().position.z)
                 )
                 item.volume = Math.pow(remapClamp(distanceToSide, 0, 40, 1, 0.1), 2) * 0.7
             }

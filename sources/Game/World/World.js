@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { Floor } from './Floor.js'
 import { Grid } from './Grid.js'
 import { Grass } from './Grass.js'
@@ -110,7 +111,7 @@ export class World
             texture(this.game.resources.paletteTexture).rgb,
             1
         )
-        mesh.position.copy(this.game.player.position)
+        mesh.position.copy(Player.getInstance().position)
         mesh.position.y += 2
         this.game.scene.add(mesh)
     }

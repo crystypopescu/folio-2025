@@ -1,5 +1,6 @@
 import { clamp } from 'three/src/math/MathUtils.js'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 
 export class Map
 {
@@ -79,7 +80,7 @@ export class Map
 
             element.addEventListener('click', () =>
             {
-                this.game.player.respawn(item.respawnName, () =>
+                Player.getInstance().respawn(item.respawnName, () =>
                 {
                     this.game.view.focusPoint.isTracking = true
                 })
@@ -173,8 +174,8 @@ export class Map
         if(!this.modal.isOpen)
             return
 
-        const playerRoundedX = Math.round(this.game.player.position.x)
-        const playerRoundedY = Math.round(this.game.player.position.z)
+        const playerRoundedX = Math.round(Player.getInstance().position.x)
+        const playerRoundedY = Math.round(Player.getInstance().position.z)
 
         if(playerRoundedX !== this.player.roundedPosition.x || playerRoundedY !== this.player.roundedPosition.y)
         {

@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 import { InstancedGroup } from './InstancedGroup.js'
 import { cameraPosition, color, Fn, luminance, mix, normalWorld, positionWorld, uniform, uv, vec3, vec4 } from 'three/tsl'
 import gsap from 'gsap'
@@ -133,7 +134,7 @@ export class Easter
             {
                 if(!egg.caught)
                 {
-                    egg.distance = egg.reference.position.distanceTo(this.game.player.position)
+                    egg.distance = egg.reference.position.distanceTo(Player.getInstance().position)
 
                     if(closest === null || egg.distance < minDistance)
                     {

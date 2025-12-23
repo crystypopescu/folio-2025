@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { attribute, cameraPosition, cameraProjectionMatrix, cameraViewMatrix, color, cross, float, floor, Fn, instancedArray, luminance, min, mix, modelWorldMatrix, mul, positionGeometry, positionWorld, remapClamp, step, uniform, varying, vec3, vec4, vertexIndex } from 'three/tsl'
 import { LineGeometry } from '../Geometries/LineGeometry.js'
 import gsap from 'gsap'
@@ -87,7 +88,7 @@ export class Lightnings
                         positions: new THREE.Vector3(),
                         onPlay: (item, coordinates) =>
                         {
-                            const distance = Math.hypot(coordinates.x - this.game.player.position2.x, coordinates.z - this.game.player.position2.y)
+                            const distance = Math.hypot(coordinates.x - Player.getInstance().position2.x, coordinates.z - Player.getInstance().position2.y)
                             item.positions[0].copy(coordinates)
         
                             // const distanceVolumeEffect = Math.pow(mathRemapClamp(distance, 0, 20, 1, 0), 2)

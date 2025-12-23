@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { Track } from '../Tracks.js'
 import { Trails } from '../Trails.js'
 import { remapClamp } from '../utilities/maths.js'
@@ -412,7 +413,7 @@ export class VisualVehicle
         this.parts.chassis.quaternion.copy(physicalVehicle.quaternion)
         
         // Wheels
-        this.wheels.steering += ((this.game.player.steering * physicalVehicle.steeringAmplitude) - this.wheels.steering) * this.game.ticker.deltaScaled * 16
+        this.wheels.steering += ((Player.getInstance().steering * physicalVehicle.steeringAmplitude) - this.wheels.steering) * this.game.ticker.deltaScaled * 16
 
         const wheelsRotation = (physicalVehicle.forwardSpeed) / physicalVehicle.wheels.settings.radius * 0.006
 
@@ -473,20 +474,20 @@ export class VisualVehicle
         }
 
         // Stop lights
-        if(this.game.player.braking)
+        if(Player.getInstance().braking)
             this.parts.stopLights.visible = true
         else
             this.parts.stopLights.visible = false
 
         // Boost trails
-        const trailAlpha = physicalVehicle.goingForward && this.game.player.boosting && this.game.player.accelerating > 0 ? 1 : 0
+        const trailAlpha = physicalVehicle.goingForward && Player.getInstance().boosting && Player.getInstance().accelerating > 0 ? 1 : 0
         this.boostTrails.leftReference.getWorldPosition(this.boostTrails.left.position)
         this.boostTrails.left.alpha = trailAlpha
         this.boostTrails.rightReference.getWorldPosition(this.boostTrails.right.position)
         this.boostTrails.right.alpha = trailAlpha
 
         // Boost animation
-        this.boostAnimation.mix += (this.game.player.boosting ? 1 : - 1) * this.game.ticker.deltaScaled * this.boostAnimation.speed
+        this.boostAnimation.mix += (Player.getInstance().boosting ? 1 : - 1) * this.game.ticker.deltaScaled * this.boostAnimation.speed
         this.boostAnimation.mix = clamp(this.boostAnimation.mix, 0, 1)
         // this.boostAnimation.mixUniform.value = remapClamp(this.boostAnimation.mix, 0, 0.2, 0, 1)
         this.boostAnimation.mixUniform.value = 1 - Math.pow(1 - this.boostAnimation.mix, 7)

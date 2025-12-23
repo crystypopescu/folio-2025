@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
 import achievementsData from '../data/achievements.js'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 import { timeToReadableString } from './utilities/time.js'
 import { uniform } from 'three/tsl'
 import { Events } from './Events.js'
@@ -136,7 +137,7 @@ export class Achievements
                     // Not already ended
                     if(!localStorage.getItem('achievementsTimeEnd'))
                     {
-                        this.globalProgress.timeEnd = this.game.player.timePlayed.all
+                        this.globalProgress.timeEnd = Player.getInstance().timePlayed.all
                         localStorage.setItem('achievementsTimeEnd', this.globalProgress.timeEnd)
                     }
 
@@ -155,7 +156,7 @@ export class Achievements
 
             this.globalProgress.currentElement.textContent = 0
 
-            this.globalProgress.timeStart = this.game.player.timePlayed.all
+            this.globalProgress.timeStart = Player.getInstance().timePlayed.all
             this.globalProgress.timeEnd = 0
             localStorage.setItem('achievementsTimeStart', this.globalProgress.timeStart)
             localStorage.removeItem('achievementsTimeEnd')
@@ -447,9 +448,9 @@ export class Achievements
                     // Confetti
                     if(this.game.world.confetti)
                     {
-                        this.game.world.confetti.pop(this.game.player.position.clone())
-                        this.game.world.confetti.pop(this.game.player.position.clone().add(new THREE.Vector3(1, -1, 1.5)))
-                        this.game.world.confetti.pop(this.game.player.position.clone().add(new THREE.Vector3(1, -1, -1.5)))
+                        this.game.world.confetti.pop(Player.getInstance().position.clone())
+                        this.game.world.confetti.pop(Player.getInstance().position.clone().add(new THREE.Vector3(1, -1, 1.5)))
+                        this.game.world.confetti.pop(Player.getInstance().position.clone().add(new THREE.Vector3(1, -1, -1.5)))
                     }
 
                     // Sound
@@ -582,7 +583,7 @@ export class Achievements
 
     reset()
     {
-        this.game.player.distanceDriven.reset()
+        Player.getInstance().distanceDriven.reset()
 
         this.groups.forEach(group =>
         {

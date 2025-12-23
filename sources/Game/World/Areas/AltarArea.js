@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../../Game.js'
+import { Player } from '../../Player.js'
 import { attribute, clamp, color, float, Fn, instancedArray, instanceIndex, luminance, max, min, mix, smoothstep, step, texture, uniform, uv, varying, vec2, vec3, vec4 } from 'three/tsl'
 import gsap from 'gsap'
 import { alea } from 'seedrandom'
@@ -402,7 +403,7 @@ export class AltarArea extends Area
                 this.animateBeamParticles()
                 this.data.insert()
                 this.updateText(this.value + 1)
-                this.game.player.die()
+                Player.getInstance().die()
                 this.sounds.deathBell2.play()
                 gsap.delayedCall(2.2, () =>
                 {

@@ -9,9 +9,24 @@ export class Player
 {
     static STATE_DEFAULT = 1
     static STATE_LOCKED = 2
+    static instance = null
+
+    static getInstance()
+    {
+        if(!Player.instance)
+            Player.instance = new Player()
+
+        return Player.instance
+    }
 
     constructor()
     {
+        // Singleton pattern
+        if(Player.instance)
+            return Player.instance
+
+        Player.instance = this
+
         this.game = Game.getInstance()
         
         this.state = Player.STATE_DEFAULT
@@ -133,7 +148,7 @@ export class Player
                 {
                     const directionRatio = (1 - Math.abs(this.game.physicalVehicle.forwardRatio)) * 0.6
                     
-                    let brakeEffect = Math.max(directionRatio, this.game.player.braking) * this.game.physicalVehicle.xzSpeed * 0.15 * this.game.physicalVehicle.wheels.inContactCount / 4
+                    let brakeEffect = Math.max(directionRatio, this.braking) * this.game.physicalVehicle.xzSpeed * 0.15 * this.game.physicalVehicle.wheels.inContactCount / 4
                     brakeEffect = clamp(brakeEffect, 0, 1)
 
                     const volume = brakeEffect * 0.4
@@ -159,8 +174,8 @@ export class Player
                 volume: 0,
                 onPlaying: (item) =>
                 {
-                    const accelerating = Math.abs(this.game.player.accelerating) * 0.5
-                    const boosting = this.game.player.boosting + 1
+                    const accelerating = Math.abs(this.accelerating) * 0.5
+                    const boosting = this.boosting + 1
                     const volume = Math.max(0.05, accelerating * boosting * 0.8)
                     const delta = volume - item.volume
                     const easing = delta > 0 ? 10 : 2.5
@@ -201,15 +216,15 @@ export class Player
             volume: 0,
             onPlaying: (item) =>
             {
-                const accelerating = 0.5 + Math.abs(this.game.player.accelerating) * 0.5
-                const boosting = this.game.player.boosting
+                const accelerating = 0.5 + Math.abs(this.accelerating) * 0.5
+                const boosting = this.boosting
                 const volume = accelerating * boosting * 0.3
                 const delta = volume - item.volume
                 const easing = delta > 0 ? 10 : 1
                 
                 item.volume += delta * this.game.ticker.deltaScaled * easing
 
-                const rate = 0.95 + Math.abs(this.game.player.accelerating) * 2
+                const rate = 0.95 + Math.abs(this.accelerating) * 2
                 item.rate += (rate - item.rate) * this.game.ticker.deltaScaled * 5
             }
         })

@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 import { color, distance, float, Fn, max, min, mix, mul, normalWorld, positionWorld, step, texture, uniform, uv, vec2, vec3, vec4 } from 'three/tsl'
 import gsap from 'gsap'
 import { Inputs } from './Inputs/Inputs.js'
@@ -577,21 +578,21 @@ export class InteractivePoints
     {
         // Player testing (not cursor intersect)
         const distanceTraveled = Math.hypot(
-            this.playerPosition.value.x - this.game.player.position2.x,
-            this.playerPosition.value.y - this.game.player.position2.y
+            this.playerPosition.value.x - Player.getInstance().position2.x,
+            this.playerPosition.value.y - Player.getInstance().position2.y
         )
 
         // Only update is moved enough
         if(distanceTraveled > 0.2 || this.needsTest)
         {
             this.needsTest = false
-            this.playerPosition.value.copy(this.game.player.position2)
+            this.playerPosition.value.copy(Player.getInstance().position2)
 
             let distance = Infinity
             let activeItem = null
             for(const item of this.items)
             {
-                const itemDistance = Math.hypot(item.position.x - this.game.player.position2.x, item.position.y - this.game.player.position2.y)
+                const itemDistance = Math.hypot(item.position.x - Player.getInstance().position2.x, item.position.y - Player.getInstance().position2.y)
                 const isIn = itemDistance < 2.5
                 
                 if(isIn)

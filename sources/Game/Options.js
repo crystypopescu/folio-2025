@@ -1,4 +1,5 @@
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 
 export class Options
 {
@@ -45,7 +46,7 @@ export class Options
 
         element.addEventListener('click', () =>
         {
-            this.game.player.respawn()
+            Player.getInstance().respawn()
             this.game.menu.close()
         })
     }

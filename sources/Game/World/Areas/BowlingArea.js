@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../../Game.js'
+import { Player } from '../../Player.js'
 import { InteractivePoints } from '../../InteractivePoints.js'
 import { clamp, lerp, remapClamp } from '../../utilities/maths.js'
 import gsap from 'gsap'
@@ -380,7 +381,7 @@ export class BowlingArea extends Area
                 }
             )
 
-            this.game.player.sounds.suspensions.play()
+            Player.getInstance().sounds.suspensions.play()
         }
 
         // Interactive point
@@ -528,7 +529,7 @@ export class BowlingArea extends Area
         let showRestartInteractivePoint = false
         
         // Screen position
-        const targetX = clamp(this.game.player.position.x, this.screen.min, this.screen.max)
+        const targetX = clamp(Player.getInstance().position.x, this.screen.min, this.screen.max)
         this.screen.x += (targetX - this.screen.x) * this.game.ticker.deltaScaled * 2
 
         const floatY = Math.sin(this.game.ticker.elapsedScaled * 0.3) * 0.5
@@ -594,7 +595,7 @@ export class BowlingArea extends Area
 
                     if(this.game.world.confetti)
                     {
-                        this.game.world.confetti.pop(this.game.player.position.clone())
+                        this.game.world.confetti.pop(Player.getInstance().position.clone())
                         this.game.world.confetti.pop(this.screen.group.position.clone().add(new THREE.Vector3(- 1, - 1, 0)))
                         this.game.world.confetti.pop(this.screen.group.position.clone().add(new THREE.Vector3(- 3.4, - 1, 0)))
                     }

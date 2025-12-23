@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { billboarding, cameraPosition, color, Fn, instanceIndex, log, min, mix, modelViewMatrix, mul, normalWorld, positionGeometry, positionViewDirection, positionWorld, smoothstep, storage, texture, time, uv, vec2, vec3, vec4 } from 'three/tsl'
 import { hash } from 'three/tsl'
 import gsap from 'gsap'
@@ -309,9 +310,9 @@ export class Whispers
                     type: 'whispersInsert',
                     message: sanatized,
                     countryCode: this.menu.inputFlag.country ? this.menu.inputFlag.country.code : '',
-                    x: this.game.player.position.x,
-                    y: this.game.player.position.y,
-                    z: this.game.player.position.z
+                    x: Player.getInstance().position.x,
+                    y: Player.getInstance().position.y,
+                    z: Player.getInstance().position.z
                 })
 
                 // Close menu
@@ -461,7 +462,7 @@ export class Whispers
         {
             if(!item.available)
             {
-                const distance = this.game.player.position.distanceTo(item.position)
+                const distance = Player.getInstance().position.distanceTo(item.position)
 
                 if(distance < closestDistance)
                 {

@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from '../Game.js'
+import { Player } from '../Player.js'
 import { color, float, Fn, materialNormal, min, mix, mul, normalWorld, positionLocal, positionWorld, texture, uniform, uv, vec3, vec4 } from 'three/tsl'
 import { MeshDefaultMaterial } from '../Materials/MeshDefaultMaterial.js'
 
@@ -180,8 +181,8 @@ export class Floor
 
         // Bedrock
         if(
-            Math.abs(this.game.player.position.x) > this.game.terrain.size / 2 - this.bedRock.halfWidth ||
-            Math.abs(this.game.player.position.z) > this.game.terrain.size / 2 - this.bedRock.halfWidth
+            Math.abs(Player.getInstance().position.x) > this.game.terrain.size / 2 - this.bedRock.halfWidth ||
+            Math.abs(Player.getInstance().position.z) > this.game.terrain.size / 2 - this.bedRock.halfWidth
         )
         {
             if(!this.bedRock.enabled)
@@ -189,8 +190,8 @@ export class Floor
                 this.bedRock.enabled = true
                 this.bedRock.physical.body.setEnabled(true)
             }
-            const x = Math.round(this.game.player.position.x)
-            const z = Math.round(this.game.player.position.z)
+            const x = Math.round(Player.getInstance().position.x)
+            const z = Math.round(Player.getInstance().position.z)
             this.bedRock.physical.body.setNextKinematicTranslation({
                 x,
                 y: this.game.water.depthElevation - this.bedRock.halfHeight,

@@ -222,7 +222,7 @@ export class CircuitArea extends Area
 
             this.timer.write('00:00:000')
 
-            this.timer.group.position.copy(this.game.player.position)
+            this.timer.group.position.copy(Player.getInstance().position)
             this.timer.group.position.y = 2.5
             this.timer.group.scale.setScalar(1)
 
@@ -289,13 +289,13 @@ export class CircuitArea extends Area
             }
             else
             {
-                target.x = this.game.player.position.x - 2
+                target.x = Player.getInstance().position.x - 2
                 target.y = 2.5
-                target.z = this.game.player.position.z + 1
+                target.z = Player.getInstance().position.z + 1
             }
             
             this.timer.group.position.lerp(target, this.game.ticker.deltaScaled * 5)
-            // this.timer.group.position.z = this.game.player.position2.y
+            // this.timer.group.position.z = Player.getInstance().position2.y
 
             // Digits
             if(this.timer.running)
@@ -672,7 +672,7 @@ export class CircuitArea extends Area
             return
 
         // Player > Lock
-        this.game.player.state = Player.STATE_LOCKED
+        Player.getInstance().state = Player.STATE_LOCKED
 
         // Respawn position and rotation
         const position = new THREE.Vector3()
@@ -694,7 +694,7 @@ export class CircuitArea extends Area
             // Player > Unlock
             gsap.delayedCall(2, () =>
             {
-                this.game.player.state = Player.STATE_DEFAULT
+                Player.getInstance().state = Player.STATE_DEFAULT
             })
 
             // Update physical vehicle
@@ -1366,7 +1366,7 @@ export class CircuitArea extends Area
         this.interactivePoint.hide()
 
         // Player > Lock
-        this.game.player.state = Player.STATE_LOCKED
+        Player.getInstance().state = Player.STATE_LOCKED
 
         // Inputs filters
         this.game.inputs.filters.clear()
@@ -1451,7 +1451,7 @@ export class CircuitArea extends Area
                 this.startAnimation.start(() =>
                 {
                     // Player > Unlock
-                    this.game.player.state = Player.STATE_DEFAULT
+                    Player.getInstance().state = Player.STATE_DEFAULT
 
                     this.timer.start()
                 })
@@ -1636,8 +1636,8 @@ export class CircuitArea extends Area
                     checkpoint.a.y,
                     checkpoint.b.x,
                     checkpoint.b.y,
-                    this.game.player.position2.x,
-                    this.game.player.position2.y,
+                    Player.getInstance().position2.x,
+                    Player.getInstance().position2.y,
                     this.checkpoints.checkRadius
                 )
 
@@ -1657,7 +1657,7 @@ export class CircuitArea extends Area
             }
 
             // If out of bounds
-            if(this.game.player.position.y < this.bounds.threshold)
+            if(Player.getInstance().position.y < this.bounds.threshold)
             {
                 if(!this.bounds.isOut)
                 {

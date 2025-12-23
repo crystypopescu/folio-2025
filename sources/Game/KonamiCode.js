@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 import { VisualVehicle } from './World/VisualVehicle.js'
 
 export class KonamiCode
@@ -65,9 +66,9 @@ export class KonamiCode
 
         if(this.game.world.confetti)
         {
-            this.game.world.confetti.pop(this.game.player.position.clone())
-            this.game.world.confetti.pop(this.game.player.position.clone().add(new THREE.Vector3(1, -1, 1.5)))
-            this.game.world.confetti.pop(this.game.player.position.clone().add(new THREE.Vector3(1, -1, -1.5)))
+            this.game.world.confetti.pop(Player.getInstance().position.clone())
+            this.game.world.confetti.pop(Player.getInstance().position.clone().add(new THREE.Vector3(1, -1, 1.5)))
+            this.game.world.confetti.pop(Player.getInstance().position.clone().add(new THREE.Vector3(1, -1, -1.5)))
         }
 
         this.activationCount++

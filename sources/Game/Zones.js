@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
 import { Events } from './Events.js'
 import { Game } from './Game.js'
+import { Player } from './Player.js'
 
 export class Zones
 {
@@ -51,7 +52,7 @@ export class Zones
     {
         for(const zone of this.items)
         {
-            let playerPosition = this.game.player.position
+            let playerPosition = Player.getInstance().position
             let zonePosition = zone.position
 
             if(zone.type === 'cylinder')

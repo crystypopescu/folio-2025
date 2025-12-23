@@ -178,8 +178,8 @@ export class Game
         this.physics = new Physics()
         this.wireframe = new PhysicsWireframe()
         this.physicalVehicle = new PhysicsVehicle()
+        Player.getInstance() // Initialize Player singleton (must be after physicalVehicle)
         this.zones = new Zones()
-        this.player = new Player()
         this.closingManager = new ClosingManager()
         this.interactivePoints = new InteractivePoints()
         this.overlay = new Overlay()
@@ -213,7 +213,7 @@ export class Game
         this.inputs.interactiveButtons.clearItems()
 
         // Player respawn
-        this.player.respawn(null, () =>
+        Player.getInstance().respawn(null, () =>
         {
             // Objects reset
             this.objects.resetAll()
