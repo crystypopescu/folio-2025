@@ -195,10 +195,8 @@ export class Game
         if(this.quality.level === 0 && this.rendering.renderer.backend.isWebGPUBackend)
             PreRenderer.render()
 
-        this.ticker.wait(3, () =>
-        {
-            this.reveal.updateStep(0)
-        })
+        // Start reveal immediately (no delay)
+        this.reveal.updateStep(0)
 
         // Debug achievement
         if(this.debug.active)

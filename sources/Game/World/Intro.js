@@ -13,7 +13,7 @@ export class Intro
         const respawn = this.game.respawns.getDefault()
         this.center = respawn.position.clone()
 
-        this.setCircle()
+        // this.setCircle() // Removed: intro circle
         this.setLabel()
 
         this.update = this.update.bind(this)
@@ -48,70 +48,7 @@ export class Intro
         this.game.scene.add(this.label)
     }
 
-    setCircle()
-    {
-        this.circle = {}
-        
-        const radius = 3.5
-        const thickness = 0.04
-        this.circle.progress = 0
-        this.circle.smoothedProgress = uniform(0)
-
-        // Geometry
-        const geometry = new THREE.RingGeometry(radius - thickness, radius, 128, 1)
-
-        // Material
-        const material = new THREE.MeshBasicNodeMaterial()
-        material.outputNode = Fn(() =>
-        {
-            const angle = atan(positionGeometry.y, positionGeometry.x)
-            const angleProgress = angle.div(PI2).add(0.5).oneMinus()
-
-            this.circle.smoothedProgress.lessThan(angleProgress).discard()
-
-            return vec4(this.game.reveal.color.mul(this.game.reveal.intensity), 1)
-        })()
-
-        // Mesh
-        const mesh = new THREE.Mesh(geometry, material)
-        
-        mesh.position.copy(this.center)
-        mesh.position.y = 0.001
-        mesh.rotation.x = - Math.PI * 0.5
-        mesh.rotation.z = Math.PI * 0.5
-        
-        this.game.scene.add(mesh)
-
-        this.circle.mesh = mesh
-
-        // Hide
-        this.circle.hide = (callback = null) =>
-        {
-            const dummy = { scale: 1 }
-            const speedMultiplier = this.game.debug.active ? 4 : 1
-            gsap.to(
-                dummy,
-                {
-                    scale: 0,
-                    duration: 1.5 / speedMultiplier,
-                    // ease: 'back.in(1.7)',
-                    ease: 'power4.in',
-                    overwrite: true,
-                    onUpdate: () =>
-                    {
-                        mesh.scale.setScalar(dummy.scale)
-                    },
-                    onComplete: () =>
-                    {
-                        if(typeof callback === 'function')
-                            callback()
-
-                        mesh.removeFromParent()
-                    }
-                }
-            )
-        }
-    }
+    // Removed: setCircle() method - intro circle no longer displayed
 
     setText()
     {
@@ -305,12 +242,12 @@ export class Intro
 
     updateProgress(progress)
     {
-        this.circle.progress = progress
+        // Removed: circle progress update
     }
 
     update()
     {
-        this.circle.smoothedProgress.value += (this.circle.progress - this.circle.smoothedProgress.value) * this.game.ticker.delta * 10
+        // Removed: circle smoothed progress update
     }
 
     destroy()
@@ -318,12 +255,12 @@ export class Intro
         this.label.removeFromParent()
 
         // Geometries
-        this.circle.mesh.geometry.dispose()
+        // this.circle.mesh.geometry.dispose() // Removed: circle no longer exists
         this.soundButton.mesh.geometry.dispose()
         this.text.mesh.geometry.dispose()
 
         // Materials
-        this.circle.mesh.material.dispose()
+        // this.circle.mesh.material.dispose() // Removed: circle no longer exists
         this.soundButton.mesh.material.dispose()
         this.text.mesh.material.dispose()
 

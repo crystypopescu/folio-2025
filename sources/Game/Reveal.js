@@ -50,101 +50,30 @@ export class Reveal
         // Step 0
         if(step === 0)
         {
-            // Intro loader => Hide circle
-            this.game.world.intro.circle.hide(() =>
+            // Grid
+            this.game.world.grid.show()
+
+            // Reveal - set immediately (no animation)
+            this.distance.value = 3.5
+
+            // View - set immediately (no animation)
+            this.game.view.zoom.smoothedRatio = 0.3
+            this.game.view.zoom.baseRatio = 0.3
+
+            // Intro loader => Show label and sound button
+            this.game.world.intro.setText()
+            this.game.world.intro.setSoundButton()
+            this.game.ticker.wait(1, () =>
             {
-                // Grid
-                this.game.world.grid.show()
-
-                // Reveal
-                this.distance.value = 0
-
-                gsap.to(
-                    this.distance,
-                    {
-                        value: 3.5,
-                        ease: 'back.out(1.7)',
-                        duration: 2 / speedMultiplier,
-                        overwrite: true,
-                    }
-                )
-
-                // View
-                this.game.view.zoom.smoothedRatio = 0.6
-                this.game.view.zoom.baseRatio = 0.6
-
-                gsap.to(
-                    this.game.view.zoom,
-                    {
-                        baseRatio: 0.3,
-                        // smoothedRatio: 0.4,
-                        ease: 'power1.inOut',
-                        duration: 1.25 / speedMultiplier,
-                        overwrite: true,
-                    }
-                )
-
-                // Intro loader => Show label and sound button
-                this.game.world.intro.setText()
-                this.game.world.intro.setSoundButton()
-                this.game.ticker.wait(1, () =>
-                {
-                    this.game.world.intro.showLabel()
-                })
-
-                // Cherry trees
-                if(this.game.world.cherryTrees)
-                    this.game.world.cherryTrees.leaves.seeThroughMultiplier = 0.5
-
-                // Click
-                if(location.hash.match(/skip/i))
-                {
-                    this.updateStep(1)
-                }
-                else
-                {
-                    // Next function
-                    const next = () =>
-                    {
-                        this.updateStep(1)
-                        this.game.inputs.events.off('introStart', inputCallback)
-                        this.game.rayCursor.removeIntersect(intersect)
-                    }
-
-                    // Input callback
-                    const inputCallback = () =>
-                    {
-                        next()
-                    }
-
-                    // Intsect
-                    const position = this.position.clone()
-                    position.y = 0
-                    
-                    const intersect = this.game.rayCursor.addIntersect({
-                        active: true,
-                        shape: new THREE.Sphere(position, 3.5),
-                        onClick: next,
-                        onEnter: () =>
-                        {
-                            gsap.to(this, { intensityMultiplier: 1.22, duration: 0.2, overwrite: true })
-                        },
-                        onLeave: () =>
-                        {
-                            gsap.to(this, { intensityMultiplier: 1, duration: 0.2, overwrite: true })
-                        }
-                    })
-                    
-                    // Inputs (for gamepad and keyboard)
-                    this.game.inputs.addActions([
-                        { name: 'introStart', categories: [ 'intro' ], keys: [ 'Gamepad.cross', 'Keyboard.Enter', 'Keyboard.ArrowUp', 'Keyboard.ArrowDown', 'Keyboard.KeyW', 'Keyboard.KeyD' ] },
-                    ])
-
-            // { name: 'forward',               categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.ArrowUp', 'Keyboard.KeyW', 'Gamepad.up', 'Gamepad.r2' ] },
-            // { name: 'right',                 categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.ArrowRight', 'Keyboard.KeyD', 'Gamepad.right' ] },
-                    this.game.inputs.events.on('introStart', inputCallback)
-                }
+                this.game.world.intro.showLabel()
             })
+
+            // Cherry trees
+            if(this.game.world.cherryTrees)
+                this.game.world.cherryTrees.leaves.seeThroughMultiplier = 0.5
+
+            // Auto-proceed to step 1 (removed user interaction requirement)
+            this.updateStep(1)
         }
         else if(step === 1)
         {
@@ -152,20 +81,8 @@ export class Reveal
             this.game.audio.init()
             this.sound.play()
 
-            // Reveal
-            gsap.to(
-                this.distance,
-                {
-                    value: 30,
-                    ease: 'back.in(1.3)',
-                    duration: 2 / speedMultiplier,
-                    overwrite: true,
-                    onComplete: () =>
-                    {
-                        this.distance.value = 99999
-                    }
-                }
-            )
+            // Reveal - set immediately (no animation)
+            this.distance.value = 99999
 
             // Intro loader => Hide label
             this.game.world.intro.hideLabel()
@@ -178,35 +95,15 @@ export class Reveal
             this.game.view.focusPoint.isTracking = true
             this.game.view.focusPoint.magnet.active = false
 
-            // View
-            gsap.to(
-                this.game.view.zoom,
-                {
-                    baseRatio: 0,
-                    // smoothedRatio: 0,
-                    ease: 'back.in(1.5)',
-                    duration: 1.75 / speedMultiplier,
-                    overwrite: true,
-                    onComplete: () =>
-                    {
-                        this.updateStep(2)
-                    }
-                }
-            )
+            // View - set immediately (no animation)
+            this.game.view.zoom.baseRatio = 0
 
-            // Cherry trees
+            // Cherry trees - set immediately (no animation)
             if(this.game.world.cherryTrees)
-            {
-                gsap.to(
-                    this.game.world.cherryTrees.leaves,
-                    {
-                        seeThroughMultiplier: 1,
-                        ease: 'power1.inOut',
-                        duration: 2 / speedMultiplier,
-                        overwrite: true
-                    }
-                )
-            }
+                this.game.world.cherryTrees.leaves.seeThroughMultiplier = 1
+
+            // Proceed to step 2 immediately
+            this.updateStep(2)
         }
         else if(step === 2)
         {
