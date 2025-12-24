@@ -1,0 +1,180 @@
+
+
+export function GameHTML() {
+  return (
+    <div className="game">
+
+        <canvas className="js-canvas"></canvas>
+
+        {/* Touch buttons */}
+        <div className="js-touch-buttons touch-buttons">
+            <div className="js-overlay overlay"></div>
+            <div className="list">
+                <button data-name="interact" className="js-button interact">Interact</button>
+                <button data-name="unstuck" className="js-button unstuck">Unstuck</button>
+                <button data-name="previous" className="js-button previous"></button>
+                <button data-name="next" className="js-button next"></button>
+                <button data-name="open" className="js-button open"></button>
+                <button data-name="close" className="js-button close"></button>
+            </div>
+        </div>
+
+        {/* Map trigger */}
+        <button className="js-map-trigger map-trigger">
+            <div className="button-inner">
+                <div className="icon-container">
+                    <img className="map-icon" src="/ui/map.svg"  alt="" />
+                </div>
+            </div>
+        </button>
+
+        {/* Modals */}
+        <div className="js-modals modals">
+
+            {/* Circuit end */}
+            <div className="js-modal modal circuit-end" data-name="circuit-end">
+                <div className="container">
+                    <div className="content">
+                        <button className="js-close close">
+                            <img className="icon is-default" src="/ui/close.svg"  alt="" />
+                            <span className="icon is-xbox">A</span>
+                        </button>
+
+                        <div className="your-time">
+                            Your time
+                            <br /><span className="js-time value">00:00:000</span>
+                        </div>
+
+                        <p className="offline-element text text-danger">
+                            <img src="/ui/warning.svg" alt="" className="icon" /> Server currently offline. Scores can't be saved.
+                        </p>
+
+                        <p className="not-top-10 text">
+                            Sorry, you didn't make it to the top 10.
+                        </p>
+
+                        <div className="horizontal-group">
+
+                            <form className="js-input-group input-group is-name-tag online-element" action="#">
+                                <div className="js-input-flag input-flag">
+                                    <div className="js-flag-button flag-button">
+                                        <img className="js-flag flag" src="/ui/flags/fr.webp" loading="lazy"  alt="" />
+                                        <svg className="none" width="23" height="20" viewBox="0 0 23 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.551758 1.7258C6.55166 -2.27398 11.0001 3.40978 19 1.40953L23 13.4096C15.5952 15.2611 11.6175 10.2589 6.30859 12.6762L8.44824 19.0941L6.55176 19.7269L0.551758 1.7258ZM5.26562 2.00328C4.68209 2.01685 4.07959 2.11674 3.42871 2.37242L6.16309 10.5746C7.17704 10.2014 8.1765 10.0274 9.17188 10.0043C10.8337 9.96566 12.395 10.3531 13.7764 10.7299C15.9783 11.3304 17.9741 11.9562 20.3564 11.806L17.6533 3.69664C13.9491 4.17921 11.0237 3.21654 8.72363 2.58922C7.3553 2.21603 6.29108 1.97952 5.26562 2.00328Z" fill="white"/>
+                                        </svg>
+                                    </div>
+
+                                    <div className="js-flag-select flag-select">
+                                        <div className="js-flag-close close-mini">
+                                            <img src="/ui/close-mini.svg"  alt="" />
+                                        </div>
+                                        <div className="js-flag-remove remove">
+                                            <img src="/ui/remove.svg"  alt="" />
+                                        </div>
+                                        <input type="text" className="js-flag-search search" placeholder="Search…" />
+                                        <div className="js-no-result no-result">
+                                            No result
+                                        </div>
+                                        <div className="choices">
+                                            <div className="js-scroller scroller">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input className="js-input js-main-focus input-text" type="text" placeholder="---" maxLength="3" />
+                                <button className="submit has-text">
+                                    Submit
+                                </button>
+                            </form>
+
+                            <div className="or">
+                                or
+                            </div>
+
+                            <button className="js-button-restart button">
+                                <svg className="icon icon-restart" width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17 5L10 10V6C5.58172 6 2 9.58172 2 14C2 18.4183 5.58172 22 10 22C14.4183 22 18 18.4183 18 14H20C20 19.5228 15.5228 24 10 24C4.47715 24 0 19.5228 0 14C0 8.47715 4.47715 4 10 4V0L17 5Z" fill="#ffffff"/>
+                                </svg>
+                                Restart
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {/* Discord */}
+            <div className="js-modal modal discord" data-name="discord">
+                <div className="container">
+                    <div className="content">
+                        <button className="js-close close">
+                            <img className="icon is-default" src="/ui/close.svg"  alt="" />
+                            <span className="icon is-xbox">A</span>
+                        </button>
+
+                        <div className="title"><img src="/ui/discord.svg"  alt="" /> Discord</div>
+
+                        <div className="items">
+                            <div className="item">
+                                <div className="title-container">
+                                    <div className="line left"></div>
+                                    <div className="title">Public server</div>
+                                    <div className="line right"></div>
+                                </div>
+                                <p>Come hang out with the community<span className="optional">, show us your projects and ask us anything</span>.</p>
+                                <div className="button-container">
+                                    <a href="https://discord.com/channels/769928116701233152/1445064878384480288" target="_blank" rel="noreferrer" className="button">
+                                        Join server
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="item">
+                                <div className="title-container">
+                                    <div className="line left"></div>
+                                    <div className="title">Private messages</div>
+                                    <div className="line right"></div>
+                                </div>
+                                <p>Contact me directly.<span className="optional"><br />I have to warn you, I try to answer everyone, but it might take a while.</span></p>
+                                <div className="button-container">
+                                    <a href="https://discord.com/users/202907325722263553" target="_blank" rel="noreferrer" className="button">
+                                        Start chating
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {/* Map */}
+            <div className="js-modal modal map" data-name="map">
+
+                <button className="js-close close">
+                    <div className="button-inner">
+                        <div className="icon-container">
+                            <img className="icon is-default" src="/ui/close.svg"  alt="" />
+                            <span className="icon is-xbox">A</span>
+                        </div>
+                    </div>
+                </button>
+
+                <div className="js-map-container map-container">
+                    <img className="js-texture texture" loading="lazy"  alt="" />
+                    <div className="js-player player"></div>
+                </div>
+            </div>
+
+        </div>
+
+        {/* Notifications */}
+        <div className="js-notifications notifications">
+            <div className="js-items items"></div>
+        </div>
+
+
+    </div>
+  )
+}
